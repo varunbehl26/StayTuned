@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/info_deatil"
+        android:enabled="true"
+        android:icon="@drawable/fav"
+        android:title="Info"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/videos_detail"
+        android:enabled="true"
+        android:icon="@drawable/unfav"
+        android:title="Videos"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/season_detail"
+        android:enabled="true"
+        android:icon="@drawable/fav"
+        android:title="Seasons"
+        app:showAsAction="ifRoom" />
+</menu>

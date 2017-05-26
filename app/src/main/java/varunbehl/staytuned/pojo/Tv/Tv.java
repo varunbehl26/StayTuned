@@ -1,0 +1,62 @@
+package varunbehl.staytuned.pojo.Tv;
+
+/**
+ * Created by varunbehl on 07/03/17.
+ */
+
+
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+import java.util.ArrayList;
+
+import varunbehl.staytuned.pojo.TvDetails.TvInfo;
+
+public class Tv {
+
+    @SerializedName("page")
+    @Expose
+    private Integer page;
+    @SerializedName("results")
+    @Expose
+    private ArrayList<TvInfo> tvShows = null;
+    @SerializedName("total_results")
+    @Expose
+    private Integer totalResults;
+    @SerializedName("total_pages")
+    @Expose
+    private Integer totalPages;
+
+    public Integer getPage() {
+        return page;
+    }
+
+    public void setPage(Integer page) {
+        this.page = page;
+    }
+
+    public ArrayList<TvInfo> getTvShows() {
+        return tvShows;
+    }
+
+    public void setTvShows(ArrayList<TvInfo> tvShows) {
+        this.tvShows = tvShows;
+    }
+
+    public Integer getTotalResults() {
+        return totalResults;
+    }
+
+    public void setTotalResults(Integer totalResults) {
+        this.totalResults = totalResults;
+    }
+
+    public Integer getTotalPages() {
+        return totalPages;
+    }
+
+    public void setTotalPages(Integer totalPages) {
+        this.totalPages = totalPages;
+    }
+
+}
