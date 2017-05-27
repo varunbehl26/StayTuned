@@ -50,8 +50,11 @@ public class TvCastAdapter extends RecyclerView.Adapter<TvCastAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(TvCastAdapter.ViewHolder holder, final int position) {
+        if (tvCastList.get(position).getName()!=null)
         holder.tvMovieTitle.setText(tvCastList.get(position).getName());
-        holder.draweeView.setImageURI(getImageUri(tvCastList.get(position).getProfilePath().toString()));
+
+        if (tvCastList.get(position).getProfilePath()!=null)
+            holder.draweeView.setImageURI(getImageUri(tvCastList.get(position).getProfilePath().toString()));
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -95,9 +95,9 @@ public class TvCastDetail extends AppCompatActivity {
 //            progress_fragment.setVisibility(View.GONE);
 //            threadAlreadyRunning = false;
             collapsingToolbar.setTitle(casts.getName());
-            draweeView.setImageURI("http://image.tmdb.org/t/p/w780" + casts.getProfilePath());
-            releaseDate.setText("Born on: " + casts.getBirthday() + "");
-            vote.setText("Rating: " + casts.getPopularity() + "/10");
+            draweeView.setImageURI(getString(R.string.image_path) + casts.getProfilePath());
+            releaseDate.setText(getString(R.string.born_on) + casts.getBirthday() + "");
+            vote.setText(getString(R.string.rating) + casts.getPopularity() + "/10");
             plotSynopsis.setText(casts.getBiography());
 
             if (casts.getCredits().getCast().size() > 1) {
@@ -105,7 +105,7 @@ public class TvCastDetail extends AppCompatActivity {
                 tvCastGridView.setAdapter(tvcastAdapter);
                 tvcastAdapter.notifyDataSetChanged();
                 tvCastProgressBar.setVisibility(View.GONE);
-                tvCastHeading.setText("Casts ");
+                tvCastHeading.setText(R.string.cast_heading);
             } else {
                 tvCastCardView.setVisibility(View.GONE);
             }

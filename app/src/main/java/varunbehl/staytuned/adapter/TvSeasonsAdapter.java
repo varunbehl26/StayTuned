@@ -50,7 +50,7 @@ public class TvSeasonsAdapter extends RecyclerView.Adapter<TvSeasonsAdapter.View
     @Override
     public void onBindViewHolder(TvSeasonsAdapter.ViewHolder holder, final int position) {
 
-        holder.tvMovieTitle.setText("Season:" + tvSeasonList.get(position).getSeasonNumber().toString());
+        holder.tvMovieTitle.setText(mContext.getString(R.string.season) + tvSeasonList.get(position).getSeasonNumber().toString());
         holder.draweeView.setImageURI(getImageUri(tvSeasonList.get(position).getPosterPath()));
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {

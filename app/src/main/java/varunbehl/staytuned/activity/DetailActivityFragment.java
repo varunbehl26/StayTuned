@@ -31,6 +31,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import rx.Observable;
@@ -238,9 +239,9 @@ public class DetailActivityFragment extends Fragment {
             progress_fragment.setVisibility(View.GONE);
             threadAlreadyRunning = false;
             collapsingToolbar.setTitle(tvInformation.getName());
-            draweeView.setImageURI("http://image.tmdb.org/t/p/w780" + tvInformation.getBackdropPath());
-            releaseDate.setText("Released Date: " + tvInformation.getFirstAirDate() + "");
-            vote.setText("Rating: " + tvInformation.getVoteAverage() + "/10");
+            draweeView.setImageURI(getString(R.string.image_path) + tvInformation.getBackdropPath());
+            releaseDate.setText(getString(R.string.release_data) + tvInformation.getFirstAirDate() + "");
+            vote.setText(getString(R.string.rating) + tvInformation.getVoteAverage() + "/10");
             plotSynopsis.setText(tvInformation.getOverview());
             is_fav = (prefs.getInt("is_fav" + "_" + tvId, 0));
             if (is_fav == 1) {
@@ -279,7 +280,7 @@ public class DetailActivityFragment extends Fragment {
                 tvSeasonsGridView.setAdapter(tvSeasonsAdapter);
                 tvSeasonsAdapter.notifyDataSetChanged();
                 tvSeasonsProgressBar.setVisibility(View.GONE);
-                tvSeasonsHeading.setText("Tv Seasons ");
+                tvSeasonsHeading.setText(R.string.tv_season_heading);
             } else {
                 tvSeasonsCardView.setVisibility(View.GONE);
             }
@@ -289,7 +290,7 @@ public class DetailActivityFragment extends Fragment {
                 tvCastGridView.setAdapter(tvCastAdapter);
                 tvCastAdapter.notifyDataSetChanged();
                 tvCastProgressBar.setVisibility(View.GONE);
-                tvCastHeading.setText("Tv Casts ");
+                tvCastHeading.setText(R.string.tv_casts_heading);
             } else {
                 tvSeasonsCardView.setVisibility(View.GONE);
             }
@@ -300,7 +301,7 @@ public class DetailActivityFragment extends Fragment {
                 similarTvDataAdapter.notifyDataSetChanged();
                 similarTvShowsHzGridView.setVisibility(View.VISIBLE);
                 similarTvShowsProgressBar.setVisibility(View.GONE);
-                similarTvShowsHeading.setText("More Tv shows like this one");
+                similarTvShowsHeading.setText(R.string.more_tv_show_heading);
             }
         } else if (event.getRequest() == 3) {
             if (getActivity() != null) {
@@ -309,7 +310,7 @@ public class DetailActivityFragment extends Fragment {
                 recommendedTvDataAdapter.notifyDataSetChanged();
                 recommendedTvShowsHzGridView.setVisibility(View.VISIBLE);
                 recommendedTvShowsProgressBar.setVisibility(View.GONE);
-                recommendedTvShowsHeading.setText("You must watch these.");
+                recommendedTvShowsHeading.setText(R.string.you_must_watch_heading);
             }
         } else if (event.getRequest() == 4) {
             if (getActivity() != null) {
@@ -318,7 +319,7 @@ public class DetailActivityFragment extends Fragment {
                 videoAdapter.notifyDataSetChanged();
                 videosHzGridView.setVisibility(View.VISIBLE);
                 videosProgressBar.setVisibility(View.GONE);
-                videosHeading.setText("Videos");
+                videosHeading.setText(R.string.videos_heading);
             }
         } else if (event.getRequest() == 5) {
             nextEpisodeEpisodeDate.setText(episode.getAirDate());
@@ -372,7 +373,7 @@ public class DetailActivityFragment extends Fragment {
                                @Override
                                public void onError(Throwable e) {
                                    e.printStackTrace();
-                                   Log.v("Exception", "NullPointerException");
+                                   Log.v("Exception", Arrays.toString(e.getStackTrace()));
                                }
 
                                @Override

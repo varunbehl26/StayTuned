@@ -126,7 +126,7 @@ public class TvSeasonDetail extends AppCompatActivity {
             tvSeasonsEpisodeAdapter.notifyDataSetChanged();
             tvSeasonsGridView.setVisibility(View.VISIBLE);
             tvSeasonsProgressBar.setVisibility(View.GONE);
-            tvSeasonsHeading.setText("Episode List ");
+            tvSeasonsHeading.setText(R.string.episode_list);
         }
     }
 

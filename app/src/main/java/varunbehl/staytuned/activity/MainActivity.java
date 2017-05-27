@@ -421,21 +421,21 @@ public class MainActivity extends AppCompatActivity
             popularTvDataAdapter.notifyDataSetChanged();
             popularTvShowsHzGridView.setVisibility(View.VISIBLE);
             popularTvShowsProgressBar.setVisibility(View.GONE);
-            popularTvShowHeading.setText("Popular Tv Shows");
+            popularTvShowHeading.setText(R.string.popular_tv_heading);
         } else if (event.getRequest() == 2) {
             TvDataAdapter topRatedTvDataAdapter = new TvDataAdapter(getApplicationContext(), topRatedTvList);
             topRatedTvshowsHzGridView.setAdapter(topRatedTvDataAdapter);
             topRatedTvDataAdapter.notifyDataSetChanged();
             topRatedTvshowsHzGridView.setVisibility(View.VISIBLE);
             topRatedTvShowsProgressBar.setVisibility(View.GONE);
-            topRatedTvshowHeading.setText("Top Rated Tv Shows");
+            topRatedTvshowHeading.setText(R.string.top_rated_heading);
         } else if (event.getRequest() == 3) {
             TvDataAdapter todayAirTvDataAdapter = new TvDataAdapter(getApplicationContext(), airingTodayList);
             todayAirTvShowsHzGridView.setAdapter(todayAirTvDataAdapter);
             todayAirTvDataAdapter.notifyDataSetChanged();
             todayAirTvShowsHzGridView.setVisibility(View.VISIBLE);
             todayAirTvShowsProgressBar.setVisibility(View.GONE);
-            todayAirTvTvShowHeading.setText("Tv Shows Airing Today");
+            todayAirTvTvShowHeading.setText(R.string.air_today_heading);
 
         } else if (event.getRequest() == 4) {
             showSnakeBar(layout);

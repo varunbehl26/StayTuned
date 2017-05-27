@@ -21,5 +21,21 @@
     <string name="view_all">View All</string>
     <string name="stay_tuned">Stay Tuned</string>
     <string name="reminds_you_of_your_daily_favorite_shows">Reminds you of your daily favorite shows</string>
+    <string name="rating">Rating:</string>
+    <string name="release_data">Released Date:</string>
+    <string name="image_path">http://image.tmdb.org/t/p/w780</string>
+    <string name="tv_season_heading">Tv Seasons</string>
+    <string name="tv_casts_heading">Tv Casts</string>
+    <string name="more_tv_show_heading">More Tv shows like this one</string>
+    <string name="you_must_watch_heading">You must watch these.</string>
+    <string name="videos_heading">Videos</string>
+    <string name="season">Season:</string>
+    <string name="popular_tv_heading">Popular Tv Shows</string>
+    <string name="top_rated_heading">Top Rated Tv Shows</string>
+    <string name="air_today_heading">Tv Shows Airing Today</string>
+    <string name="cast_heading">Casts</string>
+    <string name="born_on">Born on:</string>
+    <string name="episode_list">Episode List</string>
+    <string name="episode_air_heading">Episode Air Date:</string>
 
 </resources>

@@ -68,7 +68,7 @@ public class SearchEpisodeAdapter extends ArrayAdapter<SearchResult.Result> {
 
         holder.episodeTitle.setText(result.getName());
         holder.episodeDesc.setText(result.getOverview());
-        holder.episode_date.setText("Rating:"+result.getVoteAverage());
+        holder.episode_date.setText(mContext.getString(R.string.rating)+result.getVoteAverage());
         if (result.getPosterPath()!=null) {
             holder.draweeView.setImageURI(getImageUri(result.getPosterPath()));
             holder.draweeView.setVisibility(View.VISIBLE);

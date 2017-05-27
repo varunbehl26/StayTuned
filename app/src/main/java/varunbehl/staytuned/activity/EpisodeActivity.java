@@ -126,8 +126,8 @@ public class EpisodeActivity extends AppCompatActivity {
         if (event.getRequest() == 1) {
             threadAlreadyRunning = false;
             collapsingToolbar.setTitle(episodeInfo.getName());
-            draweeView.setImageURI("http://image.tmdb.org/t/p/w780" + episodeInfo.getStillPath());
-            releaseDate.setText("Episode Air Date: " + episodeInfo.getAirDate() + "");
+            draweeView.setImageURI(getString(R.string.image_path)+ episodeInfo.getStillPath());
+            releaseDate.setText(getString(R.string.episode_air_heading) + episodeInfo.getAirDate() + "");
             plotSynopsis.setText(episodeInfo.getOverview());
         }
     }
