@@ -2,6 +2,7 @@ package varunbehl.staytuned.data;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
@@ -16,9 +17,8 @@ import varunbehl.staytuned.pojo.TvDetails.TvInfo;
 
 public class StayTunedDBHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 8;
+    private static final int DATABASE_VERSION = 12;
     private static final String DATABASE_NAME = "StayTuned.db";
-    private static final String PRIMARY_KEY = "PRIMARY_KEY";
 
 
     public StayTunedDBHelper(Context context) {
@@ -26,38 +26,53 @@ public class StayTunedDBHelper extends SQLiteOpenHelper {
     }
 
     public static void addintoDB(TvInfo tvInformation, Context context, int tvId) {
+
         StayTunedDBHelper dbHelper = new StayTunedDBHelper(context);
-
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-
         ContentValues values = new ContentValues();
 
+        if (!checkIfTvInfoExists(tvId, context)) {
+            values.put(StayTunedContract.StayTunedEntry.RELEASE_DATE, tvInformation.getFirstAirDate());
+            values.put(StayTunedContract.StayTunedEntry.RATING, tvInformation.getVoteCount());
+            values.put(StayTunedContract.StayTunedEntry.DESC, tvInformation.getOverview());
+            values.put(StayTunedContract.StayTunedEntry.SEASONS, tvInformation.getNumberOfSeasons());
+            values.put(StayTunedContract.StayTunedEntry.IMAGE, tvInformation.getBackdropPath());
+            values.put(StayTunedContract.StayTunedEntry.EPISODE_NO, 0);
+            values.put(StayTunedContract.StayTunedEntry.SEASON_NO, 0);
+            values.put(StayTunedContract.StayTunedEntry.IS_WATCHED, 0);
+            values.put(StayTunedContract.StayTunedEntry.IS_FAVORITE, 1);
+            values.put(StayTunedContract.StayTunedEntry.IS_NOTIFIED, 0);
+            values.put(StayTunedContract.StayTunedEntry.DATE_ADDED, new Date().toString());
+            values.put(StayTunedContract.StayTunedEntry.DATE_MODIFIED, new Date().toString());
+            values.put(StayTunedContract.StayTunedEntry.USER_ID, Math.random());
+            values.put(StayTunedContract.StayTunedEntry.TV_ID, tvId);
+            values.put(StayTunedContract.StayTunedEntry.NAME, tvInformation.getName());
 
-        values.put(StayTunedContract.StayTunedEntry.RELEASE_DATE, tvInformation.getFirstAirDate());
-        values.put(StayTunedContract.StayTunedEntry.RATING, tvInformation.getVoteCount());
-        values.put(StayTunedContract.StayTunedEntry.DESC, tvInformation.getOverview());
-        values.put(StayTunedContract.StayTunedEntry.SEASONS, tvInformation.getNumberOfSeasons());
-        values.put(StayTunedContract.StayTunedEntry.IMAGE, tvInformation.getBackdropPath());
-        values.put(StayTunedContract.StayTunedEntry.EPISODE_NO, 0);
-        values.put(StayTunedContract.StayTunedEntry.SEASON_NO, 0);
-        values.put(StayTunedContract.StayTunedEntry.IS_WATCHED, 0);
-        values.put(StayTunedContract.StayTunedEntry.IS_FAVORITE, 1);
-        values.put(StayTunedContract.StayTunedEntry.IS_NOTIFIED, 0);
-        values.put(StayTunedContract.StayTunedEntry.DATE_ADDED, new Date().toString());
-        values.put(StayTunedContract.StayTunedEntry.DATE_MODIFIED, new Date().toString());
-        values.put(StayTunedContract.StayTunedEntry.USER_ID, Math.random());
-        values.put(StayTunedContract.StayTunedEntry.TV_ID, tvId);
-        values.put(StayTunedContract.StayTunedEntry.NAME, tvInformation.getName());
+            long rowUpdated = db.insert(StayTunedContract.StayTunedEntry.TABLE_NAME, null, values);
 
-        long rowUpdated = db.insert(StayTunedContract.StayTunedEntry.TABLE_NAME, null, values);
+            Log.v("Row Updated: ", rowUpdated + "");
+        }
+    }
 
-        Log.v("Row Updated: ", rowUpdated + "");
-
+    public static boolean checkIfTvInfoExists(int tvId, Context context) {
+        StayTunedDBHelper dbHelper = new StayTunedDBHelper(context);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        String SQL_CHECK_TABLE = "Select " + StayTunedContract.StayTunedEntry._ID + " from " + StayTunedContract.StayTunedEntry.TABLE_NAME +
+                " where " + StayTunedContract.StayTunedEntry.TV_ID
+                + " = " + tvId + "";
+        Cursor cursor = db.rawQuery(SQL_CHECK_TABLE, null);
+        if (cursor.getCount() <= 0) {
+            cursor.close();
+            return false;
+        }
+        cursor.close();
+        return true;
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
         String SQL_CREATE_TABLE = "CREATE TABLE " + StayTunedContract.StayTunedEntry.TABLE_NAME + "("
+                + StayTunedContract.StayTunedEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + StayTunedContract.StayTunedEntry.EPISODE_NO + " INTEGER NOT NULL,"
                 + StayTunedContract.StayTunedEntry.SEASON_NO + " INTEGER NOT NULL,"
                 + StayTunedContract.StayTunedEntry.IS_WATCHED + " INTEGER ,"
@@ -73,7 +88,7 @@ public class StayTunedDBHelper extends SQLiteOpenHelper {
                 + StayTunedContract.StayTunedEntry.IMAGE + " TEXT,"
                 + StayTunedContract.StayTunedEntry.NAME + " TEXT NOT NULL ,"
                 + StayTunedContract.StayTunedEntry.NEXT_AIR_DATE + " DATE ,"
-                + StayTunedContract.StayTunedEntry.TV_ID + " INTEGER NOT NULL,PRIMARY KEY (tv_id,episode_no,season_no))";
+                + StayTunedContract.StayTunedEntry.TV_ID + " INTEGER NOT NULL)";
         db.execSQL(SQL_CREATE_TABLE);
     }
 
@@ -83,13 +98,14 @@ public class StayTunedDBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+
     public void insertIntoDb(Date date, int tvId, Context context) {
 
-            StayTunedDBHelper dbHelper = new StayTunedDBHelper(context);
-            SQLiteDatabase db = dbHelper.getWritableDatabase();
-            ContentValues values = new ContentValues();
-            values.put(StayTunedContract.StayTunedEntry.NEXT_AIR_DATE, date.toString());
-            db.update(StayTunedContract.StayTunedEntry.TABLE_NAME, values, StayTunedContract.StayTunedEntry.TV_ID + "=" + tvId, null);
+        StayTunedDBHelper dbHelper = new StayTunedDBHelper(context);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(StayTunedContract.StayTunedEntry.NEXT_AIR_DATE, date.toString());
+        db.update(StayTunedContract.StayTunedEntry.TABLE_NAME, values, StayTunedContract.StayTunedEntry.TV_ID + "=" + tvId, null);
 
     }
 }

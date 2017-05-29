@@ -91,11 +91,6 @@ public class SearchEpisodeAdapter extends ArrayAdapter<SearchResult.Result> {
                 Intent intent = new Intent(mContext, DetailActivity.class)
                         .putExtra(DetailActivityFragment.DETAIL_TV, result.getId());
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                Bundle bundle = new Bundle();
-//                bundle.putString(FirebaseAnalytics.Param.ITEM_ID, result.getId().toString());
-//                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, result.getName().toString());
-//                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "tv show");
-//                mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
                 mContext.startActivity(intent);
             }
         });

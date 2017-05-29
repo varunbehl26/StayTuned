@@ -1,5 +1,7 @@
 package varunbehl.staytuned.data;
 
+import android.content.ContentResolver;
+import android.net.Uri;
 import android.provider.BaseColumns;
 
 /**
@@ -8,13 +10,19 @@ import android.provider.BaseColumns;
 
 public class StayTunedContract {
 
-    private StayTunedContract() {
-    }
-
+    public static final String CONTENT_AUTHORITY = "varunbehl.staytuned";
+    public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
+    private static final String PATH_TV = "stay_tuned";
 
     public static final class StayTunedEntry implements BaseColumns {
-        public static final String TABLE_NAME = "stay_tuned";
 
+        public static final String CONTENT_DIR_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_TV;
+
+        public static final String CONTENT_ITEM_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_TV;
+
+        public static final String TABLE_NAME = "stay_tuned";
         public static final String _ID = BaseColumns._ID;
         public static final String EPISODE_NO = "episode_no";
         public static final String SEASON_NO = "season_no";
@@ -32,5 +40,11 @@ public class StayTunedContract {
         public static final String IMAGE = "image";
         public static final String NAME = "name";
         public static final String NEXT_AIR_DATE = "next_air_date";
+        public static final Uri CONTENT_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_TV).build();
+
+        public static Uri buildTvUri() {
+            return CONTENT_URI.buildUpon().build();
+        }
     }
 }

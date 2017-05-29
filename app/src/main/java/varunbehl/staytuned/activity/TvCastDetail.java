@@ -155,7 +155,7 @@ public class TvCastDetail extends AppCompatActivity {
                 );
     }
 
-    private class CastLoadThread extends Thread {
+    private class CastLoadThread extends Thread {           
 
         @Override
         public void run() {

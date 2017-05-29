@@ -110,17 +110,6 @@ public class TvSeasonDetail extends AppCompatActivity {
     public void onMessageEvent(MessageEvent event) {
         if (event.getRequest() == 1) {
             threadAlreadyRunning = false;
-//            collapsingToolbar.setTitle(tvSeasonInfo.getName());
-//            draweeView.setImageURI("http://image.tmdb.org/t/p/w780" + tvSeasonInfo.getPosterPath());
-//            releaseDate.setText("Released Date: " + tvSeasonInfo.getAirDate() + "");
-//            plotSynopsis.setText(tvSeasonInfo.getOverview());
-//            fav_button.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    fav_button.setBackground(getApplicationContext().getResources().getDrawable(R.drawable.fav));
-//                }
-//            });
-
             TvSeasonsEpisodeAdapter tvSeasonsEpisodeAdapter = new TvSeasonsEpisodeAdapter(this, tvSeasonInfo.getEpisodes(), tvId);
             tvSeasonsGridView.setAdapter(tvSeasonsEpisodeAdapter);
             tvSeasonsEpisodeAdapter.notifyDataSetChanged();

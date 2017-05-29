@@ -51,15 +51,6 @@ public class TvCastInfoAdapter extends RecyclerView.Adapter<TvCastInfoAdapter.Vi
         if (tvCastList.get(position).getPosterPath()!=null)
         holder.draweeView.setImageURI(getImageUri(tvCastList.get(position).getPosterPath()));
 
-//        holder.cardView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(mContext, TvCastDetail.class);
-//                intent.putExtra(TvSeasonDetail.TV_ID, tvId);
-//                intent.putExtra(TvCastDetail.CAST_ID, tvCastList.get(position).getId());
-//                mContext.startActivity(intent);
-//            }
-//        });
 
     }
 
