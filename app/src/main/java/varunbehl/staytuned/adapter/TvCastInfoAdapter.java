@@ -17,11 +17,12 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import java.util.List;
 
 import varunbehl.staytuned.R;
+import varunbehl.staytuned.pojo.Cast.Cast;
 import varunbehl.staytuned.pojo.Cast.CastInfo;
 
 public class TvCastInfoAdapter extends RecyclerView.Adapter<TvCastInfoAdapter.ViewHolder> {
 
-    private List<CastInfo.Cast> tvCastList;
+    private List<Cast> tvCastList;
     private LayoutInflater inflater;
     private Context mContext;
 
@@ -30,7 +31,7 @@ public class TvCastInfoAdapter extends RecyclerView.Adapter<TvCastInfoAdapter.Vi
         this.mContext = mContext;
     }
 
-    public TvCastInfoAdapter(Context context, List<CastInfo.Cast> objects, int id) {
+    public TvCastInfoAdapter(Context context, List<Cast> objects, int id) {
         this.mContext = context;
         this.tvCastList = objects;
         int tvId = id;

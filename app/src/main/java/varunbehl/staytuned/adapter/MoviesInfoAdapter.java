@@ -1,11 +1,11 @@
 package varunbehl.staytuned.adapter;
 /**
- * Created by varunbehl on 07/03/17.
+ * Created by varunbehl on 02/04/16.
  */
-
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,38 +14,40 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.List;
 
 import varunbehl.staytuned.R;
 import varunbehl.staytuned.activity.DetailActivity;
-import varunbehl.staytuned.activity.TvDetailActivityFragment;
-import varunbehl.staytuned.pojo.TvDetails.TvInfo;
+import varunbehl.staytuned.activity.MovieDetailActivityFragment;
+import varunbehl.staytuned.pojo.Picture.Pictures;
 
-public class TvInfoAdapter extends ArrayAdapter<TvInfo> {
+public class MoviesInfoAdapter extends ArrayAdapter<Pictures> {
 
-    private List<TvInfo> tvInfoList;
+    private final String IMAGE_POSTER_BASE_URL = "http://image.tmdb.org/t/p/w342";
+    private List<Pictures> movieArrayList;
     private LayoutInflater inflater;
     private Context mContext;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
-    public TvInfoAdapter(Context context, List<TvInfo> objects) {
+
+    public MoviesInfoAdapter(Context context, List<Pictures> objects) {
         super(context, 0, objects);
         this.mContext = context;
-        this.tvInfoList = objects;
+        this.movieArrayList = objects;
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(context);
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     @Override
     public int getCount() {
-        if (tvInfoList != null)
-            return tvInfoList.size();
-        else
-            return 0;
+        return movieArrayList.size();
     }
 
     @Override
-    public TvInfo getItem(int position) {
-        return tvInfoList.get(position);
+    public Pictures getItem(int position) {
+        return movieArrayList.get(position);
     }
 
     @Override
@@ -54,12 +56,9 @@ public class TvInfoAdapter extends ArrayAdapter<TvInfo> {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-
-        final TvInfo tvInfo = tvInfoList.get(position);
-
+    public View getView(final int position, View convertView, ViewGroup parent) {
+        final Pictures movie = movieArrayList.get(position);
         ViewHolder holder;
-
         if (convertView != null) {
             holder = (ViewHolder) convertView.getTag();
         } else {
@@ -67,37 +66,44 @@ public class TvInfoAdapter extends ArrayAdapter<TvInfo> {
             holder = new ViewHolder(convertView);
             convertView.setTag(holder);
         }
-        holder.tvMovieTitle.setText(tvInfo.getName());
-        holder.draweeView.setImageURI(getImageUri(tvInfo.getBackdropPath()));
+
+        holder.tvMovieTitle.setText(movie.getTitle());
+
+        holder.draweeView.setImageURI(getImageUri(movie.getPosterPath()));
+
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, DetailActivity.class)
-                        .putExtra(TvDetailActivityFragment.DETAIL_TV, tvInfo.getId());
+                        .putExtra(MovieDetailActivityFragment.DETAIL_TV, movieArrayList.get(position).getId())
+                        .putExtra("ListToOpen", 1);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                Bundle bundle = new Bundle();
+                bundle.putString(FirebaseAnalytics.Param.ITEM_ID, movieArrayList.get(position).getId().toString());
+                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, movieArrayList.get(position).getTitle());
+                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "movies");
+
+                mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
                 mContext.startActivity(intent);
             }
         });
-
         return convertView;
     }
 
-    private String getImageUri(String uri) {
-        String IMAGE_POSTER_BASE_URL = "http://image.tmdb.org/t/p/w342";
+    public String getImageUri(String uri) {
         return IMAGE_POSTER_BASE_URL + "/" + uri;
     }
 
-    private static class ViewHolder {
+    static class ViewHolder {
         TextView tvMovieTitle;
-        SimpleDraweeView draweeView;
         CardView cardView;
+        SimpleDraweeView draweeView;
 
-        ViewHolder(View itemView) {
+        public ViewHolder(View itemView) {
             tvMovieTitle = (TextView) itemView.findViewById(R.id.tv_movie_title);
             draweeView = (SimpleDraweeView) itemView.findViewById(R.id.img_movie_poster);
             cardView = (CardView) itemView.findViewById(R.id.card_view);
-
         }
     }
 }

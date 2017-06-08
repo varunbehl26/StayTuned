@@ -18,7 +18,7 @@ import java.util.List;
 
 import varunbehl.staytuned.R;
 import varunbehl.staytuned.activity.DetailActivity;
-import varunbehl.staytuned.activity.DetailActivityFragment;
+import varunbehl.staytuned.activity.TvDetailActivityFragment;
 import varunbehl.staytuned.pojo.Search.SearchResult;
 
 public class SearchEpisodeAdapter extends ArrayAdapter<SearchResult.Result> {
@@ -89,7 +89,7 @@ public class SearchEpisodeAdapter extends ArrayAdapter<SearchResult.Result> {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, DetailActivity.class)
-                        .putExtra(DetailActivityFragment.DETAIL_TV, result.getId());
+                        .putExtra(TvDetailActivityFragment.DETAIL_TV, result.getId());
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 mContext.startActivity(intent);
             }

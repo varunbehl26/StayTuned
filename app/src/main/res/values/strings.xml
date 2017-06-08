@@ -27,7 +27,7 @@
     <string name="tv_season_heading">Tv Seasons</string>
     <string name="tv_casts_heading">Tv Casts</string>
     <string name="more_tv_show_heading">More Tv shows like this one</string>
-    <string name="you_must_watch_heading">You must watch these.</string>
+    <string name="you_must_watch_heading">You must watch these</string>
     <string name="videos_heading">Videos</string>
     <string name="season">Season:</string>
     <string name="popular_tv_heading">Popular Tv Shows</string>
@@ -37,5 +37,8 @@
     <string name="born_on">Born on:</string>
     <string name="episode_list">Episode List</string>
     <string name="episode_air_heading">Episode Air Date:</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

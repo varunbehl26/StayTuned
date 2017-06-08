@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:ads="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -23,57 +23,25 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <ScrollView
+
+
+    <FrameLayout
+        android:id="@+id/frameLayout"
+        android:layout_width="match_parent"
+        android:layout_above="@+id/bottom_navigation"
+        android:layout_height="wrap_content"/>
+
+    <android.support.design.widget.BottomNavigationView
+        android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="?attr/actionBarSize">
-
-        <LinearLayout
-            android:id="@+id/layout_main"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorPrimaryDark"
-            android:orientation="vertical"
-            tools:context="varunbehl.staytuned.activity.MainActivity"
-            tools:showIn="@layout/app_bar_main">
-
-            <com.google.android.gms.ads.AdView
-                android:id="@+id/adView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                ads:adSize="BANNER"
-                ads:adUnitId="@string/banner_ad_unit_id" />
-
-            <include
-                android:id="@+id/popularTvShowsCard"
-                layout="@layout/image_card"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp" />
-
-            <include
-                android:id="@+id/topRatedTvShowsCard"
-                layout="@layout/image_card"
-                android:layout_width="match_parent"
-                android:layout_marginLeft="10dp"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="10dp" />
-
-            <include
-                android:id="@+id/airTodayTvShowsCard"
-                layout="@layout/image_card"
-                android:layout_width="match_parent"
-                android:layout_marginLeft="10dp"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="10dp" />
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorPrimary"
+        app:itemBackground="@color/colorPrimary"
+        app:itemIconTint="#fff"
+        app:itemTextColor="#fff"
+        android:visibility="gone"
+        app:menu="@menu/detai_menu" />
 
 
-
-
-        </LinearLayout>
-    </ScrollView>
-
-
-</android.support.design.widget.CoordinatorLayout>
+</RelativeLayout>

@@ -12,6 +12,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 
+import com.google.firebase.crash.FirebaseCrash;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
@@ -63,6 +64,8 @@ public class NextAirService extends IntentService {
             fetchDataForTvInfo();
         } catch (Exception e) {
             e.printStackTrace();
+            FirebaseCrash.report(e);
+
         }
 
     }
@@ -86,6 +89,8 @@ public class NextAirService extends IntentService {
                                @Override
                                public void onError(Throwable e) {
                                    e.printStackTrace();
+                                   FirebaseCrash.report(e);
+
                                    Log.v("Exception", "NullPointerException");
                                }
 
@@ -136,6 +141,8 @@ public class NextAirService extends IntentService {
 
                                                    } catch (ParseException e) {
                                                        e.printStackTrace();
+                                                       FirebaseCrash.report(e);
+
                                                    }
                                                }
                                            }
@@ -171,6 +178,8 @@ public class NextAirService extends IntentService {
             episodeJson = new JSONObject(json);
         } catch (JSONException e) {
             e.printStackTrace();
+            FirebaseCrash.report(e);
+
         }
         TvSeasonInfo.Episode episode = new Gson().fromJson(episodeJson != null ? episodeJson.toString() : null, TvSeasonInfo.Episode.class);
 

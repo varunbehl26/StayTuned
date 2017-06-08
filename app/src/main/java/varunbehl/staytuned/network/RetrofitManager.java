@@ -2,14 +2,15 @@ package varunbehl.staytuned.network;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
-import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Observable;
 import varunbehl.staytuned.pojo.Cast.CastInfo;
 import varunbehl.staytuned.pojo.Episode.EpisodeInfo;
+import varunbehl.staytuned.pojo.MovieDetail;
 import varunbehl.staytuned.pojo.Picture.Picture_Detail;
+import varunbehl.staytuned.pojo.Picture.Pictures;
 import varunbehl.staytuned.pojo.Reviews.Reviews;
 import varunbehl.staytuned.pojo.Search.SearchResult;
 import varunbehl.staytuned.pojo.Tv.Tv;
@@ -52,9 +53,6 @@ public class RetrofitManager {
     }
 
 
-    public Call<Picture_Detail> getMoviesInfo(String categories, int page, String apiKey) {
-        return dataInterface.getMoviesInfo(categories, page, apiKey);
-    }
 
     public Observable<Reviews> getComments(int movieId, String apiKey) {
         return dataInterface.listReviews(movieId, apiKey);
@@ -80,6 +78,13 @@ public class RetrofitManager {
     public Observable<Tv> getRecommendedTvShows(String tvId) {
         return dataInterface.getRecommendedTvShows(tvId, API_KEY);
     }
+    public Observable<Picture_Detail> getSimilarMovies(int  movieId) {
+        return dataInterface.getSimilarMovies(movieId, API_KEY);
+    }
+
+    public Observable<Picture_Detail> getRecommendedMovies(int movieId) {
+        return dataInterface.getRecommendedMovies(movieId, API_KEY);
+    }
 
     public Observable<TvSeasonInfo> getTvSeasonInfo(String tvId, String season) {
         return dataInterface.getTvSeasonInfo(tvId, season, API_KEY);
@@ -97,6 +102,18 @@ public class RetrofitManager {
     public Observable<CastInfo> getCastInfo(String castId) {
         return dataInterface.getCastInfo(castId, API_KEY, "en-US", "combined_credits");
     }
+
+    public Observable<Picture_Detail> listMoviesInfo(String categories, int page) {
+        Observable<Picture_Detail> moviesInfoCall = dataInterface.listMoviesInfo(categories, page, API_KEY);
+        return moviesInfoCall;
+    }
+
+    public Observable<MovieDetail> getMoviesDetail(int id) {
+        Observable<MovieDetail> moviesInfoCall = dataInterface.getMovieDetail(id,API_KEY,"videos,images,credits,reviews");
+        return moviesInfoCall;
+    }
+
+
 }
 
 

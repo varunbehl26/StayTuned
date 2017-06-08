@@ -20,11 +20,12 @@ import java.util.List;
 import varunbehl.staytuned.R;
 import varunbehl.staytuned.activity.TvCastDetail;
 import varunbehl.staytuned.activity.TvSeasonDetail;
+import varunbehl.staytuned.pojo.Cast.Cast;
 import varunbehl.staytuned.pojo.TvDetails.TvInfo;
 
 public class TvCastAdapter extends RecyclerView.Adapter<TvCastAdapter.ViewHolder> {
 
-    private List<TvInfo.Cast> tvCastList;
+    private List<Cast> tvCastList;
     private LayoutInflater inflater;
     private Context mContext;
     private int tvId;
@@ -34,7 +35,7 @@ public class TvCastAdapter extends RecyclerView.Adapter<TvCastAdapter.ViewHolder
         this.mContext = mContext;
     }
 
-    public TvCastAdapter(Context context, List<TvInfo.Cast> objects, int id) {
+    public TvCastAdapter(Context context, List<Cast> objects, int id) {
         this.mContext = context;
         this.tvCastList = objects;
         this.tvId = id;

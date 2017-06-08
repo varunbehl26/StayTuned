@@ -1,5 +1,7 @@
 package varunbehl.staytuned.util;
 
+import android.util.Log;
+
 import java.util.Date;
 
 /**
@@ -22,19 +24,14 @@ public class DateTimeHelper {
         long diffHours = diff / (60 * 60 * 1000);
         int diffInDays = (int) ((dt2.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
 
-        if (diffInDays < 1) {
-            System.err.println("Difference in number of days (2) : " + diffInDays);
-            return false;
-        } else if (diffHours > 24) {
-            System.err.println(">24");
-            return false;
-        } else if ((diffHours == 24) && (diffMinutes >= 1)) {
-            System.err.println("minutes");
-            return false;
+        if (diffInDays > 1) {
+            Log.v("Diff in number of days" , diffInDays+"");
+            return true;
+        } else if (diffHours > 3) {
+            Log.v("Diff in number of hours" , diffInDays+"");
+            return true;
         }
-        return true;
-
-
+        return false;
     }
 
 }

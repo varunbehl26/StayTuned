@@ -18,7 +18,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 
 import varunbehl.staytuned.R;
 import varunbehl.staytuned.activity.DetailActivity;
-import varunbehl.staytuned.activity.DetailActivityFragment;
+import varunbehl.staytuned.activity.TvDetailActivityFragment;
 
 public class TvInfoCursorAdapter extends CursorAdapter {
 
@@ -53,7 +53,8 @@ public class TvInfoCursorAdapter extends CursorAdapter {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, DetailActivity.class)
-                        .putExtra(DetailActivityFragment.DETAIL_TV, cursor.getInt(cursor.getColumnIndexOrThrow("tv_id")));
+                        .putExtra(TvDetailActivityFragment.DETAIL_TV, cursor.getInt(cursor.getColumnIndexOrThrow("tv_id")))
+                        .putExtra("ListToOpen",2);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 mContext.startActivity(intent);
             }

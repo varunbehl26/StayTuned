@@ -25,7 +25,7 @@
         android:background="@color/cardview_dark_background"
         android:fitsSystemWindows="true"
         android:visibility="visible"
-        tools:context="varunbehl.staytuned.activity.DetailActivityFragment"
+        tools:context="varunbehl.staytuned.activity.TvDetailActivityFragment"
         tools:showIn="@layout/activity_detail">
 
 

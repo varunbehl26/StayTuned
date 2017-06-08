@@ -21,28 +21,28 @@ import java.util.List;
 
 import varunbehl.staytuned.R;
 import varunbehl.staytuned.activity.DetailActivity;
-import varunbehl.staytuned.activity.TvDetailActivityFragment;
-import varunbehl.staytuned.pojo.TvDetails.TvInfo;
+import varunbehl.staytuned.activity.MovieDetailActivityFragment;
+import varunbehl.staytuned.pojo.Picture.Pictures;
 
-public class TvDataAdapter extends RecyclerView.Adapter<TvDataAdapter.ViewHolder> {
+public class MovieListDataAdapter extends RecyclerView.Adapter<MovieListDataAdapter.ViewHolder> {
 
     private final int value;
-    private List<TvInfo> tvShows ;
+    private List<Pictures> picturesList;
     private LayoutInflater inflater;
     private Context mContext;
     private FirebaseAnalytics mFirebaseAnalytics;
 
-    public TvDataAdapter(Context context, List<TvInfo> objects,int value) {
+    public MovieListDataAdapter(Context context, List<Pictures> objects, int value) {
         this.mContext = context;
-        this.tvShows = objects;
+        this.picturesList = objects;
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(context);
-        this.value=value;
+        this.value = value;
     }
 
 
     @Override
-    public TvDataAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public MovieListDataAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View convertView;
         if (value == 1) {
             convertView = inflater.inflate(R.layout.movie_layout, parent, false);
@@ -50,24 +50,24 @@ public class TvDataAdapter extends RecyclerView.Adapter<TvDataAdapter.ViewHolder
             convertView = inflater.inflate(R.layout.custom_movie_layout, parent, false);
         }
         return new ViewHolder(convertView);
+
     }
 
     @Override
-    public void onBindViewHolder(TvDataAdapter.ViewHolder holder, final int position) {
-        holder.tvMovieTitle.setText(tvShows.get(position).getName());
-        holder.draweeView.setImageURI(getImageUri(tvShows.get(position).getPosterPath()));
-
+    public void onBindViewHolder(MovieListDataAdapter.ViewHolder holder, final int position) {
+        holder.tvMovieTitle.setText(picturesList.get(position).getTitle());
+        holder.draweeView.setImageURI(getImageUri(picturesList.get(position).getPosterPath()));
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, DetailActivity.class)
-                        .putExtra(TvDetailActivityFragment.DETAIL_TV, tvShows.get(position).getId())
-                        .putExtra("ListToOpen",2);
+                        .putExtra(MovieDetailActivityFragment.DETAIL_TV, picturesList.get(position).getId())
+                        .putExtra("ListToOpen", 1);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 Bundle bundle = new Bundle();
-                bundle.putString(FirebaseAnalytics.Param.ITEM_ID, tvShows.get(position).getId().toString());
-                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, tvShows.get(position).getName());
-                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "tv show");
+                bundle.putString(FirebaseAnalytics.Param.ITEM_ID, picturesList.get(position).getId().toString());
+                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, picturesList.get(position).getTitle());
+                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "movies");
                 mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
                 mContext.startActivity(intent);
             }
@@ -81,9 +81,9 @@ public class TvDataAdapter extends RecyclerView.Adapter<TvDataAdapter.ViewHolder
 
     @Override
     public int getItemCount() {
-        if (tvShows!=null)
-        return tvShows.size();
-        else{
+        if (picturesList != null)
+            return picturesList.size();
+        else {
             return 0;
         }
     }

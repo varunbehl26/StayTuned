@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
+import com.google.firebase.crash.FirebaseCrash;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
@@ -83,6 +84,8 @@ class TvWidgetFactory implements RemoteViewsService.RemoteViewsFactory {
             rv.setImageViewBitmap(R.id.img_movie_poster, b);
         } catch (IOException e) {
             e.printStackTrace();
+            FirebaseCrash.report(e);
+
         }
 
 

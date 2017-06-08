@@ -7,7 +7,9 @@ import retrofit2.http.Query;
 import rx.Observable;
 import varunbehl.staytuned.pojo.Cast.CastInfo;
 import varunbehl.staytuned.pojo.Episode.EpisodeInfo;
+import varunbehl.staytuned.pojo.MovieDetail;
 import varunbehl.staytuned.pojo.Picture.Picture_Detail;
+import varunbehl.staytuned.pojo.Picture.Pictures;
 import varunbehl.staytuned.pojo.Reviews.Reviews;
 import varunbehl.staytuned.pojo.Search.SearchResult;
 import varunbehl.staytuned.pojo.Tv.Tv;
@@ -22,7 +24,7 @@ import varunbehl.staytuned.pojo.Video.Videos;
 interface DataInterface {
 
     @GET("3/movie/{categories}")
-    Call<Picture_Detail> getMoviesInfo(@Path("categories") String categories, @Query("page") int page, @Query("api_key") String apiKey);
+    Observable<Picture_Detail> listMoviesInfo(@Path("categories") String categories, @Query("page") int page, @Query("api_key") String apiKey);
 
     @GET("3/tv/{id}/videos")
     Observable<Videos> listVideos(@Path("id") int id, @Query("api_key") String apiKey);
@@ -38,18 +40,31 @@ interface DataInterface {
     Observable<TvInfo> getTvInfo(@Path("id") String id, @Query("api_key") String apiKey, @Query("append_to_response") String credits);
 
 
+    @GET("3/movie/{id}")
+    Observable<MovieDetail> getMovieDetail(@Path("id") int id, @Query("api_key") String apiKey, @Query("append_to_response") String credits);
+
+
     @GET("3/tv/{id}/season/{season}")
     Observable<TvSeasonInfo> getTvSeasonInfo(@Path("id") String id, @Path("season") String season, @Query("api_key") String apiKey);
 
-    @GET("3/tv/{id}/similar")
-    Observable<Tv> getSimilarTvShows(@Path("id") String id, @Query("api_key") String apiKey);
 
 
 //    @GET("3/person/{id}/combined_credits")
 //    Observable<CastDetail> getCastDetail(@Path("id") String id, @Query("api_key") String apiKey, @Query("language") String language);
 
+
+    @GET("3/tv/{id}/similar")
+    Observable<Tv> getSimilarTvShows(@Path("id") String id, @Query("api_key") String apiKey);
+
     @GET("3/tv/{id}/recommendations")
     Observable<Tv> getRecommendedTvShows(@Path("id") String id, @Query("api_key") String apiKey);
+
+
+    @GET("3/movie/{id}/similar")
+    Observable<Picture_Detail> getSimilarMovies(@Path("id") int id, @Query("api_key") String apiKey);
+
+    @GET("3/movie/{id}/recommendations")
+    Observable<Picture_Detail> getRecommendedMovies(@Path("id") int id, @Query("api_key") String apiKey);
 
     @GET("3/tv/{id}/season/{season}/episode/{episodeId}")
     Observable<EpisodeInfo> getEpisodeInfo(@Path("id") String id, @Path("season") String episodeId, @Path("episodeId") String season, @Query("api_key") String apiKey);

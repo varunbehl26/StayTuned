@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.GridView;
 import android.widget.ProgressBar;
 
+import com.google.firebase.crash.FirebaseCrash;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -68,6 +70,8 @@ public class SearchResultsActivity extends AppCompatActivity {
             new SearchThread().start();
         } catch (Exception e) {
             e.printStackTrace();
+            FirebaseCrash.report(e);
+
         }
 
     }
@@ -80,9 +84,11 @@ public class SearchResultsActivity extends AppCompatActivity {
             searchEpisodeAdapter.notifyDataSetChanged();
             sarchResultGridView.setVisibility(View.VISIBLE);
             sarchResultProgressBar.setVisibility(View.GONE);
-//            sarchResultHeading.setText("Search Result ");
+//            sarchResultHeading.setText("Search Video ");
         } catch (Exception e) {
             e.printStackTrace();
+            FirebaseCrash.report(e);
+
         }
     }
 
@@ -107,6 +113,8 @@ public class SearchResultsActivity extends AppCompatActivity {
                                        @Override
                                        public void onError(Throwable e) {
                                            e.printStackTrace();
+                                           FirebaseCrash.report(e);
+
                                        }
 
                                        @Override

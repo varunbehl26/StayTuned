@@ -5,15 +5,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v17.leanback.widget.HorizontalGridView;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -22,6 +19,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.firebase.crash.FirebaseCrash;
 import com.google.gson.Gson;
 
 import org.greenrobot.eventbus.EventBus;
@@ -56,9 +54,9 @@ import varunbehl.staytuned.util.Constants;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class DetailActivityFragment extends Fragment {
+public class TvDetailActivityFragment extends Fragment {
 
-    public static final String TAG = DetailActivityFragment.class.getSimpleName();
+    public static final String TAG = TvDetailActivityFragment.class.getSimpleName();
     public static final String DETAIL_TV = "DETAIL_TV";
 
     private EventBus eventBus;
@@ -89,7 +87,7 @@ public class DetailActivityFragment extends Fragment {
     private CardView infoCardView;
     private LinearLayout nextEpisodeCardView;
 
-    public DetailActivityFragment() {
+    public TvDetailActivityFragment() {
     }
 
     @Override
@@ -170,63 +168,19 @@ public class DetailActivityFragment extends Fragment {
         Bundle arguments = getArguments();
         try {
             if (arguments != null) {
-                tvId = arguments.getParcelable(DetailActivityFragment.DETAIL_TV);
+                tvId = arguments.getParcelable(TvDetailActivityFragment.DETAIL_TV);
             } else {
-                tvId = (int) getActivity().getIntent().getExtras().get(DetailActivityFragment.DETAIL_TV);
+                tvId = (int) getActivity().getIntent().getExtras().get(TvDetailActivityFragment.DETAIL_TV);
             }
 //            collapsingToolbar.setTitle(picture.getTitle());
         } catch (Exception e) {
             e.printStackTrace();
+            FirebaseCrash.report(e);
+
         }
 
 
         new LoadDetailPageThread(1).start();
-
-
-        BottomNavigationView bottomNavigationView = (BottomNavigationView)
-                rootView.findViewById(R.id.bottom_navigation);
-
-        bottomNavigationView.setVisibility(View.GONE);
-        bottomNavigationView.setOnNavigationItemSelectedListener(
-                new BottomNavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                        switch (item.getItemId()) {
-                            case R.id.info_deatil:
-                                infoCardView.setVisibility(View.VISIBLE);
-                                similarTvShowsCardView.setVisibility(View.VISIBLE);
-                                recommendedTvShowsCardView.setVisibility(View.VISIBLE);
-                                videosCardView.setVisibility(View.GONE);
-                                tvSeasonsCardView.setVisibility(View.GONE);
-                                tvCastCardView.setVisibility(View.VISIBLE);
-                                nextEpisodeCardView.setVisibility(View.VISIBLE);
-                                break;
-                            case R.id.videos_detail:
-                                infoCardView.setVisibility(View.GONE);
-                                videosCardView.setVisibility(View.VISIBLE);
-                                tvSeasonsCardView.setVisibility(View.GONE);
-                                similarTvShowsCardView.setVisibility(View.GONE);
-                                recommendedTvShowsCardView.setVisibility(View.GONE);
-                                tvCastCardView.setVisibility(View.GONE);
-                                nextEpisodeCardView.setVisibility(View.GONE);
-
-                                break;
-                            case R.id.season_detail:
-                                infoCardView.setVisibility(View.GONE);
-                                videosCardView.setVisibility(View.GONE);
-                                tvSeasonsCardView.setVisibility(View.VISIBLE);
-                                similarTvShowsCardView.setVisibility(View.GONE);
-                                recommendedTvShowsCardView.setVisibility(View.GONE);
-                                tvCastCardView.setVisibility(View.GONE);
-                                nextEpisodeCardView.setVisibility(View.GONE);
-
-                                break;
-                        }
-                        return false;
-                    }
-                });
-        bottomNavigationView.getMenu().getItem(0).setChecked(true);
-
 
         return rootView;
     }
@@ -296,7 +250,7 @@ public class DetailActivityFragment extends Fragment {
             }
         } else if (event.getRequest() == 2) {
             if (getActivity() != null) {
-                TvDataAdapter similarTvDataAdapter = new TvDataAdapter(getActivity(), similarTvList);
+                TvDataAdapter similarTvDataAdapter = new TvDataAdapter(getActivity(), similarTvList,1);
                 similarTvShowsHzGridView.setAdapter(similarTvDataAdapter);
                 similarTvDataAdapter.notifyDataSetChanged();
                 similarTvShowsHzGridView.setVisibility(View.VISIBLE);
@@ -305,7 +259,7 @@ public class DetailActivityFragment extends Fragment {
             }
         } else if (event.getRequest() == 3) {
             if (getActivity() != null) {
-                TvDataAdapter recommendedTvDataAdapter = new TvDataAdapter(getActivity(), recommendedTvList);
+                TvDataAdapter recommendedTvDataAdapter = new TvDataAdapter(getActivity(), recommendedTvList,2);
                 recommendedTvShowsHzGridView.setAdapter(recommendedTvDataAdapter);
                 recommendedTvDataAdapter.notifyDataSetChanged();
                 recommendedTvShowsHzGridView.setVisibility(View.VISIBLE);
@@ -348,6 +302,8 @@ public class DetailActivityFragment extends Fragment {
             db.delete(StayTunedContract.StayTunedEntry.TABLE_NAME, StayTunedContract.StayTunedEntry.TV_ID + "=" + tvId, null);
         } catch (Exception e) {
             e.printStackTrace();
+            FirebaseCrash.report(e);
+
         }
 
     }
@@ -373,6 +329,8 @@ public class DetailActivityFragment extends Fragment {
                                @Override
                                public void onError(Throwable e) {
                                    e.printStackTrace();
+                                   FirebaseCrash.report(e);
+
                                    Log.v("Exception", Arrays.toString(e.getStackTrace()));
                                }
 
@@ -404,6 +362,8 @@ public class DetailActivityFragment extends Fragment {
                                @Override
                                public void onError(Throwable e) {
                                    e.printStackTrace();
+                                   FirebaseCrash.report(e);
+
                                    Log.v("Exception", "NullPointerException");
                                }
 
@@ -435,6 +395,8 @@ public class DetailActivityFragment extends Fragment {
                                @Override
                                public void onError(Throwable e) {
                                    e.printStackTrace();
+                                   FirebaseCrash.report(e);
+
                                    Log.v("Exception", "NullPointerException");
                                }
 
@@ -482,6 +444,8 @@ public class DetailActivityFragment extends Fragment {
 
         } catch (JSONException e) {
             e.printStackTrace();
+            FirebaseCrash.report(e);
+
         }
         if (episode == null) {
             nextEpisodeCardView.setVisibility(View.GONE);
@@ -509,11 +473,17 @@ public class DetailActivityFragment extends Fragment {
                 getContext().startService(intent);
 
                 threadAlreadyRunning = true;
-                fetchDataForTvInfo();
-                fetchVideos();
-                fetchSimilarTvShows();
-                fetchRecommendedTvShows();
-                fetchNextAirEpisode();
+                try {
+                    fetchDataForTvInfo();
+                    fetchVideos();
+                    fetchSimilarTvShows();
+                    fetchRecommendedTvShows();
+                    fetchNextAirEpisode();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    FirebaseCrash.report(e);
+
+                }
 
 //                if (tvInformation == null) {
 //                    String tvInformationJSONList = prefs.getString("tvInformation_" + tvId, "");

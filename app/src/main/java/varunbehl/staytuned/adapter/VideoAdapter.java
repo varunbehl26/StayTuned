@@ -21,11 +21,14 @@ import java.util.List;
 import varunbehl.staytuned.R;
 import varunbehl.staytuned.pojo.Video.VideoResult;
 
+import static android.R.attr.value;
+
 public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ViewHolder> {
 
     private List<VideoResult> videosList;
     private LayoutInflater inflater;
     private Context mContext;
+    private int value =2;
 
     public VideoAdapter(Context context, List<VideoResult> objects) {
         this.mContext = context;
@@ -36,7 +39,12 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ViewHolder> 
 
     @Override
     public VideoAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View convertView = inflater.inflate(R.layout.movie_layout, parent, false);
+        View convertView;
+        if (value == 1) {
+            convertView = inflater.inflate(R.layout.movie_layout, parent, false);
+        } else {
+            convertView = inflater.inflate(R.layout.custom_movie_layout, parent, false);
+        }
         return new ViewHolder(convertView);
     }
 

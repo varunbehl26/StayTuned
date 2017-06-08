@@ -85,36 +85,9 @@ public class FavouriteActivity extends AppCompatActivity implements LoaderManage
     }
 
 
-//    private void readFromDatabase() {
-//        StayTunedDBHelper dbHelper = new StayTunedDBHelper(this);
-//        SQLiteDatabase db = dbHelper.getReadableDatabase();
-//        tvInfoList = new ArrayList<>();
-//        Cursor cursor = db.rawQuery("Select * from " + StayTunedContract.StayTunedEntry.TABLE_NAME, null);
-//
-//        if (cursor.moveToFirst()) {
-//            do {
-//                TvInfo tvInfo = new TvInfo();
-//                tvInfo.setId(Integer.parseInt(getDataFromCursor(cursor, StayTunedContract.StayTunedEntry.TV_ID)));
-//                tvInfo.setBackdropPath(getDataFromCursor(cursor, StayTunedContract.StayTunedEntry.IMAGE));
-//                tvInfo.setName(getDataFromCursor(cursor, StayTunedContract.StayTunedEntry.NAME));
-//                String is_fav = cursor.getString(cursor.getColumnIndex(StayTunedContract.StayTunedEntry.IS_FAVORITE));
-//
-//                SharedPreferences.Editor editor = prefs.edit();
-//                editor.putInt("is_fav" + "_" + tvInfo.getId(), Integer.parseInt(is_fav));
-//                editor.apply();
-//
-//                tvInfoList.add(tvInfo);
-//
-//            } while (cursor.moveToNext());
-//        }
-//        cursor.close();
-//    }
 
 
-    private String getDataFromCursor(Cursor cursor, String Index) {
-        return cursor.getString(cursor.getColumnIndex(Index));
 
-    }
 
 
     @Override
