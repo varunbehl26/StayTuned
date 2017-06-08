@@ -20,7 +20,7 @@
             android:id="@+id/img_movie_poster"
             android:layout_width="match_parent"
             android:layout_height="150dp"
-            android:scaleType="centerCrop"
+            android:scaleType="centerInside"
             fresco:placeholderImage="@drawable/placeholder" />
 
         <TextView

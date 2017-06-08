@@ -25,7 +25,7 @@
         android:background="@color/cardview_dark_background"
         android:fitsSystemWindows="true"
         android:visibility="visible"
-        tools:context="varunbehl.staytuned.activity.TvDetailActivityFragment"
+        tools:context="varunbehl.showstime.activity.TvDetailActivityFragment"
         tools:showIn="@layout/activity_detail">
 
 
@@ -85,7 +85,7 @@
         </android.support.v4.view.ViewPager>
 
 
-        <varunbehl.staytuned.util.CustomScrollView
+        <varunbehl.showstime.util.CustomScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@id/appBar"
@@ -233,7 +233,7 @@
             </LinearLayout>
 
 
-        </varunbehl.staytuned.util.CustomScrollView>
+        </varunbehl.showstime.util.CustomScrollView>
 
     </android.support.design.widget.CoordinatorLayout>
 

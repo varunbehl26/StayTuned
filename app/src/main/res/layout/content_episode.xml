@@ -10,7 +10,7 @@
     android:background="@color/cardview_dark_background"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
-    tools:context="varunbehl.staytuned.activity.EpisodeActivity"
+    tools:context="varunbehl.showstime.activity.EpisodeActivity"
     tools:showIn="@layout/activity_episode">
 
     <android.support.design.widget.AppBarLayout

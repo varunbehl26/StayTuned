@@ -1,35 +1,27 @@
 {
   "project_info": {
-    "project_number": "536683536414",
-    "firebase_url": "https://staytuned-7e343.firebaseio.com",
-    "project_id": "staytuned-7e343",
-    "storage_bucket": "staytuned-7e343.appspot.com"
+    "project_number": "111254160086",
+    "firebase_url": "https://shows-time.firebaseio.com",
+    "project_id": "shows-time",
+    "storage_bucket": "shows-time.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:536683536414:android:47513cd021afc2ad",
+        "mobilesdk_app_id": "1:111254160086:android:1b191193a0f6ec06",
         "android_client_info": {
-          "package_name": "varunbehl.staytuned"
+          "package_name": "varunbehl.showstime"
         }
       },
       "oauth_client": [
         {
-          "client_id": "536683536414-h3cclmjkulf1dhd1okjljdthe1dpnilp.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "varunbehl.staytuned",
-            "certificate_hash": "cd4a966ec0bc64f493f43236379f9a7c8c89abf8"
-          }
-        },
-        {
-          "client_id": "536683536414-8lguuj3ob9v78287a9gl7n3bs0ptq89r.apps.googleusercontent.com",
+          "client_id": "111254160086-l6oml20fu66ltadkolv0o31jtkq37jie.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDiyN9c9LeEQe6npcN5dvBrxKSrpALmfHw"
+          "current_key": "AIzaSyAaFF5Zvuos-rFU5HzQktxReWlLw2-WOdo"
         }
       ],
       "services": {
@@ -37,13 +29,8 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 2,
-          "other_platform_oauth_client": [
-            {
-              "client_id": "536683536414-8lguuj3ob9v78287a9gl7n3bs0ptq89r.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "status": 1,
+          "other_platform_oauth_client": []
         },
         "ads_service": {
           "status": 2
