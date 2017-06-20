@@ -147,7 +147,7 @@ public class TvSeasonDetail extends AppCompatActivity {
                                        @Override
                                        public void onError(Throwable e) {
                                            Log.v("Exception", e.toString());
-                                       }
+                                       } 
 
                                        @Override
                                        public void onNext(TvSeasonInfo tvInfo) {

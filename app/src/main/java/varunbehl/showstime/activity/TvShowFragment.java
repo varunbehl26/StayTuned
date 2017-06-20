@@ -49,13 +49,13 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import varunbehl.showstime.R;
 import varunbehl.showstime.adapter.TvDataAdapter;
-import varunbehl.showstime.adapter.TvInfoCursorAdapter;
 import varunbehl.showstime.data.ShowsTimeContract;
 import varunbehl.showstime.data.ShowsTimeDBHelper;
 import varunbehl.showstime.eventbus.MessageEvent;
 import varunbehl.showstime.network.RetrofitManager;
 import varunbehl.showstime.pojo.Tv.Tv;
 import varunbehl.showstime.pojo.TvDetails.TvInfo;
+import varunbehl.showstime.util.Constants;
 import varunbehl.showstime.util.DateTimeHelper;
 
 public class TvShowFragment extends Fragment {
@@ -78,8 +78,6 @@ public class TvShowFragment extends Fragment {
     private Context mContext;
     private List<TvInfo> dataList = new ArrayList<>();
     private CarouselView carousel_view;
-    private TvInfoCursorAdapter tvInfoCursorAdapter;
-    private Cursor mCursor;
     private List<TvInfo> tvInfoList;
     private AdView nativeView;
 
@@ -93,7 +91,7 @@ public class TvShowFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_movie, container, false);
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
-        MobileAds.initialize(getContext(), "ca-app-pub-3940256099942544~3347511713");
+        MobileAds.initialize(getContext(), Constants.ADUNIT);
         AdView mAdView = (AdView) view.findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);

@@ -21,6 +21,7 @@ public class AppWidget extends AppWidgetProvider {
         RemoteViews remoteViews = new RemoteViews(context.getPackageName(),
                 R.layout.app_widget);
 
+
         Intent intent = new Intent(context, TvWidgetService.class);
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
         remoteViews.setRemoteAdapter(R.id.gridView_widget, intent);
@@ -31,10 +32,7 @@ public class AppWidget extends AppWidgetProvider {
 
 
 
-        Intent intent1 = new Intent(context, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent1, 0);
 
-        remoteViews.setOnClickPendingIntent(R.id.button, pendingIntent);
 
 
     }

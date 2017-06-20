@@ -50,6 +50,7 @@ import varunbehl.showstime.pojo.TvDetails.TvInfo;
 import varunbehl.showstime.pojo.TvSeason.TvSeasonInfo;
 import varunbehl.showstime.pojo.Video.Videos;
 import varunbehl.showstime.util.Constants;
+import varunbehl.showstime.util.DateTimeHelper;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -194,7 +195,7 @@ public class TvDetailActivityFragment extends Fragment {
             threadAlreadyRunning = false;
             collapsingToolbar.setTitle(tvInformation.getName());
             draweeView.setImageURI(getString(R.string.image_path) + tvInformation.getBackdropPath());
-            releaseDate.setText(getString(R.string.release_data) + tvInformation.getFirstAirDate() + "");
+            releaseDate.setText(getString(R.string.firstAir) + DateTimeHelper.parseDate(tvInformation.getFirstAirDate()) + "");
             vote.setText(getString(R.string.rating) + tvInformation.getVoteAverage() + "/10");
             plotSynopsis.setText(tvInformation.getOverview());
             is_fav = (prefs.getInt("is_fav" + "_" + tvId, 0));
@@ -276,20 +277,24 @@ public class TvDetailActivityFragment extends Fragment {
                 videosHeading.setText(R.string.videos_heading);
             }
         } else if (event.getRequest() == 5) {
-            nextEpisodeEpisodeDate.setText(episode.getAirDate());
-            nextEpisodeEpisodeName.setText(episode.getName());
-            nextEpisodeEpisodeOverview.setText(episode.getOverview());
-            if (episode != null && episode.getStillPath() != null && !"".equals(episode.getStillPath())) {
-                String imageUrl = new TvSeasonsAdapter(getContext()).getImageUri(episode.getStillPath());
-                nextEpisodeImage.setImageURI(imageUrl);
-                nextEpisodeImage.setVisibility(View.VISIBLE);
+            if (episode == null) {
+                nextEpisodeCardView.setVisibility(View.GONE);
             } else {
-                nextEpisodeImage.setVisibility(View.GONE);
-            }
-            if (!episode.getOverview().equals("")) {
-                nextEpisodeEpisodeOverview.setVisibility(View.GONE);
-            } else {
+                nextEpisodeEpisodeDate.setText(DateTimeHelper.parseDate(episode.getAirDate()));
+                nextEpisodeEpisodeName.setText(episode.getName());
                 nextEpisodeEpisodeOverview.setText(episode.getOverview());
+                if (episode.getStillPath() != null && !"".equals(episode.getStillPath())) {
+                    String imageUrl = new TvSeasonsAdapter(getContext()).getImageUri(episode.getStillPath());
+                    nextEpisodeImage.setImageURI(imageUrl);
+                    nextEpisodeImage.setVisibility(View.VISIBLE);
+                } else {
+                    nextEpisodeImage.setVisibility(View.GONE);
+                }
+                if (!episode.getOverview().equals("")) {
+                    nextEpisodeEpisodeOverview.setVisibility(View.GONE);
+                } else {
+                    nextEpisodeEpisodeOverview.setText(episode.getOverview());
+                }
             }
         }
     }
@@ -439,19 +444,15 @@ public class TvDetailActivityFragment extends Fragment {
 
     private void fetchNextAirEpisode() {
         try {
-            JSONObject episodeJson = new JSONObject(prefs.getString(Constants.NEXT_AIR_DATE + "_" + tvId, ""));
-            episode = new Gson().fromJson(episodeJson.toString(), TvSeasonInfo.Episode.class);
-
+            if (prefs.contains(Constants.NEXT_AIR_DATE + "_" + tvId)) {
+                JSONObject episodeJson = new JSONObject(prefs.getString(Constants.NEXT_AIR_DATE + "_" + tvId, ""));
+                episode = new Gson().fromJson(episodeJson.toString(), TvSeasonInfo.Episode.class);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
-            FirebaseCrash.report(e);
+        }
+        eventBus.post(new MessageEvent(5));
 
-        }
-        if (episode == null) {
-            nextEpisodeCardView.setVisibility(View.GONE);
-        } else {
-            eventBus.post(new MessageEvent(5));
-        }
     }
 
     private class LoadDetailPageThread extends Thread {
@@ -478,12 +479,11 @@ public class TvDetailActivityFragment extends Fragment {
                     fetchVideos();
                     fetchSimilarTvShows();
                     fetchRecommendedTvShows();
-                    fetchNextAirEpisode();
                 } catch (Exception e) {
                     e.printStackTrace();
                     FirebaseCrash.report(e);
-
                 }
+                fetchNextAirEpisode();
 
 //                if (tvInformation == null) {
 //                    String tvInformationJSONList = prefs.getString("tvInformation_" + tvId, "");

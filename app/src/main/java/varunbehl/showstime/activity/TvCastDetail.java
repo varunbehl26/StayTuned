@@ -28,6 +28,7 @@ import varunbehl.showstime.adapter.TvCrewAdapter;
 import varunbehl.showstime.eventbus.MessageEvent;
 import varunbehl.showstime.network.RetrofitManager;
 import varunbehl.showstime.pojo.Cast.CastInfo;
+import varunbehl.showstime.util.DateTimeHelper;
 
 public class TvCastDetail extends AppCompatActivity {
 
@@ -97,7 +98,7 @@ public class TvCastDetail extends AppCompatActivity {
 //            threadAlreadyRunning = false;
             collapsingToolbar.setTitle(casts.getName());
             draweeView.setImageURI(getString(R.string.image_path) + casts.getProfilePath());
-            releaseDate.setText(getString(R.string.born_on) + casts.getBirthday() + "");
+            releaseDate.setText(getString(R.string.born_on) + DateTimeHelper.parseDate(casts.getBirthday()) + "");
             vote.setText(getString(R.string.rating) + casts.getPopularity() + "/10");
             plotSynopsis.setText(casts.getBiography());
 

@@ -55,10 +55,12 @@ import varunbehl.showstime.eventbus.MessageEvent;
 import varunbehl.showstime.network.RetrofitManager;
 import varunbehl.showstime.pojo.Picture.Picture_Detail;
 import varunbehl.showstime.pojo.Picture.Pictures;
+import varunbehl.showstime.util.Constants;
 import varunbehl.showstime.util.DateTimeHelper;
 
 public class MovieFragment extends Fragment {
 
+    FirebaseAnalytics mFirebaseAnalytics;
     private EventBus eventBus;
     private SharedPreferences.Editor editor;
     private boolean threadAlreadyRunning = false;
@@ -78,7 +80,6 @@ public class MovieFragment extends Fragment {
     private List<Pictures> dataList = new ArrayList<>();
     private CarouselView carousel_view;
     private AdView nativeView;
-    FirebaseAnalytics mFirebaseAnalytics;
 
     public static MovieFragment newInstance() {
         MovieFragment fragment = new MovieFragment();
@@ -86,13 +87,12 @@ public class MovieFragment extends Fragment {
     }
 
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_movie, container, false);
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
-        MobileAds.initialize(getContext(), "ca-app-pub-3940256099942544~3347511713");
+        MobileAds.initialize(getContext(), Constants.ADUNIT);
         AdView mAdView = (AdView) view.findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);

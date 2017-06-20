@@ -19,6 +19,7 @@ import java.util.List;
 import varunbehl.showstime.R;
 import varunbehl.showstime.activity.EpisodeActivity;
 import varunbehl.showstime.pojo.TvSeason.TvSeasonInfo;
+import varunbehl.showstime.util.DateTimeHelper;
 
 public class TvSeasonsEpisodeAdapter extends ArrayAdapter<TvSeasonInfo.Episode> {
 
@@ -68,10 +69,12 @@ public class TvSeasonsEpisodeAdapter extends ArrayAdapter<TvSeasonInfo.Episode> 
 
         holder.episodeTitle.setText(tvSeasonEpisodeList.get(position).getEpisodeNumber() + ". " + tvSeasonEpisodeList.get(position).getName());
         holder.episodeDesc.setText(tvSeasonEpisodeList.get(position).getOverview());
-        holder.episode_date.setText(tvSeasonEpisodeList.get(position).getAirDate());
-        if (!tvSeasonEpisodeList.get(position).getStillPath().equals("")) {
+        holder.episode_date.setText(DateTimeHelper.parseDate(tvSeasonEpisodeList.get(position).getAirDate()));
+        if (tvSeasonEpisodeList.get(position).getStillPath() != null && !tvSeasonEpisodeList.get(position).getStillPath().equals("")) {
             holder.draweeView.setVisibility(View.VISIBLE);
             holder.draweeView.setImageURI(getImageUri(tvSeasonEpisodeList.get(position).getStillPath()));
+        } else {
+            holder.draweeView.setVisibility(View.VISIBLE);
         }
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -1,5 +1,6 @@
 package varunbehl.showstime.widget;
 
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import varunbehl.showstime.R;
+import varunbehl.showstime.activity.MainActivity;
 import varunbehl.showstime.data.ShowsTimeContract;
 import varunbehl.showstime.data.ShowsTimeDBHelper;
 import varunbehl.showstime.pojo.TvDetails.TvInfo;
@@ -78,6 +80,10 @@ class TvWidgetFactory implements RemoteViewsService.RemoteViewsFactory {
         final TvInfo tvInfo = tvInfoList.get(position);
         rv.setTextViewText(R.id.tv_movie_title, tvInfo.getName());
 
+        Intent intent1 = new Intent(context, MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent1, 0);
+
+        rv.setOnClickPendingIntent(R.id.button, pendingIntent);
 
         try {
             Bitmap b = Picasso.with(context).load(getImageUri(tvInfo.getBackdropPath())).get();

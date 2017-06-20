@@ -33,6 +33,7 @@ import varunbehl.showstime.network.RetrofitManager;
 import varunbehl.showstime.pojo.TvDetails.TvInfo;
 import varunbehl.showstime.pojo.TvSeason.TvSeasonInfo;
 import varunbehl.showstime.util.Constants;
+import varunbehl.showstime.util.DateTimeHelper;
 
 /**
  * Created by varunbehl on 09/05/17.
@@ -167,8 +168,6 @@ public class NextAirService extends IntentService {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         Intent resultIntent = new Intent(context, MainActivity.class);
-//        resultIntent.putExtra(IntentConstants.SOURCE_ID, IntentConstants.SourceNotification);
-//        resultIntent.putExtra(IntentConstants.CALLING_ACTIVITY, "SyncCalenderService");
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
         stackBuilder.addNextIntent(resultIntent);
         PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(1, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -188,7 +187,7 @@ public class NextAirService extends IntentService {
         mBuilder.setContentIntent(resultPendingIntent);
         mBuilder.setAutoCancel(true);
         mBuilder.setContentTitle("Next episode of " + tvInformation.getName() + " arrives on ");
-        mBuilder.setContentText(episode.getAirDate());
+        mBuilder.setContentText(DateTimeHelper.parseDate(episode.getAirDate()));
         mBuilder.setColor(Color.parseColor("#3DA0E9"));
         mBuilder.setSmallIcon(R.drawable.fav);
 

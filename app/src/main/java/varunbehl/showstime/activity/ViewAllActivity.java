@@ -43,7 +43,6 @@ public class ViewAllActivity extends AppCompatActivity {
     private MoviesInfoAdapter moviesInfoAdapter;
     private GridView myGrid;
     private boolean drawnPrevious = false;
-    private boolean isLoading;
     private String listType;
     private int categoryType;
 
@@ -74,7 +73,7 @@ public class ViewAllActivity extends AppCompatActivity {
                     Log.v("visibleItemCount--", visibleItemCount + "");
                     Log.v("totalItemCount--", totalItemCount + "");
                     // End has been reached
-                    new ViewAllThread(categoryType).start();
+                    new ViewAllThread(categoryType, true).start();
 
                 }
             }
@@ -92,7 +91,7 @@ public class ViewAllActivity extends AppCompatActivity {
 
     }
 
-    private void fetchPopularDataFromServer(String listType, int page) {
+    private void fetchTvDataFromServer(String listType, int page, final boolean scroll) {
         Observable<Tv> popularObservable = retrofitManager.listTvShows(listType, page);
 
         popularObservable
@@ -101,9 +100,13 @@ public class ViewAllActivity extends AppCompatActivity {
                 .subscribe(new Subscriber<Tv>() {
                                @Override
                                public void onCompleted() {
-                                   if (tvInfoList != null)
-                                       eventBus.post(new MessageEvent(1));
-
+                                   if (tvInfoList != null) {
+                                       if (scroll) {
+                                           eventBus.post(new MessageEvent(3));
+                                       } else {
+                                           eventBus.post(new MessageEvent(1));
+                                       }
+                                   }
                                }
 
                                @Override
@@ -123,7 +126,7 @@ public class ViewAllActivity extends AppCompatActivity {
                 );
     }
 
-    private void fetchMoviesDataFromServer(String listType, int page) {
+    private void fetchMoviesDataFromServer(String listType, int page, final boolean scroll) {
         Observable<Picture_Detail> popularObservable = popularObservable = retrofitManager.listMoviesInfo(listType, page);
 
         popularObservable
@@ -132,9 +135,13 @@ public class ViewAllActivity extends AppCompatActivity {
                 .subscribe(new Subscriber<Picture_Detail>() {
                                @Override
                                public void onCompleted() {
-                                   if (moviesList != null)
-                                       eventBus.post(new MessageEvent(2));
-
+                                   if (moviesList != null){
+                                       if (scroll) {
+                                           eventBus.post(new MessageEvent(4));
+                                       } else {
+                                           eventBus.post(new MessageEvent(2));
+                                       }
+                                   }
                                }
 
                                @Override
@@ -159,22 +166,29 @@ public class ViewAllActivity extends AppCompatActivity {
         if (event.getRequest() == 1) {
             myGrid.setAdapter(tvInfoAdapter);
             tvInfoAdapter.notifyDataSetChanged();
-            boolean isRefreshing = false;
-            threadRunning = false;
-        } else {
+        } else if (event.getRequest() == 2) {
             myGrid.setAdapter(moviesInfoAdapter);
-
             moviesInfoAdapter.notifyDataSetChanged();
-            boolean isRefreshing = false;
-            threadRunning = false;
+        } else if (event.getRequest() == 3) {
+            tvInfoAdapter.notifyDataSetChanged();
+        } else {
+            moviesInfoAdapter.notifyDataSetChanged();
         }
+        boolean isRefreshing = false;
+        threadRunning = false;
     }
 
     private class ViewAllThread extends Thread {
         int request;
+        boolean scroll;
 
         public ViewAllThread(int request) {
             this.request = request;
+        }
+
+        public ViewAllThread(int request, boolean scroll) {
+            this.request = request;
+            this.scroll = scroll;
         }
 
         @Override
@@ -185,9 +199,9 @@ public class ViewAllActivity extends AppCompatActivity {
             }
             threadRunning = true;
             if (request == 1) {
-                fetchMoviesDataFromServer(listType, page++);
+                fetchMoviesDataFromServer(listType, page++, scroll);
             } else {
-                fetchPopularDataFromServer(listType, page++);
+                fetchTvDataFromServer(listType, page++, scroll);
             }
         }
     }

@@ -38,7 +38,7 @@
     <string name="episode_list">Episode List</string>
     <string name="episode_air_heading">Episode Air Date:</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="firstAir" >First Aired on :</string>
 
 </resources>

@@ -43,6 +43,7 @@ import varunbehl.showstime.pojo.Picture.Picture_Detail;
 import varunbehl.showstime.pojo.Picture.Pictures;
 import varunbehl.showstime.pojo.Video.VideoResult;
 import varunbehl.showstime.util.Constants;
+import varunbehl.showstime.util.DateTimeHelper;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -187,7 +188,7 @@ public class MovieDetailActivityFragment extends Fragment {
             threadAlreadyRunning = false;
             collapsingToolbar.setTitle(movieDetail.getTitle());
             draweeView.setImageURI(getString(R.string.image_path) + movieDetail.getBackdropPath());
-            releaseDate.setText(getString(R.string.release_data) + movieDetail.getReleaseDate() + "");
+            releaseDate.setText(getString(R.string.release_data) + DateTimeHelper.parseDate(movieDetail.getReleaseDate()) + "");
             vote.setText(getString(R.string.rating) + movieDetail.getVoteAverage() + "/10");
             plotSynopsis.setText(movieDetail.getOverview());
             is_fav = (prefs.getInt("is_fav" + "_" + tvId, 0));

@@ -2,13 +2,34 @@ package varunbehl.showstime.util;
 
 import android.util.Log;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * Created by varunbehl on 13/03/17.
  */
 
 public class DateTimeHelper {
+
+
+    public static String parseDate(String dateTime) {
+        try {
+            if (dateTime != null && !dateTime.isEmpty() && !dateTime.equalsIgnoreCase("")) {
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+                SimpleDateFormat format2 = new SimpleDateFormat("dd, MMM yyyy");
+                simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Calcutta"));
+                Date date = simpleDateFormat.parse(dateTime);
+
+                return format2.format(date);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
 
     public static boolean getDifference(Long hours) {
 
