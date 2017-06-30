@@ -23,10 +23,10 @@ import varunbehl.showstime.util.DateTimeHelper;
 
 public class TvSeasonsEpisodeAdapter extends ArrayAdapter<TvSeasonInfo.Episode> {
 
-    private List<TvSeasonInfo.Episode> tvSeasonEpisodeList;
-    private LayoutInflater inflater;
-    private Context mContext;
-    private int tvId;
+    private final List<TvSeasonInfo.Episode> tvSeasonEpisodeList;
+    private final LayoutInflater inflater;
+    private final Context mContext;
+    private final int tvId;
 
     public TvSeasonsEpisodeAdapter(Context context, List<TvSeasonInfo.Episode> objects, int id) {
         super(context, 0, objects);
@@ -95,9 +95,11 @@ public class TvSeasonsEpisodeAdapter extends ArrayAdapter<TvSeasonInfo.Episode> 
     }
 
     static class ViewHolder {
-        TextView episodeTitle, episodeDesc, episode_date;
-        SimpleDraweeView draweeView;
-        CardView cardView;
+        final TextView episodeTitle;
+        final TextView episodeDesc;
+        final TextView episode_date;
+        final SimpleDraweeView draweeView;
+        final CardView cardView;
 
         ViewHolder(View itemView) {
             episodeTitle = (TextView) itemView.findViewById(R.id.episode_name);

@@ -54,7 +54,7 @@ public class ShowsTimeDBHelper extends SQLiteOpenHelper {
         }
     }
 
-    public static boolean checkIfTvInfoExists(int tvId, Context context) {
+    private static boolean checkIfTvInfoExists(int tvId, Context context) {
         ShowsTimeDBHelper dbHelper = new ShowsTimeDBHelper(context);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         String SQL_CHECK_TABLE = "Select " + ShowsTimeContract.StayTunedEntry._ID + " from " + ShowsTimeContract.StayTunedEntry.TABLE_NAME +

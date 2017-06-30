@@ -27,10 +27,10 @@ import varunbehl.showstime.pojo.TvDetails.TvInfo;
 public class TvDataAdapter extends RecyclerView.Adapter<TvDataAdapter.ViewHolder> {
 
     private final int value;
-    private List<TvInfo> tvShows ;
-    private LayoutInflater inflater;
-    private Context mContext;
-    private FirebaseAnalytics mFirebaseAnalytics;
+    private final List<TvInfo> tvShows ;
+    private final LayoutInflater inflater;
+    private final Context mContext;
+    private final FirebaseAnalytics mFirebaseAnalytics;
 
     public TvDataAdapter(Context context, List<TvInfo> objects,int value) {
         this.mContext = context;
@@ -53,7 +53,7 @@ public class TvDataAdapter extends RecyclerView.Adapter<TvDataAdapter.ViewHolder
     }
 
     @Override
-    public void onBindViewHolder(TvDataAdapter.ViewHolder holder, final int position) {
+    public void onBindViewHolder(final TvDataAdapter.ViewHolder holder,  int position) {
         holder.tvMovieTitle.setText(tvShows.get(position).getName());
         holder.draweeView.setImageURI(getImageUri(tvShows.get(position).getPosterPath()));
 
@@ -61,12 +61,12 @@ public class TvDataAdapter extends RecyclerView.Adapter<TvDataAdapter.ViewHolder
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, DetailActivity.class)
-                        .putExtra(TvDetailActivityFragment.DETAIL_TV, tvShows.get(position).getId())
+                        .putExtra(TvDetailActivityFragment.DETAIL_TV, tvShows.get(holder.getAdapterPosition()).getId())
                         .putExtra("ListToOpen",2);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 Bundle bundle = new Bundle();
-                bundle.putString(FirebaseAnalytics.Param.ITEM_ID, tvShows.get(position).getId().toString());
-                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, tvShows.get(position).getName());
+                bundle.putString(FirebaseAnalytics.Param.ITEM_ID, tvShows.get(holder.getAdapterPosition()).getId().toString());
+                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, tvShows.get(holder.getAdapterPosition()).getName());
                 bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "tv show");
                 mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
                 mContext.startActivity(intent);
@@ -95,9 +95,9 @@ public class TvDataAdapter extends RecyclerView.Adapter<TvDataAdapter.ViewHolder
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvMovieTitle;
-        CardView cardView;
-        SimpleDraweeView draweeView;
+        final TextView tvMovieTitle;
+        final CardView cardView;
+        final SimpleDraweeView draweeView;
 
         ViewHolder(View itemView) {
             super(itemView);

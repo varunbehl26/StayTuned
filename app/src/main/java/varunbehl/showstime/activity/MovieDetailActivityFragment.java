@@ -61,22 +61,31 @@ public class MovieDetailActivityFragment extends Fragment {
     private TextView vote;
     private TextView plotSynopsis;
     private Button fav_button;
-    private SimpleDraweeView draweeView, nextEpisodeImage;
+    private SimpleDraweeView draweeView;
     private CollapsingToolbarLayout collapsingToolbar;
     private boolean threadAlreadyRunning;
-    private HorizontalGridView videosHzGridView, recommendedTvShowsHzGridView, similarTvShowsHzGridView, tvSeasonsGridView, tvCastGridView;
+    private HorizontalGridView videosHzGridView;
+    private HorizontalGridView recommendedTvShowsHzGridView;
+    private HorizontalGridView similarTvShowsHzGridView;
+    private HorizontalGridView tvCastGridView;
     private List<Pictures> recommendedMoviesList = new ArrayList<>();
     private List<Pictures> similarMoviesList = new ArrayList<>();
-    private ProgressBar similarTvShowsProgressBar, recommendedTvShowsProgressBar, videosProgressBar, tvSeasonsProgressBar, tvCastProgressBar;
-    private TextView tvCastHeading, similarTvShowsHeading, recommendedTvShowsHeading, videosHeading, tvSeasonsHeading, nextEpisodeEpisodeName, nextEpisodeEpisodeDate, nextEpisodeEpisodeOverview;
+    private ProgressBar similarTvShowsProgressBar;
+    private ProgressBar recommendedTvShowsProgressBar;
+    private ProgressBar videosProgressBar;
+    private ProgressBar tvCastProgressBar;
+    private TextView tvCastHeading;
+    private TextView similarTvShowsHeading;
+    private TextView recommendedTvShowsHeading;
+    private TextView videosHeading;
     private SharedPreferences prefs;
     private SharedPreferences.Editor editor;
-    private CardView videosCardView, tvSeasonsCardView, similarTvShowsCardView, recommendedTvShowsCardView, tvCastCardView;
+    private CardView tvSeasonsCardView;
+    private CardView similarTvShowsCardView;
+    private CardView recommendedTvShowsCardView;
     private ProgressBar progress_fragment;
     private View cordinatorLayout;
     private String episodeDate;
-    private CardView infoCardView;
-    private LinearLayout nextEpisodeCardView;
     private MovieDetail movieDetail;
 
 
@@ -105,7 +114,7 @@ public class MovieDetailActivityFragment extends Fragment {
         retrofitManager = RetrofitManager.getInstance();
         collapsingToolbar = (CollapsingToolbarLayout) rootView.findViewById(R.id.collapsingToolbar);
 
-        infoCardView = (CardView) rootView.findViewById(R.id.info_card_view);
+        CardView infoCardView = (CardView) rootView.findViewById(R.id.info_card_view);
         TextView title = (TextView) rootView.findViewById(R.id.title);
         releaseDate = (TextView) rootView.findViewById(R.id.release_date);
         vote = (TextView) rootView.findViewById(R.id.vote);
@@ -120,27 +129,27 @@ public class MovieDetailActivityFragment extends Fragment {
         prefs = getActivity().getSharedPreferences(
                 Constants.PREFERENCE_NAME, Context.MODE_PRIVATE);
 
-        nextEpisodeCardView = (LinearLayout) rootView.findViewById(R.id.nextAirLayout);
-        nextEpisodeImage = (SimpleDraweeView) nextEpisodeCardView.findViewById(R.id.img_episode_poster);
-        nextEpisodeEpisodeName = (TextView) nextEpisodeCardView.findViewById(R.id.episode_name);
-        nextEpisodeEpisodeDate = (TextView) nextEpisodeCardView.findViewById(R.id.episode_date);
-        nextEpisodeEpisodeOverview = (TextView) nextEpisodeCardView.findViewById(R.id.episode_desc);
+        LinearLayout nextEpisodeCardView = (LinearLayout) rootView.findViewById(R.id.nextAirLayout);
+        SimpleDraweeView nextEpisodeImage = (SimpleDraweeView) nextEpisodeCardView.findViewById(R.id.img_episode_poster);
+        TextView nextEpisodeEpisodeName = (TextView) nextEpisodeCardView.findViewById(R.id.episode_name);
+        TextView nextEpisodeEpisodeDate = (TextView) nextEpisodeCardView.findViewById(R.id.episode_date);
+        TextView nextEpisodeEpisodeOverview = (TextView) nextEpisodeCardView.findViewById(R.id.episode_desc);
         nextEpisodeCardView.setVisibility(View.GONE);
 
-        videosCardView = (CardView) rootView.findViewById(R.id.videosCard);
+        CardView videosCardView = (CardView) rootView.findViewById(R.id.videosCard);
         videosHzGridView = (HorizontalGridView) videosCardView.findViewById(R.id.horizontal_grid_view);
         videosHeading = (TextView) videosCardView.findViewById(R.id.heading);
         videosProgressBar = (ProgressBar) videosCardView.findViewById(R.id.progress_main);
         videosProgressBar.setVisibility(View.VISIBLE);
 
         tvSeasonsCardView = (CardView) rootView.findViewById(R.id.tvSeasonsCard);
-        tvSeasonsGridView = (HorizontalGridView) tvSeasonsCardView.findViewById(R.id.horizontal_grid_view);
-        tvSeasonsHeading = (TextView) tvSeasonsCardView.findViewById(R.id.heading);
-        tvSeasonsProgressBar = (ProgressBar) tvSeasonsCardView.findViewById(R.id.progress_main);
+        HorizontalGridView tvSeasonsGridView = (HorizontalGridView) tvSeasonsCardView.findViewById(R.id.horizontal_grid_view);
+        TextView tvSeasonsHeading = (TextView) tvSeasonsCardView.findViewById(R.id.heading);
+        ProgressBar tvSeasonsProgressBar = (ProgressBar) tvSeasonsCardView.findViewById(R.id.progress_main);
         tvSeasonsProgressBar.setVisibility(View.VISIBLE);
         tvSeasonsCardView.setVisibility(View.GONE);
 
-        tvCastCardView = (CardView) rootView.findViewById(R.id.tvCastCard);
+        CardView tvCastCardView = (CardView) rootView.findViewById(R.id.tvCastCard);
         tvCastGridView = (HorizontalGridView) tvCastCardView.findViewById(R.id.horizontal_grid_view);
         tvCastHeading = (TextView) tvCastCardView.findViewById(R.id.heading);
         tvCastProgressBar = (ProgressBar) tvCastCardView.findViewById(R.id.progress_main);
@@ -363,7 +372,7 @@ public class MovieDetailActivityFragment extends Fragment {
 
 
     private class LoadDetailPageThread extends Thread {
-        int requestType;
+        final int requestType;
 
         LoadDetailPageThread(int requestType) {
             this.requestType = requestType;

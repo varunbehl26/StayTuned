@@ -42,7 +42,7 @@ import varunbehl.showstime.util.DateTimeHelper;
 public class NextAirService extends IntentService {
     private final RetrofitManager retrofitManager;
     private int tvId;
-    private Context context;
+    private final Context context;
     private TvInfo tvInformation;
     private Integer lastSeasonNumber;
     private TvSeasonInfo tvSeasonInfo;

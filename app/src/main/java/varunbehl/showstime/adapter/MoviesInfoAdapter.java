@@ -25,11 +25,10 @@ import varunbehl.showstime.pojo.Picture.Pictures;
 
 public class MoviesInfoAdapter extends ArrayAdapter<Pictures> {
 
-    private final String IMAGE_POSTER_BASE_URL = "http://image.tmdb.org/t/p/w342";
-    private List<Pictures> movieArrayList;
-    private LayoutInflater inflater;
-    private Context mContext;
-    private FirebaseAnalytics mFirebaseAnalytics;
+    private final List<Pictures> movieArrayList;
+    private final LayoutInflater inflater;
+    private final Context mContext;
+    private final FirebaseAnalytics mFirebaseAnalytics;
 
 
     public MoviesInfoAdapter(Context context, List<Pictures> objects) {
@@ -91,14 +90,15 @@ public class MoviesInfoAdapter extends ArrayAdapter<Pictures> {
         return convertView;
     }
 
-    public String getImageUri(String uri) {
+    private String getImageUri(String uri) {
+        String IMAGE_POSTER_BASE_URL = "http://image.tmdb.org/t/p/w342";
         return IMAGE_POSTER_BASE_URL + "/" + uri;
     }
 
     static class ViewHolder {
-        TextView tvMovieTitle;
-        CardView cardView;
-        SimpleDraweeView draweeView;
+        final TextView tvMovieTitle;
+        final CardView cardView;
+        final SimpleDraweeView draweeView;
 
         public ViewHolder(View itemView) {
             tvMovieTitle = (TextView) itemView.findViewById(R.id.tv_movie_title);

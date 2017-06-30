@@ -81,11 +81,13 @@ public class TvDetailActivityFragment extends Fragment {
     private TextView tvCastHeading, similarTvShowsHeading, recommendedTvShowsHeading, videosHeading, tvSeasonsHeading, nextEpisodeEpisodeName, nextEpisodeEpisodeDate, nextEpisodeEpisodeOverview;
     private SharedPreferences prefs;
     private SharedPreferences.Editor editor;
-    private CardView videosCardView, tvSeasonsCardView, similarTvShowsCardView, recommendedTvShowsCardView, tvCastCardView;
+    private CardView videosCardView;
+    private CardView tvSeasonsCardView;
+    private CardView similarTvShowsCardView;
+    private CardView recommendedTvShowsCardView;
     private ProgressBar progress_fragment;
     private View cordinatorLayout;
     private String episodeDate;
-    private CardView infoCardView;
     private LinearLayout nextEpisodeCardView;
 
     public TvDetailActivityFragment() {
@@ -113,7 +115,7 @@ public class TvDetailActivityFragment extends Fragment {
         retrofitManager = RetrofitManager.getInstance();
         collapsingToolbar = (CollapsingToolbarLayout) rootView.findViewById(R.id.collapsingToolbar);
 
-        infoCardView = (CardView) rootView.findViewById(R.id.info_card_view);
+        CardView infoCardView = (CardView) rootView.findViewById(R.id.info_card_view);
         TextView title = (TextView) rootView.findViewById(R.id.title);
         releaseDate = (TextView) rootView.findViewById(R.id.release_date);
         vote = (TextView) rootView.findViewById(R.id.vote);
@@ -147,7 +149,7 @@ public class TvDetailActivityFragment extends Fragment {
         tvSeasonsProgressBar = (ProgressBar) tvSeasonsCardView.findViewById(R.id.progress_main);
         tvSeasonsProgressBar.setVisibility(View.VISIBLE);
 
-        tvCastCardView = (CardView) rootView.findViewById(R.id.tvCastCard);
+        CardView tvCastCardView = (CardView) rootView.findViewById(R.id.tvCastCard);
         tvCastGridView = (HorizontalGridView) tvCastCardView.findViewById(R.id.horizontal_grid_view);
         tvCastHeading = (TextView) tvCastCardView.findViewById(R.id.heading);
         tvCastProgressBar = (ProgressBar) tvCastCardView.findViewById(R.id.progress_main);
@@ -456,7 +458,7 @@ public class TvDetailActivityFragment extends Fragment {
     }
 
     private class LoadDetailPageThread extends Thread {
-        int requestType;
+        final int requestType;
 
         LoadDetailPageThread(int requestType) {
             this.requestType = requestType;
@@ -466,7 +468,6 @@ public class TvDetailActivityFragment extends Fragment {
         public void run() {
             super.run();
             if (threadAlreadyRunning) {
-                return;
             } else {
 
                 Intent intent = new Intent(getContext(), NextAirService.class);

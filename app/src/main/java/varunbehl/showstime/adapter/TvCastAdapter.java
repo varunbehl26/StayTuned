@@ -26,7 +26,7 @@ public class TvCastAdapter extends RecyclerView.Adapter<TvCastAdapter.ViewHolder
 
     private List<Cast> tvCastList;
     private LayoutInflater inflater;
-    private Context mContext;
+    private final Context mContext;
     private int tvId;
 
 
@@ -49,7 +49,7 @@ public class TvCastAdapter extends RecyclerView.Adapter<TvCastAdapter.ViewHolder
     }
 
     @Override
-    public void onBindViewHolder(TvCastAdapter.ViewHolder holder, final int position) {
+    public void onBindViewHolder(final TvCastAdapter.ViewHolder holder,  int position) {
         if (tvCastList.get(position).getName()!=null)
         holder.tvMovieTitle.setText(tvCastList.get(position).getName());
 
@@ -61,7 +61,7 @@ public class TvCastAdapter extends RecyclerView.Adapter<TvCastAdapter.ViewHolder
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, TvCastDetail.class);
                 intent.putExtra(TvSeasonDetail.TV_ID, tvId);
-                intent.putExtra(TvCastDetail.CAST_ID, tvCastList.get(position).getId());
+                intent.putExtra(TvCastDetail.CAST_ID, tvCastList.get(holder.getAdapterPosition()).getId());
                 mContext.startActivity(intent);
             }
         });
@@ -88,9 +88,9 @@ public class TvCastAdapter extends RecyclerView.Adapter<TvCastAdapter.ViewHolder
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvMovieTitle;
-        CardView cardView;
-        SimpleDraweeView draweeView;
+        final TextView tvMovieTitle;
+        final CardView cardView;
+        final SimpleDraweeView draweeView;
 
         ViewHolder(View itemView) {
             super(itemView);

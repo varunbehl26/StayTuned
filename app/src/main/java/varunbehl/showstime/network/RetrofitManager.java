@@ -23,8 +23,7 @@ import varunbehl.showstime.pojo.Video.Videos;
 public class RetrofitManager {
 
     private static DataInterface dataInterface = null;
-    private static String API_BASE_URL = "http://api.themoviedb.org/";
-    private static String API_KEY = "29c90a4aee629499a2149041cc6a0ffd";
+    private static final String API_KEY = "29c90a4aee629499a2149041cc6a0ffd";
     private static RetrofitManager retrofitManager;
 
     private RetrofitManager() {
@@ -33,6 +32,7 @@ public class RetrofitManager {
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
 
+        String API_BASE_URL = "http://api.themoviedb.org/";
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(API_BASE_URL)
                 .client(client)
@@ -103,13 +103,11 @@ public class RetrofitManager {
     }
 
     public Observable<Picture_Detail> listMoviesInfo(String categories, int page) {
-        Observable<Picture_Detail> moviesInfoCall = dataInterface.listMoviesInfo(categories, page, API_KEY);
-        return moviesInfoCall;
+        return dataInterface.listMoviesInfo(categories, page, API_KEY);
     }
 
     public Observable<MovieDetail> getMoviesDetail(int id) {
-        Observable<MovieDetail> moviesInfoCall = dataInterface.getMovieDetail(id,API_KEY,"videos,images,credits,reviews");
-        return moviesInfoCall;
+        return dataInterface.getMovieDetail(id,API_KEY,"videos,images,credits,reviews");
     }
 
 

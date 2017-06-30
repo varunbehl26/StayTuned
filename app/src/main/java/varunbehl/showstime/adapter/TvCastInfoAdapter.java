@@ -23,7 +23,7 @@ public class TvCastInfoAdapter extends RecyclerView.Adapter<TvCastInfoAdapter.Vi
 
     private List<Cast> tvCastList;
     private LayoutInflater inflater;
-    private Context mContext;
+    private final Context mContext;
 
 
     public TvCastInfoAdapter(Context mContext) {
@@ -33,7 +33,6 @@ public class TvCastInfoAdapter extends RecyclerView.Adapter<TvCastInfoAdapter.Vi
     public TvCastInfoAdapter(Context context, List<Cast> objects, int id) {
         this.mContext = context;
         this.tvCastList = objects;
-        int tvId = id;
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -74,9 +73,9 @@ public class TvCastInfoAdapter extends RecyclerView.Adapter<TvCastInfoAdapter.Vi
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvMovieTitle;
-        CardView cardView;
-        SimpleDraweeView draweeView;
+        final TextView tvMovieTitle;
+        final CardView cardView;
+        final SimpleDraweeView draweeView;
 
         ViewHolder(View itemView) {
             super(itemView);

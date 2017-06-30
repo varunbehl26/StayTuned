@@ -23,7 +23,7 @@ import varunbehl.showstime.activity.TvDetailActivityFragment;
 public class TvInfoCursorAdapter extends CursorAdapter {
 
 
-    private Context mContext;
+    private final Context mContext;
 
     public TvInfoCursorAdapter(Context context, Cursor c) {
         super(context, c);

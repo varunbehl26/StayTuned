@@ -127,7 +127,7 @@ public class ViewAllActivity extends AppCompatActivity {
     }
 
     private void fetchMoviesDataFromServer(String listType, int page, final boolean scroll) {
-        Observable<Picture_Detail> popularObservable = popularObservable = retrofitManager.listMoviesInfo(listType, page);
+        Observable<Picture_Detail> popularObservable = retrofitManager.listMoviesInfo(listType, page);
 
         popularObservable
                 .observeOn(AndroidSchedulers.mainThread())
@@ -179,7 +179,7 @@ public class ViewAllActivity extends AppCompatActivity {
     }
 
     private class ViewAllThread extends Thread {
-        int request;
+        final int request;
         boolean scroll;
 
         public ViewAllThread(int request) {

@@ -6,12 +6,12 @@
         android:id="@+id/movies"
         android:enabled="true"
         android:icon="@drawable/unfav"
-        android:title="Movies"
+        android:title="@string/movies"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/tv_shows"
         android:enabled="true"
         android:icon="@drawable/unfav"
-        android:title="Tv Shows"
+        android:title="@string/tv_shows"
         app:showAsAction="ifRoom" />
 </menu>

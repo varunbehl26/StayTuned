@@ -18,7 +18,7 @@ public class DateTimeHelper {
         try {
             if (dateTime != null && !dateTime.isEmpty() && !dateTime.equalsIgnoreCase("")) {
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
-                SimpleDateFormat format2 = new SimpleDateFormat("dd, MMM yyyy");
+                SimpleDateFormat format2 = new SimpleDateFormat("dd, MMM yyyy", Locale.ENGLISH);
                 simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Calcutta"));
                 Date date = simpleDateFormat.parse(dateTime);
 

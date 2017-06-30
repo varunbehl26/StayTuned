@@ -23,10 +23,9 @@ import varunbehl.showstime.pojo.Video.VideoResult;
 
 public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ViewHolder> {
 
-    private List<VideoResult> videosList;
-    private LayoutInflater inflater;
-    private Context mContext;
-    private int value =2;
+    private final List<VideoResult> videosList;
+    private final LayoutInflater inflater;
+    private final Context mContext;
 
     public VideoAdapter(Context context, List<VideoResult> objects) {
         this.mContext = context;
@@ -38,6 +37,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ViewHolder> 
     @Override
     public VideoAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View convertView;
+        int value = 2;
         if (value == 1) {
             convertView = inflater.inflate(R.layout.movie_layout, parent, false);
         } else {
@@ -47,12 +47,12 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(VideoAdapter.ViewHolder holder, final int position) {
+    public void onBindViewHolder(final VideoAdapter.ViewHolder holder,  int position) {
         holder.tvMovieTitle.setText(videosList.get(position).getName());
         holder.draweeView.setImageURI("http://img.youtube.com/vi/" + videosList.get(position).getKey() + "/0.jpg");
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=" + videosList.get(position).getKey())));
+                mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=" + videosList.get(holder.getAdapterPosition()).getKey())));
             }
         });
 
@@ -75,9 +75,9 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ViewHolder> 
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvMovieTitle;
-        CardView cardView;
-        SimpleDraweeView draweeView;
+        final TextView tvMovieTitle;
+        final CardView cardView;
+        final SimpleDraweeView draweeView;
 
         ViewHolder(View itemView) {
             super(itemView);

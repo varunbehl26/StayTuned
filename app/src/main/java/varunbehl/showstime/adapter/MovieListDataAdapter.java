@@ -27,10 +27,10 @@ import varunbehl.showstime.pojo.Picture.Pictures;
 public class MovieListDataAdapter extends RecyclerView.Adapter<MovieListDataAdapter.ViewHolder> {
 
     private final int value;
-    private List<Pictures> picturesList;
-    private LayoutInflater inflater;
-    private Context mContext;
-    private FirebaseAnalytics mFirebaseAnalytics;
+    private final List<Pictures> picturesList;
+    private final LayoutInflater inflater;
+    private final Context mContext;
+    private final FirebaseAnalytics mFirebaseAnalytics;
 
     public MovieListDataAdapter(Context context, List<Pictures> objects, int value) {
         this.mContext = context;
@@ -54,19 +54,19 @@ public class MovieListDataAdapter extends RecyclerView.Adapter<MovieListDataAdap
     }
 
     @Override
-    public void onBindViewHolder(MovieListDataAdapter.ViewHolder holder, final int position) {
+    public void onBindViewHolder(final MovieListDataAdapter.ViewHolder holder,  int position) {
         holder.tvMovieTitle.setText(picturesList.get(position).getTitle());
         holder.draweeView.setImageURI(getImageUri(picturesList.get(position).getPosterPath()));
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, DetailActivity.class)
-                        .putExtra(MovieDetailActivityFragment.DETAIL_TV, picturesList.get(position).getId())
+                        .putExtra(MovieDetailActivityFragment.DETAIL_TV, picturesList.get(holder.getAdapterPosition()).getId())
                         .putExtra("ListToOpen", 1);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 Bundle bundle = new Bundle();
-                bundle.putString(FirebaseAnalytics.Param.ITEM_ID, picturesList.get(position).getId().toString());
-                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, picturesList.get(position).getTitle());
+                bundle.putString(FirebaseAnalytics.Param.ITEM_ID, picturesList.get(holder.getAdapterPosition()).getId().toString());
+                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, picturesList.get(holder.getAdapterPosition()).getTitle());
                 bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "movies");
                 mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
                 mContext.startActivity(intent);
@@ -95,9 +95,9 @@ public class MovieListDataAdapter extends RecyclerView.Adapter<MovieListDataAdap
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvMovieTitle;
-        CardView cardView;
-        SimpleDraweeView draweeView;
+        final TextView tvMovieTitle;
+        final CardView cardView;
+        final SimpleDraweeView draweeView;
 
         ViewHolder(View itemView) {
             super(itemView);

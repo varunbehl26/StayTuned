@@ -26,16 +26,15 @@ import varunbehl.showstime.pojo.Search.SearchResult;
 public class SearchEpisodeAdapter extends ArrayAdapter<SearchResult.Result> {
 
     private final FirebaseAnalytics mFirebaseAnalytics;
-    private List<SearchResult.Result> searchResultList;
-    private LayoutInflater inflater;
-    private Context mContext;
+    private final List<SearchResult.Result> searchResultList;
+    private final LayoutInflater inflater;
+    private final Context mContext;
     private int tvId;
 
     public SearchEpisodeAdapter(Context context, List<SearchResult.Result> objects, int id) {
         super(context, 0, objects);
         this.mContext = context;
         this.searchResultList = objects;
-        int tvId = id;
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(context);
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -104,9 +103,11 @@ public class SearchEpisodeAdapter extends ArrayAdapter<SearchResult.Result> {
     }
 
     static class ViewHolder {
-        TextView episodeTitle, episodeDesc, episode_date;
-        SimpleDraweeView draweeView;
-        CardView cardView;
+        final TextView episodeTitle;
+        final TextView episodeDesc;
+        final TextView episode_date;
+        final SimpleDraweeView draweeView;
+        final CardView cardView;
 
         ViewHolder(View itemView) {
             episodeTitle = (TextView) itemView.findViewById(R.id.episode_name);

@@ -60,7 +60,7 @@ import varunbehl.showstime.util.DateTimeHelper;
 
 public class TvShowFragment extends Fragment {
 
-    FirebaseAnalytics mFirebaseAnalytics;
+    private FirebaseAnalytics mFirebaseAnalytics;
     private EventBus eventBus;
     private SharedPreferences.Editor editor;
     private boolean threadAlreadyRunning = false;
@@ -82,8 +82,7 @@ public class TvShowFragment extends Fragment {
     private AdView nativeView;
 
     public static TvShowFragment newInstance() {
-        TvShowFragment fragment = new TvShowFragment();
-        return fragment;
+        return new TvShowFragment();
     }
 
     @Override
@@ -92,9 +91,6 @@ public class TvShowFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_movie, container, false);
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
         MobileAds.initialize(getContext(), Constants.ADUNIT);
-        AdView mAdView = (AdView) view.findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
         mContext = getActivity();
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(mContext);
         new ShowsTimeDBHelper(mContext);
@@ -436,7 +432,7 @@ public class TvShowFragment extends Fragment {
 
     private void handleAdView() {
 
-        nativeView.loadAd(new AdRequest.Builder().addTestDevice("testDeviceID").build());
+        nativeView.loadAd(new AdRequest.Builder().addTestDevice("D938443E0DE7112D76DF6BBA67607EB5").build());
 
         nativeView.setAdListener(new AdListener() {
 
@@ -508,7 +504,7 @@ public class TvShowFragment extends Fragment {
     }
 
     private class MainPageThread extends Thread {
-        int requestType;
+        final int requestType;
 
         MainPageThread(int requestType) {
             this.requestType = requestType;

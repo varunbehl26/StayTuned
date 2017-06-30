@@ -42,7 +42,6 @@ public class TvSeasonDetail extends AppCompatActivity {
     TextView title, releaseDate, vote, plotSynopsis;
     Button fav_button;
     SimpleDraweeView draweeView;
-    private CollapsingToolbarLayout collapsingToolbar;
     private boolean threadAlreadyRunning;
     private GridView tvSeasonsGridView;
     private ProgressBar tvSeasonsProgressBar;
@@ -77,7 +76,7 @@ public class TvSeasonDetail extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         retrofitManager = RetrofitManager.getInstance();
-        collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsingToolbar);
+        CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsingToolbar);
 
         tvSeasonsGridView = (GridView) findViewById(R.id.list_view);
         tvSeasonsHeading = (TextView) findViewById(R.id.heading);
@@ -120,7 +119,7 @@ public class TvSeasonDetail extends AppCompatActivity {
     }
 
     private class LoadSeasonInfoThread extends Thread {
-        int requestType;
+        final int requestType;
 
         LoadSeasonInfoThread(int requestType) {
             this.requestType = requestType;

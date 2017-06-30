@@ -10,7 +10,7 @@ import com.google.firebase.crash.FirebaseCrash;
  * Created by varunbehl on 12/05/17.
  */
 
-public class NetworkCommon {
+class NetworkCommon {
 
     public static boolean isConnected(Context context) {
         try {

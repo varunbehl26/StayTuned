@@ -27,8 +27,8 @@ import varunbehl.showstime.pojo.TvDetails.TvInfo;
  */
 class TvWidgetFactory implements RemoteViewsService.RemoteViewsFactory {
     private Cursor cursor;
-    private Context context;
-    private List<TvInfo> tvInfoList;
+    private final Context context;
+    private final List<TvInfo> tvInfoList;
 
     public TvWidgetFactory(Context applicationContext, Intent intent) {
         context = applicationContext;

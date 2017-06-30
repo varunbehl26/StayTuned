@@ -39,9 +39,7 @@ public class EpisodeActivity extends AppCompatActivity {
     private EpisodeInfo episodeInfo = new EpisodeInfo();
     private int tvId;
     private RetrofitManager retrofitManager;
-    private TextView title;
     private TextView releaseDate;
-    private TextView vote;
     private TextView plotSynopsis;
     Button fav_button;
     private SimpleDraweeView draweeView;
@@ -84,9 +82,9 @@ public class EpisodeActivity extends AppCompatActivity {
         collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsingToolbar);
 
 
-        title = (TextView) findViewById(R.id.title);
+        TextView title = (TextView) findViewById(R.id.title);
         releaseDate = (TextView) findViewById(R.id.release_date);
-        vote = (TextView) findViewById(R.id.vote);
+        TextView vote = (TextView) findViewById(R.id.vote);
         plotSynopsis = (TextView) findViewById(R.id.plot_synopsis);
 //        fav_button = (Button) findViewById(R.id.b11);
         draweeView = (SimpleDraweeView) findViewById(R.id.movie_poster);
@@ -133,7 +131,7 @@ public class EpisodeActivity extends AppCompatActivity {
     }
 
     private class LoadEpisodeInfoThread extends Thread {
-        int requestType;
+        final int requestType;
 
         LoadEpisodeInfoThread(int requestType) {
             this.requestType = requestType;

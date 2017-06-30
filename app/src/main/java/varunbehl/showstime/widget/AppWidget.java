@@ -1,6 +1,5 @@
 package varunbehl.showstime.widget;
 
-import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
@@ -8,7 +7,6 @@ import android.content.Intent;
 import android.widget.RemoteViews;
 
 import varunbehl.showstime.R;
-import varunbehl.showstime.activity.MainActivity;
 
 /**
  * Implementation of App Widget functionality.

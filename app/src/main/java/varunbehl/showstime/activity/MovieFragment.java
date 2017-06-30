@@ -60,7 +60,7 @@ import varunbehl.showstime.util.DateTimeHelper;
 
 public class MovieFragment extends Fragment {
 
-    FirebaseAnalytics mFirebaseAnalytics;
+    private FirebaseAnalytics mFirebaseAnalytics;
     private EventBus eventBus;
     private SharedPreferences.Editor editor;
     private boolean threadAlreadyRunning = false;
@@ -82,8 +82,7 @@ public class MovieFragment extends Fragment {
     private AdView nativeView;
 
     public static MovieFragment newInstance() {
-        MovieFragment fragment = new MovieFragment();
-        return fragment;
+        return new MovieFragment();
     }
 
 
@@ -93,9 +92,6 @@ public class MovieFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_movie, container, false);
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
         MobileAds.initialize(getContext(), Constants.ADUNIT);
-        AdView mAdView = (AdView) view.findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
         mContext = getActivity();
         new ShowsTimeDBHelper(mContext);
         eventBus = EventBus.getDefault();
@@ -162,7 +158,7 @@ public class MovieFragment extends Fragment {
 
     private void handleAdView() {
 
-        nativeView.loadAd(new AdRequest.Builder().addTestDevice("testDeviceID").build());
+        nativeView.loadAd(new AdRequest.Builder().addTestDevice("D938443E0DE7112D76DF6BBA67607EB5").build());
 
         nativeView.setAdListener(new AdListener() {
 
@@ -394,21 +390,21 @@ public class MovieFragment extends Fragment {
             popularTvDataAdapter.notifyDataSetChanged();
             popularTvShowsHzGridView.setVisibility(View.VISIBLE);
             popularTvShowsProgressBar.setVisibility(View.GONE);
-            popularTvShowHeading.setText("Popular Movies");
+            popularTvShowHeading.setText(R.string.popular_movies);
         } else if (event.getRequest() == 2) {
             MovieListDataAdapter topRatedTvDataAdapter = new MovieListDataAdapter(mContext, topRatedMoviesList, 2);
             topRatedTvshowsHzGridView.setAdapter(topRatedTvDataAdapter);
             topRatedTvDataAdapter.notifyDataSetChanged();
             topRatedTvshowsHzGridView.setVisibility(View.VISIBLE);
             topRatedTvShowsProgressBar.setVisibility(View.GONE);
-            topRatedTvshowHeading.setText("Top Rated Movies");
+            topRatedTvshowHeading.setText(R.string.top_rated_movies);
         } else if (event.getRequest() == 3) {
             MovieListDataAdapter todayAirTvDataAdapter = new MovieListDataAdapter(mContext, upcomingMoviesList, 1);
             todayAirTvShowsHzGridView.setAdapter(todayAirTvDataAdapter);
             todayAirTvDataAdapter.notifyDataSetChanged();
             todayAirTvShowsHzGridView.setVisibility(View.VISIBLE);
             todayAirTvShowsProgressBar.setVisibility(View.GONE);
-            todayAirTvTvShowHeading.setText("Upcoming Movies");
+            todayAirTvTvShowHeading.setText(R.string.upcoming_movies);
 
         } else if (event.getRequest() == 4) {
             showSnakeBar(layout);
@@ -500,7 +496,7 @@ public class MovieFragment extends Fragment {
     }
 
     private class MainPageThread extends Thread {
-        int requestType;
+        final int requestType;
 
         MainPageThread(int requestType) {
             this.requestType = requestType;

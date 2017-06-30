@@ -25,7 +25,7 @@ public class TvSeasonsAdapter extends RecyclerView.Adapter<TvSeasonsAdapter.View
 
     private List<TvInfo.Season> tvSeasonList;
     private LayoutInflater inflater;
-    private Context mContext;
+    private final Context mContext;
     private int tvId;
 
 
@@ -48,7 +48,7 @@ public class TvSeasonsAdapter extends RecyclerView.Adapter<TvSeasonsAdapter.View
     }
 
     @Override
-    public void onBindViewHolder(TvSeasonsAdapter.ViewHolder holder, final int position) {
+    public void onBindViewHolder(final TvSeasonsAdapter.ViewHolder holder,  int position) {
 
         holder.tvMovieTitle.setText(mContext.getString(R.string.season) + tvSeasonList.get(position).getSeasonNumber().toString());
         holder.draweeView.setImageURI(getImageUri(tvSeasonList.get(position).getPosterPath()));
@@ -58,7 +58,7 @@ public class TvSeasonsAdapter extends RecyclerView.Adapter<TvSeasonsAdapter.View
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, TvSeasonDetail.class);
                 intent.putExtra(TvSeasonDetail.TV_ID, tvId);
-                intent.putExtra(TvSeasonDetail.SEASON_ID, tvSeasonList.get(position).getSeasonNumber());
+                intent.putExtra(TvSeasonDetail.SEASON_ID, tvSeasonList.get(holder.getAdapterPosition()).getSeasonNumber());
                 mContext.startActivity(intent);
             }
         });
@@ -85,9 +85,9 @@ public class TvSeasonsAdapter extends RecyclerView.Adapter<TvSeasonsAdapter.View
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvMovieTitle;
-        CardView cardView;
-        SimpleDraweeView draweeView;
+        final TextView tvMovieTitle;
+        final CardView cardView;
+        final SimpleDraweeView draweeView;
 
         ViewHolder(View itemView) {
             super(itemView);

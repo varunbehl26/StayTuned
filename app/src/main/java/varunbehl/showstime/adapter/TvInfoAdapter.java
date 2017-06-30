@@ -24,9 +24,9 @@ import varunbehl.showstime.pojo.TvDetails.TvInfo;
 
 public class TvInfoAdapter extends ArrayAdapter<TvInfo> {
 
-    private List<TvInfo> tvInfoList;
-    private LayoutInflater inflater;
-    private Context mContext;
+    private final List<TvInfo> tvInfoList;
+    private final LayoutInflater inflater;
+    private final Context mContext;
 
     public TvInfoAdapter(Context context, List<TvInfo> objects) {
         super(context, 0, objects);
@@ -89,9 +89,9 @@ public class TvInfoAdapter extends ArrayAdapter<TvInfo> {
     }
 
     private static class ViewHolder {
-        TextView tvMovieTitle;
-        SimpleDraweeView draweeView;
-        CardView cardView;
+        final TextView tvMovieTitle;
+        final SimpleDraweeView draweeView;
+        final CardView cardView;
 
         ViewHolder(View itemView) {
             tvMovieTitle = (TextView) itemView.findViewById(R.id.tv_movie_title);

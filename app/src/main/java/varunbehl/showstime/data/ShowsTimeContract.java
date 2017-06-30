@@ -10,8 +10,8 @@ import android.provider.BaseColumns;
 
 public class ShowsTimeContract {
 
-    public static final String CONTENT_AUTHORITY = "varunbehl.showstime";
-    public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
+    private static final String CONTENT_AUTHORITY = "varunbehl.showstime";
+    private static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
     private static final String PATH_TV = "stay_tuned";
 
     public static final class StayTunedEntry implements BaseColumns {

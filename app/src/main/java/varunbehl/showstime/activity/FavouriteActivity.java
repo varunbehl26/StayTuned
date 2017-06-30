@@ -24,10 +24,8 @@ import varunbehl.showstime.pojo.TvDetails.TvInfo;
 
 public class FavouriteActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    TvInfoCursorAdapter tvInfoCursorAdapter;
+    private TvInfoCursorAdapter tvInfoCursorAdapter;
     private List<TvInfo> tvInfoList = new ArrayList<>();
-    private SharedPreferences prefs;
-    private Cursor mCursor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +47,7 @@ public class FavouriteActivity extends AppCompatActivity implements LoaderManage
         GridView myGrid = (GridView) findViewById(R.id.grid_view);
 
         // Here we query database
-        mCursor = getContentResolver().query(
+        Cursor mCursor = getContentResolver().query(
                 ShowsTimeContract.StayTunedEntry.CONTENT_URI,
                 new String[]{ShowsTimeContract.StayTunedEntry._ID, ShowsTimeContract.StayTunedEntry.NAME, ShowsTimeContract.StayTunedEntry.TV_ID,},
                 null,
@@ -59,7 +57,7 @@ public class FavouriteActivity extends AppCompatActivity implements LoaderManage
 
         tvInfoCursorAdapter = new TvInfoCursorAdapter(this, mCursor);
 
-        prefs = this.getSharedPreferences(
+        SharedPreferences prefs = this.getSharedPreferences(
                 "varunbehl.showstime", Context.MODE_PRIVATE);
 
 
