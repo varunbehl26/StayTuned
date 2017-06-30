@@ -14,6 +14,8 @@ import android.view.View;
 import android.widget.GridView;
 import android.widget.TextView;
 
+import com.google.firebase.crash.FirebaseCrash;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,12 +49,20 @@ public class FavouriteActivity extends AppCompatActivity implements LoaderManage
         GridView myGrid = (GridView) findViewById(R.id.grid_view);
 
         // Here we query database
-        Cursor mCursor = getContentResolver().query(
-                ShowsTimeContract.StayTunedEntry.CONTENT_URI,
-                new String[]{ShowsTimeContract.StayTunedEntry._ID, ShowsTimeContract.StayTunedEntry.NAME, ShowsTimeContract.StayTunedEntry.TV_ID,},
-                null,
-                null,
-                null);
+        Cursor mCursor = null;
+        try {
+            mCursor = getContentResolver().query(
+                    ShowsTimeContract.StayTunedEntry.CONTENT_URI,
+                    new String[]{ShowsTimeContract.StayTunedEntry._ID, ShowsTimeContract.StayTunedEntry.NAME, ShowsTimeContract.StayTunedEntry.TV_ID,},
+                    null,
+                    null,
+                    null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            FirebaseCrash.report(e);
+        } finally {
+            mCursor.close();
+        }
 
 
         tvInfoCursorAdapter = new TvInfoCursorAdapter(this, mCursor);
