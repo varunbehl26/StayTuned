@@ -5,13 +5,13 @@
     <item
         android:id="@+id/movies"
         android:enabled="true"
-        android:icon="@drawable/ic_favourites"
+        android:icon="@drawable/fav"
         android:title="@string/movies"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/tv_shows"
         android:enabled="true"
-        android:icon="@drawable/ic_favourites"
+        android:icon="@drawable/fav"
         android:title="@string/tv_shows"
         app:showAsAction="ifRoom" />
 </menu>

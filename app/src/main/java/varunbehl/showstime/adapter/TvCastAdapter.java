@@ -44,7 +44,7 @@ public class TvCastAdapter extends RecyclerView.Adapter<TvCastAdapter.ViewHolder
 
     @Override
     public TvCastAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View convertView = inflater.inflate(R.layout.movie_layout, parent, false);
+        View convertView = inflater.inflate(R.layout.cast_layout, parent, false);
         return new ViewHolder(convertView);
     }
 
