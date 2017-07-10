@@ -62,8 +62,6 @@ public class TvCastDetail extends AppCompatActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        eventBus = EventBus.getDefault();
-        eventBus.register(this);
 
         TextView title = (TextView) findViewById(R.id.title);
         releaseDate = (TextView) findViewById(R.id.release_date);
@@ -88,6 +86,20 @@ public class TvCastDetail extends AppCompatActivity {
         castId = getIntent().getIntExtra(CAST_ID, 0);
         new CastLoadThread().start();
 
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        eventBus = EventBus.getDefault();
+        eventBus.register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        eventBus = EventBus.getDefault();
+        eventBus.unregister(this);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

@@ -1,11 +1,12 @@
 package varunbehl.showstime.activity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
 import android.widget.AbsListView;
 import android.widget.GridView;
 
@@ -45,6 +46,7 @@ public class ViewAllActivity extends AppCompatActivity {
     private boolean drawnPrevious = false;
     private String listType;
     private int categoryType;
+    private Parcelable state;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,9 +56,6 @@ public class ViewAllActivity extends AppCompatActivity {
         toolbar.setTitle("View All");
         myGrid = (GridView) findViewById(R.id.grid_view);
         retrofitManager = RetrofitManager.getInstance();
-        eventBus = EventBus.getDefault();
-        eventBus.register(this);
-        Context context = this;
         setSupportActionBar(toolbar);
         tvInfoList = new ArrayList<>();
         moviesList = new ArrayList<>();
@@ -65,13 +64,20 @@ public class ViewAllActivity extends AppCompatActivity {
         listType = intent.getStringExtra("listType");
         categoryType = intent.getIntExtra("categoryType", 1);
 
+        tvInfoAdapter = new TvInfoAdapter(getApplicationContext(), tvInfoList);
+        moviesInfoAdapter = new MoviesInfoAdapter(getApplicationContext(), moviesList);
+
+
+        if (categoryType == 2) {
+            myGrid.setAdapter(tvInfoAdapter);
+        } else if (categoryType == 1) {
+            myGrid.setAdapter(moviesInfoAdapter);
+        }
+
         myGrid.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 if ((firstVisibleItem + visibleItemCount >= totalItemCount) && firstVisibleItem != 0 && drawnPrevious) {
-                    Log.v("firstVisibleItem--", firstVisibleItem + "");
-                    Log.v("visibleItemCount--", visibleItemCount + "");
-                    Log.v("totalItemCount--", totalItemCount + "");
                     // End has been reached
                     new ViewAllThread(categoryType, true).start();
 
@@ -83,12 +89,25 @@ public class ViewAllActivity extends AppCompatActivity {
             }
         });
 
-        tvInfoAdapter = new TvInfoAdapter(getApplicationContext(), tvInfoList);
-        moviesInfoAdapter = new MoviesInfoAdapter(getApplicationContext(), moviesList);
 
         new ViewAllThread(categoryType).start();
         drawnPrevious = true;
 
+    }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        eventBus = EventBus.getDefault();
+        eventBus.register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        eventBus = EventBus.getDefault();
+        eventBus.unregister(this);
     }
 
     private void fetchTvDataFromServer(String listType, int page, final boolean scroll) {
@@ -135,7 +154,7 @@ public class ViewAllActivity extends AppCompatActivity {
                 .subscribe(new Subscriber<Picture_Detail>() {
                                @Override
                                public void onCompleted() {
-                                   if (moviesList != null){
+                                   if (moviesList != null) {
                                        if (scroll) {
                                            eventBus.post(new MessageEvent(4));
                                        } else {
@@ -163,18 +182,16 @@ public class ViewAllActivity extends AppCompatActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MessageEvent event) {
+        myGrid.setVisibility(View.VISIBLE);
         if (event.getRequest() == 1) {
-            myGrid.setAdapter(tvInfoAdapter);
             tvInfoAdapter.notifyDataSetChanged();
         } else if (event.getRequest() == 2) {
-            myGrid.setAdapter(moviesInfoAdapter);
             moviesInfoAdapter.notifyDataSetChanged();
         } else if (event.getRequest() == 3) {
             tvInfoAdapter.notifyDataSetChanged();
         } else {
             moviesInfoAdapter.notifyDataSetChanged();
         }
-        boolean isRefreshing = false;
         threadRunning = false;
     }
 

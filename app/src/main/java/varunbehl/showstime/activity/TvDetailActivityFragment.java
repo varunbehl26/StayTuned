@@ -112,8 +112,10 @@ public class TvDetailActivityFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
+        ((DetailActivity) getActivity()).getSupportActionBar().setHomeButtonEnabled(true);
+        ((DetailActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         retrofitManager = RetrofitManager.getInstance();
-        collapsingToolbar = (CollapsingToolbarLayout) rootView.findViewById(R.id.collapsingToolbar);
+        collapsingToolbar = (CollapsingToolbarLayout) getActivity().findViewById(R.id.toolbar_layout);
 
         CardView infoCardView = (CardView) rootView.findViewById(R.id.info_card_view);
         TextView title = (TextView) rootView.findViewById(R.id.title);
@@ -121,11 +123,11 @@ public class TvDetailActivityFragment extends Fragment {
         vote = (TextView) rootView.findViewById(R.id.vote);
         plotSynopsis = (TextView) rootView.findViewById(R.id.plot_synopsis);
         fav_button = (Button) rootView.findViewById(R.id.b11);
-        draweeView = (SimpleDraweeView) rootView.findViewById(R.id.movie_poster);
+        draweeView = (SimpleDraweeView) getActivity().findViewById(R.id.movie_poster);
         fav_button.setBackground(getContext().getResources().getDrawable(R.drawable.unfav));
 
         progress_fragment = (ProgressBar) rootView.findViewById(R.id.progress_fragment);
-        cordinatorLayout = rootView.findViewById(R.id.cordinator_layout);
+        cordinatorLayout = getActivity().findViewById(R.id.app_bar);
 
         prefs = getActivity().getSharedPreferences(
                 Constants.PREFERENCE_NAME, Context.MODE_PRIVATE);
@@ -434,7 +436,8 @@ public class TvDetailActivityFragment extends Fragment {
 
                     @Override
                     public void onError(Throwable e) {
-                        // handle error
+                        e.printStackTrace();
+                        FirebaseCrash.report(e);
                     }
 
                     @Override

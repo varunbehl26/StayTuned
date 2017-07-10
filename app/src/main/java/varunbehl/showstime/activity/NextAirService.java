@@ -153,7 +153,8 @@ public class NextAirService extends IntentService {
 
                                @Override
                                public void onError(Throwable e) {
-                                   Log.v("Exception", e.toString());
+                                   e.printStackTrace();
+                                   FirebaseCrash.report(e);
                                }
 
                                @Override

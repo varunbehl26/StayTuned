@@ -43,8 +43,6 @@ public class ShowsTimeProvider extends ContentProvider {
         sURIMatcher.addURI(AUTHORITY, EPISODES_BASE_PATH + "/#", EPISODE_ID);
     }
 
-    private List tvInfoList= new ArrayList();
-
 
     @Override
     public boolean onCreate() {

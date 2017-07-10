@@ -90,7 +90,6 @@ public class MovieFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_movie, container, false);
-        Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
         MobileAds.initialize(getContext(), Constants.ADUNIT);
         mContext = getActivity();
         new ShowsTimeDBHelper(mContext);
@@ -105,7 +104,6 @@ public class MovieFragment extends Fragment {
         prefs = mContext.getSharedPreferences(
                 "varunbehl.showstime", Context.MODE_PRIVATE);
 
-        Fresco.initialize(mContext);
         retrofitManager = RetrofitManager.getInstance();
         layout = (LinearLayout) view.findViewById(R.id.layout_main);
 
@@ -270,7 +268,7 @@ public class MovieFragment extends Fragment {
                                public void onError(Throwable e) {
                                    e.printStackTrace();
                                    FirebaseCrash.report(e);
-
+                                   topRatedTvshowsHzGridView.setVisibility(View.GONE);
                                    Log.v("Exception", "NullPointerException");
                                }
 
@@ -308,7 +306,7 @@ public class MovieFragment extends Fragment {
                                public void onError(Throwable e) {
                                    e.printStackTrace();
                                    FirebaseCrash.report(e);
-
+                                   popularTvShowsHzGridView.setVisibility(View.GONE);
                                    Log.v("Exception", "NullPointerEx/ception");
                                }
 
@@ -343,7 +341,7 @@ public class MovieFragment extends Fragment {
                                public void onError(Throwable e) {
                                    e.printStackTrace();
                                    FirebaseCrash.report(e);
-
+                                   todayAirTvShowsHzGridView.setVisibility(View.GONE);
                                    Log.v("Exception", "NullPointerException");
                                }
 

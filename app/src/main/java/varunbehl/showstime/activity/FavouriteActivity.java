@@ -57,15 +57,17 @@ public class FavouriteActivity extends AppCompatActivity implements LoaderManage
                     null,
                     null,
                     null);
+
+            tvInfoCursorAdapter = new TvInfoCursorAdapter(this, mCursor);
+
         } catch (Exception e) {
             e.printStackTrace();
             FirebaseCrash.report(e);
         } finally {
+            assert mCursor != null;
             mCursor.close();
         }
 
-
-        tvInfoCursorAdapter = new TvInfoCursorAdapter(this, mCursor);
 
         SharedPreferences prefs = this.getSharedPreferences(
                 "varunbehl.showstime", Context.MODE_PRIVATE);

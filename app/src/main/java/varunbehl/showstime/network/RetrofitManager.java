@@ -1,11 +1,14 @@
 package varunbehl.showstime.network;
 
+import java.util.concurrent.TimeUnit;
+
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Observable;
+import rx.android.BuildConfig;
 import varunbehl.showstime.pojo.Cast.CastInfo;
 import varunbehl.showstime.pojo.Episode.EpisodeInfo;
 import varunbehl.showstime.pojo.MovieDetail;
@@ -22,27 +25,40 @@ import varunbehl.showstime.pojo.Video.Videos;
  */
 public class RetrofitManager {
 
-    private static DataInterface dataInterface = null;
     private static final String API_KEY = "29c90a4aee629499a2149041cc6a0ffd";
+    private static DataInterface dataInterface = null;
     private static RetrofitManager retrofitManager;
 
     private RetrofitManager() {
 
-        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
+        try {
+            OkHttpClient.Builder builder = new OkHttpClient().newBuilder();
+            builder.readTimeout(10, TimeUnit.SECONDS);
+            builder.connectTimeout(5, TimeUnit.SECONDS);
 
-        String API_BASE_URL = "http://api.themoviedb.org/";
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(API_BASE_URL)
-                .client(client)
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .build();
+            if (BuildConfig.DEBUG) {
+                HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+                interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+                builder.addInterceptor(interceptor);
+            }
 
-        dataInterface = retrofit.create(DataInterface.class);
+
+            OkHttpClient client = builder.build();
+
+            String API_BASE_URL = "http://api.themoviedb.org/";
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(API_BASE_URL)
+                    .client(client)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                    .build();
+
+            dataInterface = retrofit.create(DataInterface.class);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-
 
     public static RetrofitManager getInstance() {
         if (retrofitManager == null) {
@@ -50,7 +66,6 @@ public class RetrofitManager {
         }
         return retrofitManager;
     }
-
 
 
     public Observable<Reviews> getComments(int movieId, String apiKey) {
@@ -77,7 +92,8 @@ public class RetrofitManager {
     public Observable<Tv> getRecommendedTvShows(String tvId) {
         return dataInterface.getRecommendedTvShows(tvId, API_KEY);
     }
-    public Observable<Picture_Detail> getSimilarMovies(int  movieId) {
+
+    public Observable<Picture_Detail> getSimilarMovies(int movieId) {
         return dataInterface.getSimilarMovies(movieId, API_KEY);
     }
 
@@ -107,7 +123,7 @@ public class RetrofitManager {
     }
 
     public Observable<MovieDetail> getMoviesDetail(int id) {
-        return dataInterface.getMovieDetail(id,API_KEY,"videos,images,credits,reviews");
+        return dataInterface.getMovieDetail(id, API_KEY, "videos,images,credits,reviews");
     }
 
 

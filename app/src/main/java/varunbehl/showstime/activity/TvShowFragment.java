@@ -89,7 +89,6 @@ public class TvShowFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_movie, container, false);
-        Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
         MobileAds.initialize(getContext(), Constants.ADUNIT);
         mContext = getActivity();
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(mContext);
@@ -103,7 +102,6 @@ public class TvShowFragment extends Fragment {
         prefs = mContext.getSharedPreferences(
                 "varunbehl.showstime", Context.MODE_PRIVATE);
 
-        Fresco.initialize(mContext);
         retrofitManager = RetrofitManager.getInstance();
         layout = (LinearLayout) view.findViewById(R.id.layout_main);
 
@@ -160,11 +158,17 @@ public class TvShowFragment extends Fragment {
         eventBus.register(this);
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        eventBus.unregister(this);
+    }
+
 
     @Override
     public void onStop() {
-        super.onStop();
         eventBus.unregister(this);
+        super.onStop();
     }
 
     @Override
@@ -206,7 +210,7 @@ public class TvShowFragment extends Fragment {
                                public void onError(Throwable e) {
                                    e.printStackTrace();
                                    FirebaseCrash.report(e);
-
+                                    topRatedTvshowsHzGridView.setVisibility(View.GONE);
                                    Log.v("Exception", "NullPointerException");
                                }
 
@@ -244,7 +248,7 @@ public class TvShowFragment extends Fragment {
                                public void onError(Throwable e) {
                                    e.printStackTrace();
                                    FirebaseCrash.report(e);
-
+                                    topRatedTvshowsHzGridView.setVisibility(View.GONE);
                                    Log.v("Exception", "NullPointerException");
                                }
 
@@ -282,7 +286,7 @@ public class TvShowFragment extends Fragment {
                                public void onError(Throwable e) {
                                    e.printStackTrace();
                                    FirebaseCrash.report(e);
-
+                                    popularTvShowsHzGridView.setVisibility(View.GONE);
                                    Log.v("Exception", "NullPointerEx/ception");
                                }
 
@@ -317,7 +321,7 @@ public class TvShowFragment extends Fragment {
                                public void onError(Throwable e) {
                                    e.printStackTrace();
                                    FirebaseCrash.report(e);
-
+                                    todayAirTvShowsHzGridView.setVisibility(View.GONE);
                                    Log.v("Exception", "NullPointerException");
                                }
 

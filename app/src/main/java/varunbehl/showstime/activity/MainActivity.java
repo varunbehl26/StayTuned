@@ -27,13 +27,15 @@ import varunbehl.showstime.R;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
+        getSupportActionBar().setHomeButtonEnabled(true);
+
         MobileAds.initialize(getApplicationContext(), "pub-9118327582693953");
 
         FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
@@ -52,14 +54,15 @@ public class MainActivity extends AppCompatActivity
                                 android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
                                 fragmentManager.beginTransaction()
                                         .replace(R.id.frameLayout, mFragment).commit();
-                                item.setIcon(R.drawable.fav);
+//                                item.setIcon(R.drawable.fav);
                                 break;
                             case R.id.tv_shows:
                                 TvShowFragment tvShowFragment = new TvShowFragment();
                                 android.support.v4.app.FragmentManager fragmentManager1 = getSupportFragmentManager();
                                 fragmentManager1.beginTransaction()
                                         .replace(R.id.frameLayout, tvShowFragment).commit();
-                                item.setIcon(R.drawable.fav);
+//                                item.setIcon(R.drawable.fav);
+
                                 break;
                         }
                         return true;

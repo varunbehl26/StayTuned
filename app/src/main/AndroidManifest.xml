@@ -21,14 +21,13 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <provider
-            android:name="varunbehl.showstime.data.ShowsTimeProvider"
+            android:name=".data.ShowsTimeProvider"
             android:authorities="varunbehl.showstime"
             android:exported="true" />
 
         <activity
-            android:name="varunbehl.showstime.activity.MainActivity"
+            android:name=".activity.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -42,26 +41,26 @@
                 android:resource="@xml/searchable" />
         </activity>
 
-        <service android:name="varunbehl.showstime.activity.NextAirService" />
+        <service android:name=".activity.NextAirService" />
 
         <activity
-            android:name="varunbehl.showstime.activity.DetailActivity"
+            android:name=".activity.DetailActivity"
             android:label="@string/title_activity_detail"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="varunbehl.showstime.activity.TvSeasonDetail"
+            android:name=".activity.TvSeasonDetail"
             android:label="@string/title_activity_tv_season_info"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="varunbehl.showstime.activity.EpisodeActivity"
+            android:name=".activity.EpisodeActivity"
             android:label="@string/title_activity_episode"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="varunbehl.showstime.activity.FavouriteActivity"
+            android:name=".activity.FavouriteActivity"
             android:label="@string/title_activity_favourite"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <receiver android:name="varunbehl.showstime.widget.AppWidget">
+        <receiver android:name=".widget.AppWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -72,11 +71,11 @@
         </receiver>
 
         <service
-            android:name="varunbehl.showstime.widget.TvWidgetService"
+            android:name=".widget.TvWidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
         <activity
-            android:name="varunbehl.showstime.activity.SearchResultsActivity"
+            android:name=".activity.SearchResultsActivity"
             android:label="@string/title_activity_search_results"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -84,13 +83,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="varunbehl.showstime.activity.ViewAllActivity"
+            android:name=".activity.ViewAllActivity"
             android:label="@string/title_activity_view_all"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="varunbehl.showstime.activity.TvCastDetail"
+            android:name=".activity.TvCastDetail"
             android:label="@string/title_activity_tv_cast_detail"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

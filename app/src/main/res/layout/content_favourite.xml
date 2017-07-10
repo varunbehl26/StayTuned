@@ -4,17 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:background="@color/cardview_dark_background"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="varunbehl.showstime.activity.FavouriteActivity"
-    tools:showIn="@layout/activity_favourite"
-    android:orientation="horizontal">
+    tools:showIn="@layout/activity_favourite">
 
     <GridView
         android:id="@+id/grid_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
         android:layout_margin="10dp"
+        android:gravity="center"
         android:numColumns="3"
         android:visibility="gone" />
 
@@ -25,6 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
+        android:textColor="#fff"
         android:indeterminate="true"
         android:text="@string/no_favorites_aded_yet"
         android:textAlignment="center"

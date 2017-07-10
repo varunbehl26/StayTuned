@@ -12,6 +12,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.firebase.crash.FirebaseCrash;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -158,7 +159,8 @@ public class EpisodeActivity extends AppCompatActivity {
 
                                        @Override
                                        public void onError(Throwable e) {
-                                           Log.v("Exception", e.toString());
+                                           e.printStackTrace();
+                                           FirebaseCrash.report(e);
                                        }
 
                                        @Override

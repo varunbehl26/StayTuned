@@ -12,9 +12,12 @@
         android:id="@+id/grid_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="10dp"
+        android:background="@color/cardview_dark_background"
         android:gravity="center"
+        android:horizontalSpacing="0dp"
         android:numColumns="3"
+        android:verticalSpacing="5dp"
+        android:stretchMode="columnWidth"
         android:visibility="visible" />
 
 </RelativeLayout>
