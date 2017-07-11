@@ -8,15 +8,14 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Observable;
-import rx.android.BuildConfig;
 import varunbehl.showstime.pojo.Cast.CastInfo;
+import varunbehl.showstime.pojo.CombinedMovieDetail;
 import varunbehl.showstime.pojo.Episode.EpisodeInfo;
-import varunbehl.showstime.pojo.MovieDetail;
 import varunbehl.showstime.pojo.Picture.Picture_Detail;
 import varunbehl.showstime.pojo.Reviews.Reviews;
 import varunbehl.showstime.pojo.Search.SearchResult;
 import varunbehl.showstime.pojo.Tv.Tv;
-import varunbehl.showstime.pojo.TvDetails.TvInfo;
+import varunbehl.showstime.pojo.TvDetails.CombinedTvDetail;
 import varunbehl.showstime.pojo.TvSeason.TvSeasonInfo;
 import varunbehl.showstime.pojo.Video.Videos;
 
@@ -36,11 +35,11 @@ public class RetrofitManager {
             builder.readTimeout(10, TimeUnit.SECONDS);
             builder.connectTimeout(5, TimeUnit.SECONDS);
 
-            if (BuildConfig.DEBUG) {
-                HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-                interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-                builder.addInterceptor(interceptor);
-            }
+//            if (BuildConfig.DEBUG) {
+            HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+            interceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
+            builder.addInterceptor(interceptor);
+//            }
 
 
             OkHttpClient client = builder.build();
@@ -81,8 +80,8 @@ public class RetrofitManager {
         return dataInterface.listTvShows(tvId, API_KEY, page);
     }
 
-    public Observable<TvInfo> getTvInfo(String tvId) {
-        return dataInterface.getTvInfo(tvId, API_KEY, "credits");
+    public Observable<CombinedTvDetail> getTvInfo(String tvId) {
+        return dataInterface.getTvInfo(tvId, API_KEY, "credits,videos,images,similar,recommendations");
     }
 
     public Observable<Tv> getSimilarTvShows(String tvId) {
@@ -122,8 +121,8 @@ public class RetrofitManager {
         return dataInterface.listMoviesInfo(categories, page, API_KEY);
     }
 
-    public Observable<MovieDetail> getMoviesDetail(int id) {
-        return dataInterface.getMovieDetail(id, API_KEY, "videos,images,credits,reviews");
+    public Observable<CombinedMovieDetail> getMoviesDetail(int id) {
+        return dataInterface.getMovieDetail(id, API_KEY, "videos,images,credits,reviews,similar,recommendations");
     }
 
 

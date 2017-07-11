@@ -24,9 +24,9 @@ import varunbehl.showstime.pojo.Cast.Cast;
 
 public class TvCastAdapter extends RecyclerView.Adapter<TvCastAdapter.ViewHolder> {
 
+    private final Context mContext;
     private List<Cast> tvCastList;
     private LayoutInflater inflater;
-    private final Context mContext;
     private int tvId;
 
 
@@ -49,11 +49,11 @@ public class TvCastAdapter extends RecyclerView.Adapter<TvCastAdapter.ViewHolder
     }
 
     @Override
-    public void onBindViewHolder(final TvCastAdapter.ViewHolder holder,  int position) {
-        if (tvCastList.get(position).getName()!=null)
-        holder.tvMovieTitle.setText(tvCastList.get(position).getName());
+    public void onBindViewHolder(final TvCastAdapter.ViewHolder holder, int position) {
+        if (tvCastList.get(position).getName() != null)
+            holder.tvMovieTitle.setText(tvCastList.get(position).getName());
 
-        if (tvCastList.get(position).getProfilePath()!=null)
+        if (tvCastList.get(position).getProfilePath() != null)
             holder.draweeView.setImageURI(getImageUri(tvCastList.get(position).getProfilePath().toString()));
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {

@@ -7,7 +7,6 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v17.leanback.widget.HorizontalGridView;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,13 +17,14 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.firebase.crash.FirebaseCrash;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import rx.Observable;
@@ -38,8 +38,7 @@ import varunbehl.showstime.adapter.VideoAdapter;
 import varunbehl.showstime.eventbus.MessageEvent;
 import varunbehl.showstime.network.RetrofitManager;
 import varunbehl.showstime.pojo.Cast.Cast;
-import varunbehl.showstime.pojo.MovieDetail;
-import varunbehl.showstime.pojo.Picture.Picture_Detail;
+import varunbehl.showstime.pojo.CombinedMovieDetail;
 import varunbehl.showstime.pojo.Picture.Pictures;
 import varunbehl.showstime.pojo.Video.VideoResult;
 import varunbehl.showstime.util.Constants;
@@ -55,7 +54,7 @@ public class MovieDetailActivityFragment extends Fragment {
 
     private EventBus eventBus;
     private int is_fav;
-    private int tvId;
+    private int movieId;
     private RetrofitManager retrofitManager;
     private TextView releaseDate;
     private TextView vote;
@@ -83,10 +82,11 @@ public class MovieDetailActivityFragment extends Fragment {
     private CardView tvSeasonsCardView;
     private CardView similarTvShowsCardView;
     private CardView recommendedTvShowsCardView;
-    private ProgressBar progress_fragment;
+    private ProgressBar progressBar;
     private View cordinatorLayout;
     private String episodeDate;
-    private MovieDetail movieDetail;
+    private CombinedMovieDetail combinedMovieDetail;
+    private LinearLayout detailLayout;
 
 
     public MovieDetailActivityFragment() {
@@ -116,7 +116,7 @@ public class MovieDetailActivityFragment extends Fragment {
 
         retrofitManager = RetrofitManager.getInstance();
         collapsingToolbar = (CollapsingToolbarLayout) getActivity().findViewById(R.id.toolbar_layout);
-
+        detailLayout = (LinearLayout) rootView.findViewById(R.id.detail_layout);
         CardView infoCardView = (CardView) rootView.findViewById(R.id.info_card_view);
         TextView title = (TextView) rootView.findViewById(R.id.title);
         releaseDate = (TextView) rootView.findViewById(R.id.release_date);
@@ -126,17 +126,13 @@ public class MovieDetailActivityFragment extends Fragment {
         draweeView = (SimpleDraweeView) getActivity().findViewById(R.id.movie_poster);
         fav_button.setBackground(getContext().getResources().getDrawable(R.drawable.unfav));
         fav_button.setVisibility(View.GONE);
-        progress_fragment = (ProgressBar) rootView.findViewById(R.id.progress_fragment);
+        progressBar = (ProgressBar) rootView.findViewById(R.id.progress_fragment);
         cordinatorLayout = getActivity().findViewById(R.id.app_bar);
 
         prefs = getActivity().getSharedPreferences(
                 Constants.PREFERENCE_NAME, Context.MODE_PRIVATE);
 
         LinearLayout nextEpisodeCardView = (LinearLayout) rootView.findViewById(R.id.nextAirLayout);
-        SimpleDraweeView nextEpisodeImage = (SimpleDraweeView) nextEpisodeCardView.findViewById(R.id.img_episode_poster);
-        TextView nextEpisodeEpisodeName = (TextView) nextEpisodeCardView.findViewById(R.id.episode_name);
-        TextView nextEpisodeEpisodeDate = (TextView) nextEpisodeCardView.findViewById(R.id.episode_date);
-        TextView nextEpisodeEpisodeOverview = (TextView) nextEpisodeCardView.findViewById(R.id.episode_desc);
         nextEpisodeCardView.setVisibility(View.GONE);
 
         CardView videosCardView = (CardView) rootView.findViewById(R.id.videosCard);
@@ -146,8 +142,6 @@ public class MovieDetailActivityFragment extends Fragment {
         videosProgressBar.setVisibility(View.VISIBLE);
 
         tvSeasonsCardView = (CardView) rootView.findViewById(R.id.tvSeasonsCard);
-        HorizontalGridView tvSeasonsGridView = (HorizontalGridView) tvSeasonsCardView.findViewById(R.id.horizontal_grid_view);
-        TextView tvSeasonsHeading = (TextView) tvSeasonsCardView.findViewById(R.id.heading);
         ProgressBar tvSeasonsProgressBar = (ProgressBar) tvSeasonsCardView.findViewById(R.id.progress_main);
         tvSeasonsProgressBar.setVisibility(View.VISIBLE);
         tvSeasonsCardView.setVisibility(View.GONE);
@@ -174,36 +168,45 @@ public class MovieDetailActivityFragment extends Fragment {
         Bundle arguments = getArguments();
         try {
             if (arguments != null) {
-                tvId = arguments.getParcelable(MovieDetailActivityFragment.DETAIL_TV);
+                movieId = arguments.getParcelable(MovieDetailActivityFragment.DETAIL_TV);
             } else {
-                tvId = (int) getActivity().getIntent().getExtras().get(MovieDetailActivityFragment.DETAIL_TV);
+                movieId = (int) getActivity().getIntent().getExtras().get(MovieDetailActivityFragment.DETAIL_TV);
             }
-//            collapsingToolbar.setTitle(picture.getTitle());
         } catch (Exception e) {
             e.printStackTrace();
             FirebaseCrash.report(e);
 
         }
 
-
+        showProgressBar();
         new LoadDetailPageThread(1).start();
 
         return rootView;
     }
 
+    private void hideProgressBar() {
+        detailLayout.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.GONE);
+    }
+
+    private void showProgressBar() {
+        detailLayout.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+    }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MessageEvent event) {
+        hideProgressBar();
         if (event.getRequest() == 1) {
             cordinatorLayout.setVisibility(View.VISIBLE);
-            progress_fragment.setVisibility(View.GONE);
+            progressBar.setVisibility(View.GONE);
             threadAlreadyRunning = false;
-            collapsingToolbar.setTitle(movieDetail.getTitle());
-            draweeView.setImageURI(getString(R.string.image_path) + movieDetail.getBackdropPath());
-            releaseDate.setText(getString(R.string.release_data) + DateTimeHelper.parseDate(movieDetail.getReleaseDate()) + "");
-            vote.setText(getString(R.string.rating) + movieDetail.getVoteAverage() + "/10");
-            plotSynopsis.setText(movieDetail.getOverview());
-            is_fav = (prefs.getInt("is_fav" + "_" + tvId, 0));
+            collapsingToolbar.setTitle(combinedMovieDetail.getTitle());
+            draweeView.setImageURI(getString(R.string.image_path) + combinedMovieDetail.getBackdropPath());
+            releaseDate.setText(getString(R.string.release_data) + DateTimeHelper.parseDate(combinedMovieDetail.getReleaseDate()) + "");
+            vote.setText(getString(R.string.rating) + combinedMovieDetail.getVoteAverage() + "/10");
+            plotSynopsis.setText(combinedMovieDetail.getOverview());
+            is_fav = (prefs.getInt("is_fav" + "_" + movieId, 0));
             if (is_fav == 1) {
                 fav_button.setBackground(getContext().getResources().getDrawable(R.drawable.fav));
             } else {
@@ -218,22 +221,22 @@ public class MovieDetailActivityFragment extends Fragment {
 //                        deleteFromDb();
                         is_fav = 0;
                         SharedPreferences.Editor editor = prefs.edit();
-                        editor.putInt("is_fav" + "_" + tvId, 0);
+                        editor.putInt("is_fav" + "_" + movieId, 0);
                         editor.apply();
                     } else {
                         fav_button.setBackground(getContext().getResources().getDrawable(R.drawable.fav));
-//                        ShowsTimeDBHelper.addintoDB(tvInformation, getContext(), tvId);
+//                        ShowsTimeDBHelper.addintoDB(tvInformation, getContext(), movieId);
                         is_fav = 1;
                         SharedPreferences.Editor editor = prefs.edit();
-                        editor.putInt("is_fav" + "_" + tvId, 1);
+                        editor.putInt("is_fav" + "_" + movieId, 1);
                         editor.apply();
                     }
                 }
             });
-            List<VideoResult> movieDetailVideos = movieDetail.getVideos().getVideoResults();
+            List<VideoResult> CombinedMovieDetailVideos = combinedMovieDetail.getVideos().getResults();
 
-            if (getActivity() != null || (movieDetailVideos != null ? movieDetailVideos.size() : 0) < 1) {
-                VideoAdapter videoAdapter = new VideoAdapter(getActivity(), movieDetailVideos);
+            if (getActivity() != null || (CombinedMovieDetailVideos != null ? CombinedMovieDetailVideos.size() : 0) < 1) {
+                VideoAdapter videoAdapter = new VideoAdapter(getActivity(), CombinedMovieDetailVideos);
                 videosHzGridView.setAdapter(videoAdapter);
                 videoAdapter.notifyDataSetChanged();
                 videosHzGridView.setVisibility(View.VISIBLE);
@@ -243,10 +246,10 @@ public class MovieDetailActivityFragment extends Fragment {
             } else {
                 tvSeasonsCardView.setVisibility(View.GONE);
             }
-            List<Cast> movieCast = movieDetail.getCredits().getCast();
+            List<Cast> movieCast = combinedMovieDetail.getCredits().getCast();
 
-            if (getActivity() != null || movieDetail.getCredits().getCast().size() < 1) {
-                TvCastAdapter tvCastAdapter = new TvCastAdapter(getActivity(), movieCast, tvId);
+            if (getActivity() != null || combinedMovieDetail.getCredits().getCast().size() < 1) {
+                TvCastAdapter tvCastAdapter = new TvCastAdapter(getActivity(), movieCast, movieId);
                 tvCastGridView.setAdapter(tvCastAdapter);
                 tvCastAdapter.notifyDataSetChanged();
                 tvCastProgressBar.setVisibility(View.GONE);
@@ -275,22 +278,44 @@ public class MovieDetailActivityFragment extends Fragment {
         }
     }
 
+    public void loadSimilarRecommendations(CombinedMovieDetail combinedMovieDetail) {
+        similarMoviesList = combinedMovieDetail.getSimilar().getResults();
 
+        if (similarMoviesList.size() < 1) {
+            similarTvShowsCardView.setVisibility(View.GONE);
+        } else {
+            eventBus.post(new MessageEvent(2));
+        }
+        recommendedMoviesList = combinedMovieDetail.getRecommendations().getResults();
+        if (recommendedMoviesList.size() < 1) {
+            recommendedTvShowsCardView.setVisibility(View.GONE);
+        } else {
+            eventBus.post(new MessageEvent(3));
+        }
+
+    }
 
     private void fetchDataForTvInfo() {
-        Observable<MovieDetail> tvInfoObservable = retrofitManager.getMoviesDetail(tvId);
+        Observable<CombinedMovieDetail> tvInfoObservable = retrofitManager.getMoviesDetail(movieId);
         tvInfoObservable
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe(new Subscriber<MovieDetail>() {
+                .subscribe(new Subscriber<CombinedMovieDetail>() {
                                @Override
                                public void onCompleted() {
-                                   if (movieDetail != null) {
-                                       if (movieDetail.getOverview().equals("")) {
+                                   if (combinedMovieDetail != null) {
+                                       if (combinedMovieDetail.getOverview().equals("")) {
 //                                           tv.setVisibility(View.GONE);
                                        } else {
                                            eventBus.post(new MessageEvent(1));
                                        }
+
+                                       loadSimilarRecommendations(combinedMovieDetail);
+                                       String tvInformationJSONList = new Gson().toJson(combinedMovieDetail);
+                                       SharedPreferences.Editor editor = prefs.edit();
+                                       editor.putString("movieInformation_" + movieId, tvInformationJSONList);
+                                       editor.apply();
+
                                    }
                                }
 
@@ -301,74 +326,8 @@ public class MovieDetailActivityFragment extends Fragment {
                                }
 
                                @Override
-                               public void onNext(MovieDetail detail) {
-                                   movieDetail = detail;
-                               }
-                           }
-                );
-    }
-
-    private void fetchSimilarTvShows() {
-        Observable<Picture_Detail> similarTvShowsObservable = retrofitManager.getSimilarMovies(tvId);
-        similarTvShowsObservable
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe(new Subscriber<Picture_Detail>() {
-                               @Override
-                               public void onCompleted() {
-                                   if (similarMoviesList != null) {
-                                       if (similarMoviesList.size() < 1) {
-                                           similarTvShowsCardView.setVisibility(View.GONE);
-                                       } else {
-                                           eventBus.post(new MessageEvent(2));
-                                       }
-                                   }
-                               }
-
-                               @Override
-                               public void onError(Throwable e) {
-                                   e.printStackTrace();
-                                   FirebaseCrash.report(e);
-
-                                   Log.v("Exception", "NullPointerException");
-                               }
-
-                               @Override
-                               public void onNext(Picture_Detail picture_detail) {
-                                   similarMoviesList = picture_detail.getResults();
-                               }
-                           }
-                );
-    }
-
-    private void fetchRecommendedTvShows() {
-        Observable<Picture_Detail> recommendedTvShowsObservable = retrofitManager.getRecommendedMovies(tvId);
-        recommendedTvShowsObservable
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe(new Subscriber<Picture_Detail>() {
-                               @Override
-                               public void onCompleted() {
-                                   if (recommendedMoviesList != null) {
-                                       if (recommendedMoviesList.size() < 1) {
-                                           recommendedTvShowsCardView.setVisibility(View.GONE);
-                                       } else {
-                                           eventBus.post(new MessageEvent(3));
-                                       }
-                                   }
-                               }
-
-                               @Override
-                               public void onError(Throwable e) {
-                                   e.printStackTrace();
-                                   FirebaseCrash.report(e);
-
-                                   Log.v("Exception", "NullPointerException");
-                               }
-
-                               @Override
-                               public void onNext(Picture_Detail pictures) {
-                                   recommendedMoviesList = pictures.getResults();
+                               public void onNext(CombinedMovieDetail detail) {
+                                   combinedMovieDetail = detail;
                                }
                            }
                 );
@@ -388,83 +347,27 @@ public class MovieDetailActivityFragment extends Fragment {
             if (threadAlreadyRunning) {
                 return;
             } else {
-
                 threadAlreadyRunning = true;
                 try {
-                    fetchDataForTvInfo();
-                    fetchSimilarTvShows();
-                    fetchRecommendedTvShows();
+                    String tvInformationJSONList = prefs.getString("movieInformation_" + movieId, "");
+                    if (prefs.contains("movieInformation_" + movieId)) {
+                        combinedMovieDetail =
+                                new Gson().fromJson(tvInformationJSONList, new TypeToken<CombinedMovieDetail>() {
+                                }.getType());
+                        if (combinedMovieDetail != null) {
+                            eventBus.post(new MessageEvent(1));
+                            loadSimilarRecommendations(combinedMovieDetail);
+                        } else {
+                            fetchDataForTvInfo();
+                        }
+                    } else {
+                        fetchDataForTvInfo();
+
+                    }
                 } catch (Exception e) {
                     FirebaseCrash.report(e);
                     e.printStackTrace();
                 }
-
-//                if (tvInformation == null) {
-//                    String tvInformationJSONList = prefs.getString("tvInformation_" + tvId, "");
-//                    if (!tvInformationJSONList.equals("null")) {
-//                        tvInformation =
-//                                new Gson().fromJson(tvInformationJSONList, new TypeToken<TvInfo>() {
-//                                }.getType());
-//                        eventBus.post(new MessageEvent(1));
-//                    } else {
-//                        fetchDataForTvInfo();
-//                        tvInformationJSONList = new Gson().toJson(tvInformation);
-//                        SharedPreferences.Editor editor = prefs.edit();
-//                        editor.putString("tvInformation_" + tvId, tvInformationJSONList);
-//                        editor.apply();
-//                    }
-//                }
-//
-//                if (recommendedMoviesList.isEmpty()) {
-//                    String recommendedTvListJSONList = prefs.getString("recommendedTvList_" + tvId, "");
-//                    if (!recommendedTvListJSONList.equals("")) {
-//                        recommendedMoviesList =
-//                                new Gson().fromJson(recommendedTvListJSONList, new TypeToken<List<Tv.TvShow>>() {
-//                                }.getType());
-//                        eventBus.post(new MessageEvent(3));
-//                    } else {
-//                        fetchRecommendedTvShows();
-//                        recommendedTvListJSONList = new Gson().toJson(recommendedMoviesList);
-//                        SharedPreferences.Editor editor = prefs.edit();
-//                        editor.putString("recommendedTvList_" + tvId, recommendedTvListJSONList);
-//                        editor.apply();
-//                    }
-//                }
-//
-//
-//                if (similarMoviesList.isEmpty()) {
-//
-//                    String similarTvListJSONList = prefs.getString("similarTvList_" + tvId, "");
-//                    if (!similarTvListJSONList.equals("")) {
-//                        similarMoviesList =
-//                                new Gson().fromJson(similarTvListJSONList, new TypeToken<List<Tv.TvShow>>() {
-//                                }.getType());
-//                        eventBus.post(new MessageEvent(2));
-//                    } else {
-//                        fetchSimilarTvShows();
-//                        similarTvListJSONList = new Gson().toJson(similarMoviesList);
-//                        SharedPreferences.Editor editor = prefs.edit();
-//                        editor.putString("similarTvList_" + tvId, similarTvListJSONList);
-//                        editor.apply();
-//                    }
-//                }
-//
-//
-//                if (videos != null) {
-//                    String vidoesJSONList = prefs.getString("videos_" + tvId, "");
-//                    if (!vidoesJSONList.isEmpty()) {
-//                        videos =
-//                                new Gson().fromJson(vidoesJSONList, new TypeToken<Videos>() {
-//                                }.getType());
-//                        eventBus.post(new MessageEvent(4));
-//                    } else {
-//                        fetchVideos();
-//                        vidoesJSONList = new Gson().toJson(videos);
-//                        SharedPreferences.Editor editor = prefs.edit();
-//                        editor.putString("videos_" + tvId, vidoesJSONList);
-//                        editor.apply();
-//                    }
-//                }
             }
         }
     }

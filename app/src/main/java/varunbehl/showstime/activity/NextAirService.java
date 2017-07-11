@@ -30,7 +30,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import varunbehl.showstime.R;
 import varunbehl.showstime.network.RetrofitManager;
-import varunbehl.showstime.pojo.TvDetails.TvInfo;
 import varunbehl.showstime.pojo.TvSeason.TvSeasonInfo;
 import varunbehl.showstime.util.Constants;
 import varunbehl.showstime.util.DateTimeHelper;
@@ -41,14 +40,14 @@ import varunbehl.showstime.util.DateTimeHelper;
 
 public class NextAirService extends IntentService {
     private final RetrofitManager retrofitManager;
-    private int tvId;
     private final Context context;
-    private TvInfo tvInformation;
+    private int tvId;
     private Integer lastSeasonNumber;
     private TvSeasonInfo tvSeasonInfo;
     private List<TvSeasonInfo.Episode> episodeList;
     private String json;
     private SharedPreferences prefs;
+    private String tvSeriesName;
 
 
     public NextAirService() {
@@ -62,45 +61,17 @@ public class NextAirService extends IntentService {
     protected void onHandleIntent(@Nullable Intent intent) {
         try {
             tvId = intent != null ? intent.getIntExtra("tvId", 0) : 0;
-            fetchDataForTvInfo();
+            lastSeasonNumber = intent != null ? intent.getIntExtra("lastSeasonNumber", 0) : 0;
+            tvSeriesName = intent != null ? intent.getStringExtra("TvSeriesName") : "";
+            if (tvId != 0 && lastSeasonNumber != 0) {
+                fetchDataForSeasonInfo();
+            }
         } catch (Exception e) {
             e.printStackTrace();
             FirebaseCrash.report(e);
 
         }
 
-    }
-
-    private void fetchDataForTvInfo() {
-        Observable<TvInfo> tvInfoObservable = retrofitManager.getTvInfo(tvId + "");
-        tvInfoObservable
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe(new Subscriber<TvInfo>() {
-                               @Override
-                               public void onCompleted() {
-                                   if (tvInformation != null) {
-                                       if (tvInformation.getStatus().equals("Returning Series")) {
-                                           lastSeasonNumber = tvInformation.getNumberOfSeasons();
-                                       }
-                                       fetchDataForSeasonInfo();
-                                   }
-                               }
-
-                               @Override
-                               public void onError(Throwable e) {
-                                   e.printStackTrace();
-                                   FirebaseCrash.report(e);
-
-                                   Log.v("Exception", "NullPointerException");
-                               }
-
-                               @Override
-                               public void onNext(TvInfo tvInfo) {
-                                   tvInformation = tvInfo;
-                               }
-                           }
-                );
     }
 
     private void fetchDataForSeasonInfo() {
@@ -187,7 +158,7 @@ public class NextAirService extends IntentService {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
         mBuilder.setContentIntent(resultPendingIntent);
         mBuilder.setAutoCancel(true);
-        mBuilder.setContentTitle("Next episode of " + tvInformation.getName() + " arrives on ");
+        mBuilder.setContentTitle("Next episode of " + tvSeriesName + " arrives on ");
         mBuilder.setContentText(DateTimeHelper.parseDate(episode.getAirDate()));
         mBuilder.setColor(Color.parseColor("#3DA0E9"));
         mBuilder.setSmallIcon(R.drawable.fav);

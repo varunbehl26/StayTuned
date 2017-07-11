@@ -22,12 +22,12 @@ import java.util.List;
 import varunbehl.showstime.R;
 import varunbehl.showstime.adapter.TvInfoCursorAdapter;
 import varunbehl.showstime.data.ShowsTimeContract;
-import varunbehl.showstime.pojo.TvDetails.TvInfo;
+import varunbehl.showstime.pojo.TvDetails.CombinedTvDetail;
 
 public class FavouriteActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private TvInfoCursorAdapter tvInfoCursorAdapter;
-    private List<TvInfo> tvInfoList = new ArrayList<>();
+    private List<CombinedTvDetail> tvInfoList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +71,6 @@ public class FavouriteActivity extends AppCompatActivity implements LoaderManage
 
         SharedPreferences prefs = this.getSharedPreferences(
                 "varunbehl.showstime", Context.MODE_PRIVATE);
-
 
 
         if (mCursor.getCount() < 1) {

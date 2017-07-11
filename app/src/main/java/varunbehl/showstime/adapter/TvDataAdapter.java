@@ -22,22 +22,22 @@ import java.util.List;
 import varunbehl.showstime.R;
 import varunbehl.showstime.activity.DetailActivity;
 import varunbehl.showstime.activity.TvDetailActivityFragment;
-import varunbehl.showstime.pojo.TvDetails.TvInfo;
+import varunbehl.showstime.pojo.TvDetails.CombinedTvDetail;
 
 public class TvDataAdapter extends RecyclerView.Adapter<TvDataAdapter.ViewHolder> {
 
     private final int value;
-    private final List<TvInfo> tvShows ;
+    private final List<CombinedTvDetail.Result_> tvShows;
     private final LayoutInflater inflater;
     private final Context mContext;
     private final FirebaseAnalytics mFirebaseAnalytics;
 
-    public TvDataAdapter(Context context, List<TvInfo> objects,int value) {
+    public TvDataAdapter(Context context, List<CombinedTvDetail.Result_> objects, int value) {
         this.mContext = context;
         this.tvShows = objects;
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(context);
-        this.value=value;
+        this.value = value;
     }
 
 
@@ -53,7 +53,7 @@ public class TvDataAdapter extends RecyclerView.Adapter<TvDataAdapter.ViewHolder
     }
 
     @Override
-    public void onBindViewHolder(final TvDataAdapter.ViewHolder holder,  int position) {
+    public void onBindViewHolder(final TvDataAdapter.ViewHolder holder, int position) {
         holder.tvMovieTitle.setText(tvShows.get(position).getName());
         holder.draweeView.setImageURI(getImageUri(tvShows.get(position).getPosterPath()));
 
@@ -62,7 +62,7 @@ public class TvDataAdapter extends RecyclerView.Adapter<TvDataAdapter.ViewHolder
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, DetailActivity.class)
                         .putExtra(TvDetailActivityFragment.DETAIL_TV, tvShows.get(holder.getAdapterPosition()).getId())
-                        .putExtra("ListToOpen",2);
+                        .putExtra("ListToOpen", 2);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 Bundle bundle = new Bundle();
                 bundle.putString(FirebaseAnalytics.Param.ITEM_ID, tvShows.get(holder.getAdapterPosition()).getId().toString());
@@ -81,9 +81,9 @@ public class TvDataAdapter extends RecyclerView.Adapter<TvDataAdapter.ViewHolder
 
     @Override
     public int getItemCount() {
-        if (tvShows!=null)
-        return tvShows.size();
-        else{
+        if (tvShows != null)
+            return tvShows.size();
+        else {
             return 0;
         }
     }

@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.GridView;
+import android.widget.ProgressBar;
 
 import com.google.firebase.crash.FirebaseCrash;
 
@@ -30,12 +31,12 @@ import varunbehl.showstime.network.RetrofitManager;
 import varunbehl.showstime.pojo.Picture.Picture_Detail;
 import varunbehl.showstime.pojo.Picture.Pictures;
 import varunbehl.showstime.pojo.Tv.Tv;
-import varunbehl.showstime.pojo.TvDetails.TvInfo;
+import varunbehl.showstime.pojo.TvDetails.CombinedTvDetail;
 
 public class ViewAllActivity extends AppCompatActivity {
 
     private boolean threadRunning = false;
-    private ArrayList<TvInfo> tvInfoList;
+    private ArrayList<CombinedTvDetail.Result_> tvInfoList;
     private ArrayList<Pictures> moviesList;
     private EventBus eventBus;
     private RetrofitManager retrofitManager;
@@ -47,6 +48,7 @@ public class ViewAllActivity extends AppCompatActivity {
     private String listType;
     private int categoryType;
     private Parcelable state;
+    private ProgressBar progressbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +61,8 @@ public class ViewAllActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         tvInfoList = new ArrayList<>();
         moviesList = new ArrayList<>();
-
+        progressbar = (ProgressBar) findViewById(R.id.progress_fragment);
+        showProgressBar();
         Intent intent = getIntent();
         listType = intent.getStringExtra("listType");
         categoryType = intent.getIntExtra("categoryType", 1);
@@ -93,6 +96,16 @@ public class ViewAllActivity extends AppCompatActivity {
         new ViewAllThread(categoryType).start();
         drawnPrevious = true;
 
+    }
+
+    private void hideProgressBar() {
+        myGrid.setVisibility(View.VISIBLE);
+        progressbar.setVisibility(View.GONE);
+    }
+
+    private void showProgressBar() {
+        myGrid.setVisibility(View.GONE);
+        progressbar.setVisibility(View.VISIBLE);
     }
 
 
@@ -182,7 +195,7 @@ public class ViewAllActivity extends AppCompatActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MessageEvent event) {
-        myGrid.setVisibility(View.VISIBLE);
+        hideProgressBar();
         if (event.getRequest() == 1) {
             tvInfoAdapter.notifyDataSetChanged();
         } else if (event.getRequest() == 2) {

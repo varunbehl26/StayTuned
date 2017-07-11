@@ -19,13 +19,13 @@ import java.util.List;
 
 import varunbehl.showstime.R;
 import varunbehl.showstime.activity.TvSeasonDetail;
-import varunbehl.showstime.pojo.TvDetails.TvInfo;
+import varunbehl.showstime.pojo.TvDetails.CombinedTvDetail;
 
 public class TvSeasonsAdapter extends RecyclerView.Adapter<TvSeasonsAdapter.ViewHolder> {
 
-    private List<TvInfo.Season> tvSeasonList;
-    private LayoutInflater inflater;
     private final Context mContext;
+    private List<CombinedTvDetail.Season> tvSeasonList;
+    private LayoutInflater inflater;
     private int tvId;
 
 
@@ -33,7 +33,7 @@ public class TvSeasonsAdapter extends RecyclerView.Adapter<TvSeasonsAdapter.View
         this.mContext = mContext;
     }
 
-    public TvSeasonsAdapter(Context context, List<TvInfo.Season> objects, int id) {
+    public TvSeasonsAdapter(Context context, List<CombinedTvDetail.Season> objects, int id) {
         this.mContext = context;
         this.tvSeasonList = objects;
         this.tvId = id;
@@ -48,7 +48,7 @@ public class TvSeasonsAdapter extends RecyclerView.Adapter<TvSeasonsAdapter.View
     }
 
     @Override
-    public void onBindViewHolder(final TvSeasonsAdapter.ViewHolder holder,  int position) {
+    public void onBindViewHolder(final TvSeasonsAdapter.ViewHolder holder, int position) {
 
         holder.tvMovieTitle.setText(mContext.getString(R.string.season) + tvSeasonList.get(position).getSeasonNumber().toString());
         holder.draweeView.setImageURI(getImageUri(tvSeasonList.get(position).getPosterPath()));

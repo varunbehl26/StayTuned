@@ -3,6 +3,7 @@ package varunbehl.showstime.activity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.ProgressBar;
@@ -92,6 +93,17 @@ public class SearchResultsActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                super.onBackPressed();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
     private class SearchThread extends Thread {
 
         @Override
@@ -132,5 +144,4 @@ public class SearchResultsActivity extends AppCompatActivity {
             }
         }
     }
-
 }

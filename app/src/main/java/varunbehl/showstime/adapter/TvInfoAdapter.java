@@ -22,17 +22,17 @@ import java.util.List;
 import varunbehl.showstime.R;
 import varunbehl.showstime.activity.DetailActivity;
 import varunbehl.showstime.activity.TvDetailActivityFragment;
-import varunbehl.showstime.pojo.TvDetails.TvInfo;
+import varunbehl.showstime.pojo.TvDetails.CombinedTvDetail;
 
-public class TvInfoAdapter extends ArrayAdapter<TvInfo> {
+public class TvInfoAdapter extends ArrayAdapter<CombinedTvDetail.Result_> {
 
-    private final List<TvInfo> tvInfoList;
+    private final List<CombinedTvDetail.Result_> tvInfoList;
     private final LayoutInflater inflater;
     private final Context mContext;
     private final FirebaseAnalytics mFirebaseAnalytics;
 
 
-    public TvInfoAdapter(Context context, List<TvInfo> objects) {
+    public TvInfoAdapter(Context context, List<CombinedTvDetail.Result_> objects) {
         super(context, 0, objects);
         this.mContext = context;
         this.tvInfoList = objects;
@@ -49,7 +49,7 @@ public class TvInfoAdapter extends ArrayAdapter<TvInfo> {
     }
 
     @Override
-    public TvInfo getItem(int position) {
+    public CombinedTvDetail.Result_ getItem(int position) {
         return tvInfoList.get(position);
     }
 
@@ -61,7 +61,7 @@ public class TvInfoAdapter extends ArrayAdapter<TvInfo> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        final TvInfo tvInfo = tvInfoList.get(position);
+        final CombinedTvDetail.Result_ tvInfo = tvInfoList.get(position);
 
         ViewHolder holder;
 

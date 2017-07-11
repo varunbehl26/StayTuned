@@ -10,7 +10,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 
-import varunbehl.showstime.pojo.TvDetails.TvInfo;
+import varunbehl.showstime.pojo.TvDetails.CombinedTvDetail;
 
 public class Tv {
 
@@ -19,7 +19,7 @@ public class Tv {
     private Integer page;
     @SerializedName("results")
     @Expose
-    private ArrayList<TvInfo> tvShows = null;
+    private ArrayList<CombinedTvDetail.Result_> tvShows = null;
     @SerializedName("total_results")
     @Expose
     private Integer totalResults;
@@ -35,11 +35,11 @@ public class Tv {
         this.page = page;
     }
 
-    public ArrayList<TvInfo> getTvShows() {
+    public ArrayList<CombinedTvDetail.Result_> getTvShows() {
         return tvShows;
     }
 
-    public void setTvShows(ArrayList<TvInfo> tvShows) {
+    public void setTvShows(ArrayList<CombinedTvDetail.Result_> tvShows) {
         this.tvShows = tvShows;
     }
 

@@ -9,7 +9,7 @@ import android.util.Log;
 
 import java.util.Date;
 
-import varunbehl.showstime.pojo.TvDetails.TvInfo;
+import varunbehl.showstime.pojo.TvDetails.CombinedTvDetail;
 
 /**
  * Created by varunbehl on 18/03/17.
@@ -25,7 +25,7 @@ public class ShowsTimeDBHelper extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
-    public static void addintoDB(TvInfo tvInformation, Context context, int tvId) {
+    public static void addintoDB(CombinedTvDetail tvInformation, Context context, int tvId) {
 
         ShowsTimeDBHelper dbHelper = new ShowsTimeDBHelper(context);
         SQLiteDatabase db = dbHelper.getWritableDatabase();

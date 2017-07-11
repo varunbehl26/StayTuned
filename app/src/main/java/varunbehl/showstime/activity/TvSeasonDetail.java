@@ -4,15 +4,11 @@ import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.firebase.crash.FirebaseCrash;
 
 import org.greenrobot.eventbus.EventBus;
@@ -40,14 +36,11 @@ public class TvSeasonDetail extends AppCompatActivity {
     private TvSeasonInfo tvSeasonInfo = new TvSeasonInfo();
     private int tvId;
     private RetrofitManager retrofitManager;
-    TextView title, releaseDate, vote, plotSynopsis;
-    Button fav_button;
-    SimpleDraweeView draweeView;
     private boolean threadAlreadyRunning;
     private GridView tvSeasonsGridView;
     private ProgressBar tvSeasonsProgressBar;
-    private TextView tvSeasonsHeading;
     private int seasonId;
+    private ProgressBar progressbar;
 
     @Override
     public void onStart() {
@@ -63,14 +56,27 @@ public class TvSeasonDetail extends AppCompatActivity {
         eventBus.unregister(this);
     }
 
+    private void hideProgressBar() {
+        tvSeasonsGridView.setVisibility(View.VISIBLE);
+        progressbar.setVisibility(View.GONE);
+    }
+
+    private void showProgressBar() {
+        tvSeasonsGridView.setVisibility(View.GONE);
+        progressbar.setVisibility(View.VISIBLE);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tv_season_info);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("Seasons:");
+        tvId = (int) getIntent().getExtras().get(TV_ID);
+        seasonId = (int) getIntent().getExtras().get(SEASON_ID);
+        toolbar.setTitle("Season:" + seasonId);
         setSupportActionBar(toolbar);
+        progressbar = (ProgressBar) findViewById(R.id.progress_fragment);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
@@ -80,18 +86,9 @@ public class TvSeasonDetail extends AppCompatActivity {
         CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsingToolbar);
 
         tvSeasonsGridView = (GridView) findViewById(R.id.list_view);
-        tvSeasonsHeading = (TextView) findViewById(R.id.heading);
         tvSeasonsProgressBar = (ProgressBar) findViewById(R.id.progress_main);
         tvSeasonsProgressBar.setVisibility(View.VISIBLE);
-
-//        ViewCompat.setNestedScrollingEnabled(tvSeasonsGridView, true);
-
-
-        tvId = (int) getIntent().getExtras().get(TV_ID);
-        seasonId = (int) getIntent().getExtras().get(SEASON_ID);
-
-//            collapsingToolbar.setTitle(picture.getTitle());
-
+        showProgressBar();
         new LoadSeasonInfoThread(1).start();
     }
 
@@ -109,13 +106,13 @@ public class TvSeasonDetail extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MessageEvent event) {
         if (event.getRequest() == 1) {
+            hideProgressBar();
             threadAlreadyRunning = false;
             TvSeasonsEpisodeAdapter tvSeasonsEpisodeAdapter = new TvSeasonsEpisodeAdapter(this, tvSeasonInfo.getEpisodes(), tvId);
             tvSeasonsGridView.setAdapter(tvSeasonsEpisodeAdapter);
             tvSeasonsEpisodeAdapter.notifyDataSetChanged();
             tvSeasonsGridView.setVisibility(View.VISIBLE);
             tvSeasonsProgressBar.setVisibility(View.GONE);
-            tvSeasonsHeading.setText(R.string.episode_list);
         }
     }
 

@@ -20,15 +20,15 @@ import varunbehl.showstime.R;
 import varunbehl.showstime.activity.MainActivity;
 import varunbehl.showstime.data.ShowsTimeContract;
 import varunbehl.showstime.data.ShowsTimeDBHelper;
-import varunbehl.showstime.pojo.TvDetails.TvInfo;
+import varunbehl.showstime.pojo.TvDetails.CombinedTvDetail;
 
 /**
  * Created by varunbehl on 02/04/17.
  */
 class TvWidgetFactory implements RemoteViewsService.RemoteViewsFactory {
-    private Cursor cursor;
     private final Context context;
-    private final List<TvInfo> tvInfoList;
+    private final List<CombinedTvDetail> tvInfoList;
+    private Cursor cursor;
 
     public TvWidgetFactory(Context applicationContext, Intent intent) {
         context = applicationContext;
@@ -51,7 +51,7 @@ class TvWidgetFactory implements RemoteViewsService.RemoteViewsFactory {
         cursor = new ShowsTimeDBHelper(context).getReadableDatabase().rawQuery("Select * from " + ShowsTimeContract.StayTunedEntry.TABLE_NAME, null);
         if (cursor.moveToFirst()) {
             do {
-                TvInfo tvInfo = new TvInfo();
+                CombinedTvDetail tvInfo = new CombinedTvDetail();
                 tvInfo.setId(Integer.parseInt(getDataFromCursor(cursor, ShowsTimeContract.StayTunedEntry.TV_ID)));
                 tvInfo.setBackdropPath(getDataFromCursor(cursor, ShowsTimeContract.StayTunedEntry.IMAGE));
                 tvInfo.setName(getDataFromCursor(cursor, ShowsTimeContract.StayTunedEntry.NAME));
@@ -77,7 +77,7 @@ class TvWidgetFactory implements RemoteViewsService.RemoteViewsFactory {
     @Override
     public RemoteViews getViewAt(int position) {
         final RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.widget_movie_layout);
-        final TvInfo tvInfo = tvInfoList.get(position);
+        final CombinedTvDetail tvInfo = tvInfoList.get(position);
         rv.setTextViewText(R.id.tv_movie_title, tvInfo.getName());
 
         Intent intent1 = new Intent(context, MainActivity.class);

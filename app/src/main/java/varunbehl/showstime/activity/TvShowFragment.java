@@ -12,7 +12,6 @@ import android.support.v17.leanback.widget.HorizontalGridView;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +20,6 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
@@ -54,7 +52,7 @@ import varunbehl.showstime.data.ShowsTimeDBHelper;
 import varunbehl.showstime.eventbus.MessageEvent;
 import varunbehl.showstime.network.RetrofitManager;
 import varunbehl.showstime.pojo.Tv.Tv;
-import varunbehl.showstime.pojo.TvDetails.TvInfo;
+import varunbehl.showstime.pojo.TvDetails.CombinedTvDetail;
 import varunbehl.showstime.util.Constants;
 import varunbehl.showstime.util.DateTimeHelper;
 
@@ -65,9 +63,9 @@ public class TvShowFragment extends Fragment {
     private SharedPreferences.Editor editor;
     private boolean threadAlreadyRunning = false;
     private RetrofitManager retrofitManager;
-    private ArrayList<TvInfo> topRatedTvList = new ArrayList<>();
-    private ArrayList<TvInfo> popularTvList = new ArrayList<>();
-    private ArrayList<TvInfo> airingTodayList = new ArrayList<>();
+    private ArrayList<CombinedTvDetail.Result_> topRatedTvList = new ArrayList<>();
+    private ArrayList<CombinedTvDetail.Result_> popularTvList = new ArrayList<>();
+    private ArrayList<CombinedTvDetail.Result_> airingTodayList = new ArrayList<>();
     private HorizontalGridView popularTvShowsHzGridView, topRatedTvshowsHzGridView, todayAirTvShowsHzGridView;
     private ProgressBar popularTvShowsProgressBar, topRatedTvShowsProgressBar, todayAirTvShowsProgressBar;
     private SharedPreferences prefs;
@@ -76,14 +74,11 @@ public class TvShowFragment extends Fragment {
     private TextView todayAirTvTvShowHeading;
     private LinearLayout layout;
     private Context mContext;
-    private List<TvInfo> dataList = new ArrayList<>();
+    private List<CombinedTvDetail> dataList = new ArrayList<>();
     private CarouselView carousel_view;
-    private List<TvInfo> tvInfoList;
+    private List<CombinedTvDetail> tvInfoList;
     private AdView nativeView;
 
-    public static TvShowFragment newInstance() {
-        return new TvShowFragment();
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -177,52 +172,6 @@ public class TvShowFragment extends Fragment {
         eventBus.unregister(this);
     }
 
-    private void fetchListTypeDataFromServer(String listType, int eventType) {
-        Random rand = new Random();
-        int pageToQuery = rand.nextInt(5) + 1;
-
-        switch (eventType) {
-            case 2:
-                listType = "top_rated";
-                break;
-
-
-        }
-
-        Observable<Tv> topRatedObservable = retrofitManager.listTvShows(listType, pageToQuery);
-
-        topRatedObservable
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe(new Subscriber<Tv>() {
-                               @Override
-                               public void onCompleted() {
-                                   if (dataList != null) {
-                                       eventBus.post(new MessageEvent(2));
-                                   }
-                                   String topRatedTvJSONList = new Gson().toJson(topRatedTvList);
-                                   SharedPreferences.Editor editor = prefs.edit();
-                                   editor.putString("topRatedTvList", topRatedTvJSONList);
-                                   editor.apply();
-                               }
-
-                               @Override
-                               public void onError(Throwable e) {
-                                   e.printStackTrace();
-                                   FirebaseCrash.report(e);
-                                    topRatedTvshowsHzGridView.setVisibility(View.GONE);
-                                   Log.v("Exception", "NullPointerException");
-                               }
-
-                               @Override
-                               public void onNext(Tv tv) {
-                                   dataList = tv.getTvShows();
-                               }
-                           }
-                );
-
-
-    }
 
     private void fetchTopRatedDataFromServer() {
         Random rand = new Random();
@@ -248,7 +197,7 @@ public class TvShowFragment extends Fragment {
                                public void onError(Throwable e) {
                                    e.printStackTrace();
                                    FirebaseCrash.report(e);
-                                    topRatedTvshowsHzGridView.setVisibility(View.GONE);
+                                   topRatedTvshowsHzGridView.setVisibility(View.GONE);
                                    Log.v("Exception", "NullPointerException");
                                }
 
@@ -286,7 +235,7 @@ public class TvShowFragment extends Fragment {
                                public void onError(Throwable e) {
                                    e.printStackTrace();
                                    FirebaseCrash.report(e);
-                                    popularTvShowsHzGridView.setVisibility(View.GONE);
+                                   popularTvShowsHzGridView.setVisibility(View.GONE);
                                    Log.v("Exception", "NullPointerEx/ception");
                                }
 
@@ -321,7 +270,7 @@ public class TvShowFragment extends Fragment {
                                public void onError(Throwable e) {
                                    e.printStackTrace();
                                    FirebaseCrash.report(e);
-                                    todayAirTvShowsHzGridView.setVisibility(View.GONE);
+                                   todayAirTvShowsHzGridView.setVisibility(View.GONE);
                                    Log.v("Exception", "NullPointerException");
                                }
 
@@ -416,7 +365,7 @@ public class TvShowFragment extends Fragment {
 
         if (cursor.moveToFirst()) {
             do {
-                TvInfo tvInfo = new TvInfo();
+                CombinedTvDetail tvInfo = new CombinedTvDetail();
                 tvInfo.setId(Integer.parseInt(getDataFromCursor(cursor, ShowsTimeContract.StayTunedEntry.TV_ID)));
                 tvInfo.setBackdropPath(getDataFromCursor(cursor, ShowsTimeContract.StayTunedEntry.IMAGE));
                 tvInfo.setName(getDataFromCursor(cursor, ShowsTimeContract.StayTunedEntry.NAME));
@@ -533,7 +482,7 @@ public class TvShowFragment extends Fragment {
                     if (popularTvList.isEmpty()) {
                         String popularTvJSONList = prefs.getString("popularTvList", "");
                         popularTvList =
-                                new Gson().fromJson(popularTvJSONList, new TypeToken<List<TvInfo>>() {
+                                new Gson().fromJson(popularTvJSONList, new TypeToken<List<CombinedTvDetail.Result_>>() {
                                 }.getType());
                         eventBus.post(new MessageEvent(1));
 
@@ -542,7 +491,7 @@ public class TvShowFragment extends Fragment {
                     if (topRatedTvList.isEmpty()) {
                         String topRatedTvJSONList = prefs.getString("topRatedTvList", "");
                         topRatedTvList =
-                                new Gson().fromJson(topRatedTvJSONList, new TypeToken<List<TvInfo>>() {
+                                new Gson().fromJson(topRatedTvJSONList, new TypeToken<List<CombinedTvDetail.Result_>>() {
                                 }.getType());
                         eventBus.post(new MessageEvent(2));
 
@@ -551,7 +500,7 @@ public class TvShowFragment extends Fragment {
                         String airingTodayJSONList = prefs.getString("airingTodayList", "");
                         if (!airingTodayJSONList.isEmpty()) {
                             airingTodayList =
-                                    new Gson().fromJson(airingTodayJSONList, new TypeToken<List<TvInfo>>() {
+                                    new Gson().fromJson(airingTodayJSONList, new TypeToken<List<CombinedTvDetail.Result_>>() {
                                     }.getType());
                             eventBus.post(new MessageEvent(3));
                         }

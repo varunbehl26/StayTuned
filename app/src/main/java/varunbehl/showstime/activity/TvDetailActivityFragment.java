@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.firebase.crash.FirebaseCrash;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -45,10 +46,9 @@ import varunbehl.showstime.data.ShowsTimeContract;
 import varunbehl.showstime.data.ShowsTimeDBHelper;
 import varunbehl.showstime.eventbus.MessageEvent;
 import varunbehl.showstime.network.RetrofitManager;
-import varunbehl.showstime.pojo.Tv.Tv;
-import varunbehl.showstime.pojo.TvDetails.TvInfo;
+import varunbehl.showstime.pojo.TvDetails.CombinedTvDetail;
 import varunbehl.showstime.pojo.TvSeason.TvSeasonInfo;
-import varunbehl.showstime.pojo.Video.Videos;
+import varunbehl.showstime.pojo.Video.VideoResult;
 import varunbehl.showstime.util.Constants;
 import varunbehl.showstime.util.DateTimeHelper;
 
@@ -63,8 +63,8 @@ public class TvDetailActivityFragment extends Fragment {
     private EventBus eventBus;
     private TvSeasonInfo.Episode episode = null;
     private int is_fav;
-    private Videos videos;
-    private TvInfo tvInformation;
+    private List<VideoResult> videos;
+    private CombinedTvDetail tvInformation;
     private int tvId;
     private RetrofitManager retrofitManager;
     private TextView releaseDate;
@@ -75,8 +75,8 @@ public class TvDetailActivityFragment extends Fragment {
     private CollapsingToolbarLayout collapsingToolbar;
     private boolean threadAlreadyRunning;
     private HorizontalGridView videosHzGridView, recommendedTvShowsHzGridView, similarTvShowsHzGridView, tvSeasonsGridView, tvCastGridView;
-    private List<TvInfo> recommendedTvList = new ArrayList<>();
-    private List<TvInfo> similarTvList = new ArrayList<>();
+    private List<CombinedTvDetail.Result_> recommendedTvList = new ArrayList<>();
+    private List<CombinedTvDetail.Result_> similarTvList = new ArrayList<>();
     private ProgressBar similarTvShowsProgressBar, recommendedTvShowsProgressBar, videosProgressBar, tvSeasonsProgressBar, tvCastProgressBar;
     private TextView tvCastHeading, similarTvShowsHeading, recommendedTvShowsHeading, videosHeading, tvSeasonsHeading, nextEpisodeEpisodeName, nextEpisodeEpisodeDate, nextEpisodeEpisodeOverview;
     private SharedPreferences prefs;
@@ -87,7 +87,6 @@ public class TvDetailActivityFragment extends Fragment {
     private CardView recommendedTvShowsCardView;
     private ProgressBar progress_fragment;
     private View cordinatorLayout;
-    private String episodeDate;
     private LinearLayout nextEpisodeCardView;
 
     public TvDetailActivityFragment() {
@@ -177,7 +176,6 @@ public class TvDetailActivityFragment extends Fragment {
             } else {
                 tvId = (int) getActivity().getIntent().getExtras().get(TvDetailActivityFragment.DETAIL_TV);
             }
-//            collapsingToolbar.setTitle(picture.getTitle());
         } catch (Exception e) {
             e.printStackTrace();
             FirebaseCrash.report(e);
@@ -229,11 +227,10 @@ public class TvDetailActivityFragment extends Fragment {
                     }
                 }
             });
-            List<TvInfo.Season> tvSeasons = tvInformation.getSeasons();
+            List<CombinedTvDetail.Season> tvSeasons = tvInformation.getSeasons();
             if (tvSeasons != null && tvSeasons.get(0).getSeasonNumber() == 0) {
                 tvSeasons.remove(0);
             }
-//            Collections.sort(tvSeasons);
             if (getActivity() != null || (tvSeasons != null ? tvSeasons.size() : 0) < 1) {
                 TvSeasonsAdapter tvSeasonsAdapter = new TvSeasonsAdapter(getActivity(), tvSeasons, tvId);
                 tvSeasonsGridView.setAdapter(tvSeasonsAdapter);
@@ -255,7 +252,7 @@ public class TvDetailActivityFragment extends Fragment {
             }
         } else if (event.getRequest() == 2) {
             if (getActivity() != null) {
-                TvDataAdapter similarTvDataAdapter = new TvDataAdapter(getActivity(), similarTvList,1);
+                TvDataAdapter similarTvDataAdapter = new TvDataAdapter(getActivity(), similarTvList, 1);
                 similarTvShowsHzGridView.setAdapter(similarTvDataAdapter);
                 similarTvDataAdapter.notifyDataSetChanged();
                 similarTvShowsHzGridView.setVisibility(View.VISIBLE);
@@ -264,7 +261,7 @@ public class TvDetailActivityFragment extends Fragment {
             }
         } else if (event.getRequest() == 3) {
             if (getActivity() != null) {
-                TvDataAdapter recommendedTvDataAdapter = new TvDataAdapter(getActivity(), recommendedTvList,2);
+                TvDataAdapter recommendedTvDataAdapter = new TvDataAdapter(getActivity(), recommendedTvList, 2);
                 recommendedTvShowsHzGridView.setAdapter(recommendedTvDataAdapter);
                 recommendedTvDataAdapter.notifyDataSetChanged();
                 recommendedTvShowsHzGridView.setVisibility(View.VISIBLE);
@@ -273,7 +270,7 @@ public class TvDetailActivityFragment extends Fragment {
             }
         } else if (event.getRequest() == 4) {
             if (getActivity() != null) {
-                VideoAdapter videoAdapter = new VideoAdapter(getActivity(), videos.getResults());
+                VideoAdapter videoAdapter = new VideoAdapter(getActivity(), videos);
                 videosHzGridView.setAdapter(videoAdapter);
                 videoAdapter.notifyDataSetChanged();
                 videosHzGridView.setVisibility(View.VISIBLE);
@@ -319,11 +316,11 @@ public class TvDetailActivityFragment extends Fragment {
 
 
     private void fetchDataForTvInfo() {
-        Observable<TvInfo> tvInfoObservable = retrofitManager.getTvInfo(tvId + "");
+        Observable<CombinedTvDetail> tvInfoObservable = retrofitManager.getTvInfo(tvId + "");
         tvInfoObservable
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe(new Subscriber<TvInfo>() {
+                .subscribe(new Subscriber<CombinedTvDetail>() {
                                @Override
                                public void onCompleted() {
                                    if (tvInformation != null) {
@@ -332,6 +329,24 @@ public class TvDetailActivityFragment extends Fragment {
                                        } else {
                                            eventBus.post(new MessageEvent(1));
                                        }
+                                       loadSimilarRecommendations(tvInformation);
+                                       String tvInformationJSONList = new Gson().toJson(tvInformation);
+                                       SharedPreferences.Editor editor = prefs.edit();
+                                       editor.putString("tvInformation_" + tvId, tvInformationJSONList);
+                                       editor.apply();
+
+                                       Integer lastSeasonNumber = null;
+                                       if (tvInformation.getStatus().equals("Returning Series")) {
+                                           lastSeasonNumber = tvInformation.getNumberOfSeasons();
+                                       }
+                                       if (lastSeasonNumber != null) {
+                                           Intent intent = new Intent(getContext(), NextAirService.class);
+                                           intent.putExtra("tvId", tvId);
+                                           intent.putExtra("lastSeasonNumber", lastSeasonNumber);
+                                           intent.putExtra("TvSeriesName", tvInformation.getName());
+                                           getContext().startService(intent);
+
+                                       }
                                    }
                                }
 
@@ -339,112 +354,15 @@ public class TvDetailActivityFragment extends Fragment {
                                public void onError(Throwable e) {
                                    e.printStackTrace();
                                    FirebaseCrash.report(e);
-
                                    Log.v("Exception", Arrays.toString(e.getStackTrace()));
                                }
 
                                @Override
-                               public void onNext(TvInfo tvInfo) {
-                                   tvInformation = tvInfo;
+                               public void onNext(CombinedTvDetail combinedTvDetail) {
+                                   tvInformation = combinedTvDetail;
                                }
                            }
                 );
-    }
-
-    private void fetchSimilarTvShows() {
-        Observable<Tv> similarTvShowsObservable = retrofitManager.getSimilarTvShows(tvId + "");
-        similarTvShowsObservable
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe(new Subscriber<Tv>() {
-                               @Override
-                               public void onCompleted() {
-                                   if (similarTvList != null) {
-                                       if (similarTvList.size() < 1) {
-                                           similarTvShowsCardView.setVisibility(View.GONE);
-                                       } else {
-                                           eventBus.post(new MessageEvent(2));
-                                       }
-                                   }
-                               }
-
-                               @Override
-                               public void onError(Throwable e) {
-                                   e.printStackTrace();
-                                   FirebaseCrash.report(e);
-
-                                   Log.v("Exception", "NullPointerException");
-                               }
-
-                               @Override
-                               public void onNext(Tv tv) {
-                                   similarTvList = tv.getTvShows();
-                               }
-                           }
-                );
-    }
-
-    private void fetchRecommendedTvShows() {
-        Observable<Tv> recommendedTvShowsObservable = retrofitManager.getRecommendedTvShows(tvId + "");
-        recommendedTvShowsObservable
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe(new Subscriber<Tv>() {
-                               @Override
-                               public void onCompleted() {
-                                   if (recommendedTvList != null) {
-                                       if (recommendedTvList.size() < 1) {
-                                           recommendedTvShowsCardView.setVisibility(View.GONE);
-                                       } else {
-                                           eventBus.post(new MessageEvent(3));
-                                       }
-                                   }
-                               }
-
-                               @Override
-                               public void onError(Throwable e) {
-                                   e.printStackTrace();
-                                   FirebaseCrash.report(e);
-
-                                   Log.v("Exception", "NullPointerException");
-                               }
-
-                               @Override
-                               public void onNext(Tv tv) {
-                                   recommendedTvList = tv.getTvShows();
-                               }
-                           }
-                );
-    }
-
-    private void fetchVideos() {
-        Observable<Videos> videosObservable = retrofitManager.getTrailer(tvId);
-
-        videosObservable
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe(new Subscriber<Videos>() {
-                    @Override
-                    public void onCompleted() {
-
-                        if (videos.getResults().size() < 1) {
-                            videosCardView.setVisibility(View.GONE);
-                        } else {
-                            eventBus.post(new MessageEvent(4));
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                        FirebaseCrash.report(e);
-                    }
-
-                    @Override
-                    public void onNext(Videos vid) {
-                        videos = vid;
-                    }
-                });
     }
 
     private void fetchNextAirEpisode() {
@@ -460,6 +378,27 @@ public class TvDetailActivityFragment extends Fragment {
 
     }
 
+    private void loadSimilarRecommendations(CombinedTvDetail tvInformation) {
+        if (tvInformation.getSimilar().getResults().size() < 1) {
+            similarTvShowsCardView.setVisibility(View.GONE);
+        } else {
+            similarTvList = tvInformation.getSimilar().getResults();
+            eventBus.post(new MessageEvent(2));
+        }
+        if (tvInformation.getRecommendations().getResults().size() < 1) {
+            recommendedTvShowsCardView.setVisibility(View.GONE);
+        } else {
+            recommendedTvList = tvInformation.getRecommendations().getResults();
+            eventBus.post(new MessageEvent(3));
+        }
+        if (tvInformation.getVideos().getResults().size() < 1) {
+            videosCardView.setVisibility(View.GONE);
+        } else {
+            videos = tvInformation.getVideos().getResults();
+            eventBus.post(new MessageEvent(4));
+        }
+    }
+
     private class LoadDetailPageThread extends Thread {
         final int requestType;
 
@@ -472,89 +411,30 @@ public class TvDetailActivityFragment extends Fragment {
             super.run();
             if (threadAlreadyRunning) {
             } else {
-
-                Intent intent = new Intent(getContext(), NextAirService.class);
-                intent.putExtra("tvId", tvId);
-                getContext().startService(intent);
-
                 threadAlreadyRunning = true;
                 try {
-                    fetchDataForTvInfo();
-                    fetchVideos();
-                    fetchSimilarTvShows();
-                    fetchRecommendedTvShows();
+                    String tvInformationJSONList = prefs.getString("tvInformation_" + tvId, "");
+                    if (prefs.contains("tvInformation_" + tvId)) {
+                        tvInformation =
+                                new Gson().fromJson(tvInformationJSONList, new TypeToken<CombinedTvDetail>() {
+                                }.getType());
+                        if (tvInformation != null) {
+                            eventBus.post(new MessageEvent(1));
+                            loadSimilarRecommendations(tvInformation);
+                        } else {
+                            fetchDataForTvInfo();
+                        }
+                    } else {
+                        fetchDataForTvInfo();
+
+                    }
                 } catch (Exception e) {
-                    e.printStackTrace();
                     FirebaseCrash.report(e);
+                    e.printStackTrace();
                 }
+
                 fetchNextAirEpisode();
 
-//                if (tvInformation == null) {
-//                    String tvInformationJSONList = prefs.getString("tvInformation_" + tvId, "");
-//                    if (!tvInformationJSONList.equals("null")) {
-//                        tvInformation =
-//                                new Gson().fromJson(tvInformationJSONList, new TypeToken<TvInfo>() {
-//                                }.getType());
-//                        eventBus.post(new MessageEvent(1));
-//                    } else {
-//                        fetchDataForTvInfo();
-//                        tvInformationJSONList = new Gson().toJson(tvInformation);
-//                        SharedPreferences.Editor editor = prefs.edit();
-//                        editor.putString("tvInformation_" + tvId, tvInformationJSONList);
-//                        editor.apply();
-//                    }
-//                }
-//
-//                if (recommendedTvList.isEmpty()) {
-//                    String recommendedTvListJSONList = prefs.getString("recommendedTvList_" + tvId, "");
-//                    if (!recommendedTvListJSONList.equals("")) {
-//                        recommendedTvList =
-//                                new Gson().fromJson(recommendedTvListJSONList, new TypeToken<List<Tv.TvShow>>() {
-//                                }.getType());
-//                        eventBus.post(new MessageEvent(3));
-//                    } else {
-//                        fetchRecommendedTvShows();
-//                        recommendedTvListJSONList = new Gson().toJson(recommendedTvList);
-//                        SharedPreferences.Editor editor = prefs.edit();
-//                        editor.putString("recommendedTvList_" + tvId, recommendedTvListJSONList);
-//                        editor.apply();
-//                    }
-//                }
-//
-//
-//                if (similarTvList.isEmpty()) {
-//
-//                    String similarTvListJSONList = prefs.getString("similarTvList_" + tvId, "");
-//                    if (!similarTvListJSONList.equals("")) {
-//                        similarTvList =
-//                                new Gson().fromJson(similarTvListJSONList, new TypeToken<List<Tv.TvShow>>() {
-//                                }.getType());
-//                        eventBus.post(new MessageEvent(2));
-//                    } else {
-//                        fetchSimilarTvShows();
-//                        similarTvListJSONList = new Gson().toJson(similarTvList);
-//                        SharedPreferences.Editor editor = prefs.edit();
-//                        editor.putString("similarTvList_" + tvId, similarTvListJSONList);
-//                        editor.apply();
-//                    }
-//                }
-//
-//
-//                if (videos != null) {
-//                    String vidoesJSONList = prefs.getString("videos_" + tvId, "");
-//                    if (!vidoesJSONList.isEmpty()) {
-//                        videos =
-//                                new Gson().fromJson(vidoesJSONList, new TypeToken<Videos>() {
-//                                }.getType());
-//                        eventBus.post(new MessageEvent(4));
-//                    } else {
-//                        fetchVideos();
-//                        vidoesJSONList = new Gson().toJson(videos);
-//                        SharedPreferences.Editor editor = prefs.edit();
-//                        editor.putString("videos_" + tvId, vidoesJSONList);
-//                        editor.apply();
-//                    }
-//                }
             }
         }
     }

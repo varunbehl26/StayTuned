@@ -97,7 +97,7 @@ public class Reviews {
 
     @Override
     public String toString() {
-        return "Reviews{" +
+        return "varunbehl.showstime.pojo.Reviews{" +
                 "id=" + id +
                 ", page=" + page +
                 ", reviewsResults=" + reviewsResults +
