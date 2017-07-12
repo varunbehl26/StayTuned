@@ -18,15 +18,15 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import java.util.List;
 
 import varunbehl.showstime.R;
-import varunbehl.showstime.activity.TvCastDetail;
+import varunbehl.showstime.activity.TvCastDetailActivity;
 import varunbehl.showstime.activity.TvSeasonDetail;
 import varunbehl.showstime.pojo.Cast.CastInfo;
 
 public class TvCrewAdapter extends RecyclerView.Adapter<TvCrewAdapter.ViewHolder> {
 
+    private final Context mContext;
     private List<CastInfo.Crew> tvCastList;
     private LayoutInflater inflater;
-    private final Context mContext;
     private int tvId;
 
 
@@ -57,9 +57,9 @@ public class TvCrewAdapter extends RecyclerView.Adapter<TvCrewAdapter.ViewHolder
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(mContext, TvCastDetail.class);
+                Intent intent = new Intent(mContext, TvCastDetailActivity.class);
                 intent.putExtra(TvSeasonDetail.TV_ID, tvId);
-                intent.putExtra(TvCastDetail.CAST_ID, tvCastList.get(holder.getAdapterPosition()).getId());
+                intent.putExtra(TvCastDetailActivity.CAST_ID, tvCastList.get(holder.getAdapterPosition()).getId());
                 mContext.startActivity(intent);
             }
         });

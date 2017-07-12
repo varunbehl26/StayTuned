@@ -1,21 +1,34 @@
 package varunbehl.showstime.pojo.Cast;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Cast {
+public class Cast implements Parcelable {
 
 
+    public static final Parcelable.Creator<Cast> CREATOR = new Parcelable.Creator<Cast>() {
+        @Override
+        public Cast createFromParcel(Parcel source) {
+            return new Cast(source);
+        }
+
+        @Override
+        public Cast[] newArray(int size) {
+            return new Cast[size];
+        }
+    };
     @SerializedName("gender")
     @Expose
     private Integer gender;
     @SerializedName("profile_path")
     @Expose
-    private Object profilePath;
+    private String profilePath;
     @SerializedName("order")
     @Expose
     private Integer order;
-
     @SerializedName("adult")
     @Expose
     private Boolean adult;
@@ -52,11 +65,31 @@ public class Cast {
     @SerializedName("name")
     @Expose
     private String name;
-
     @SerializedName("original_name")
     @Expose
     private String originalName;
 
+    public Cast() {
+    }
+
+    protected Cast(Parcel in) {
+        this.gender = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.profilePath = in.readString();
+        this.order = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.adult = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        this.character = in.readString();
+        this.creditId = in.readString();
+        this.id = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.originalTitle = in.readString();
+        this.posterPath = in.readString();
+        this.releaseDate = in.readString();
+        this.title = in.readString();
+        this.mediaType = in.readString();
+        this.episodeCount = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.firstAirDate = in.readString();
+        this.name = in.readString();
+        this.originalName = in.readString();
+    }
 
     public Integer getGender() {
         return gender;
@@ -66,11 +99,11 @@ public class Cast {
         this.gender = gender;
     }
 
-    public Object getProfilePath() {
+    public String getProfilePath() {
         return profilePath;
     }
 
-    public void setProfilePath(Object profilePath) {
+    public void setProfilePath(String profilePath) {
         this.profilePath = profilePath;
     }
 
@@ -184,5 +217,30 @@ public class Cast {
 
     public void setOriginalName(String originalName) {
         this.originalName = originalName;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(this.gender);
+        dest.writeString(this.profilePath);
+        dest.writeValue(this.order);
+        dest.writeValue(this.adult);
+        dest.writeString(this.character);
+        dest.writeString(this.creditId);
+        dest.writeValue(this.id);
+        dest.writeString(this.originalTitle);
+        dest.writeString(this.posterPath);
+        dest.writeString(this.releaseDate);
+        dest.writeString(this.title);
+        dest.writeString(this.mediaType);
+        dest.writeValue(this.episodeCount);
+        dest.writeString(this.firstAirDate);
+        dest.writeString(this.name);
+        dest.writeString(this.originalName);
     }
 }

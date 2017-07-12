@@ -4,23 +4,38 @@ package varunbehl.showstime.pojo.TvDetails;
  * Created by varunbehl on 10/07/17.
  */
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import varunbehl.showstime.pojo.Credits.Credits;
-import varunbehl.showstime.pojo.Video.VideoResult;
+import varunbehl.showstime.pojo.Images.Images;
+import varunbehl.showstime.pojo.Recommendations;
+import varunbehl.showstime.pojo.Similar;
+import varunbehl.showstime.pojo.Video.Videos;
 
 
-public class CombinedTvDetail {
+public class CombinedTvDetail implements Parcelable {
 
+    public static final Parcelable.Creator<CombinedTvDetail> CREATOR = new Parcelable.Creator<CombinedTvDetail>() {
+        @Override
+        public CombinedTvDetail createFromParcel(Parcel source) {
+            return new CombinedTvDetail(source);
+        }
+
+        @Override
+        public CombinedTvDetail[] newArray(int size) {
+            return new CombinedTvDetail[size];
+        }
+    };
     @SerializedName("backdrop_path")
     @Expose
     private String backdropPath;
-    @SerializedName("created_by")
-    @Expose
-    private List<CreatedBy> createdBy = null;
     @SerializedName("episode_run_time")
     @Expose
     private List<Integer> episodeRunTime = null;
@@ -109,6 +124,47 @@ public class CombinedTvDetail {
     @Expose
     private Recommendations recommendations;
 
+    public CombinedTvDetail() {
+    }
+
+    protected CombinedTvDetail(Parcel in) {
+        this.backdropPath = in.readString();
+        this.episodeRunTime = new ArrayList<>();
+        in.readList(this.episodeRunTime, Integer.class.getClassLoader());
+        this.firstAirDate = in.readString();
+        this.genres = new ArrayList<>();
+        in.readList(this.genres, Genre.class.getClassLoader());
+        this.homepage = in.readString();
+        this.id = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.inProduction = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        this.languages = in.createStringArrayList();
+        this.lastAirDate = in.readString();
+        this.name = in.readString();
+        this.networks = new ArrayList<>();
+        in.readList(this.networks, Network.class.getClassLoader());
+        this.numberOfEpisodes = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.numberOfSeasons = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.originCountry = in.createStringArrayList();
+        this.originalLanguage = in.readString();
+        this.originalName = in.readString();
+        this.overview = in.readString();
+        this.popularity = (Double) in.readValue(Double.class.getClassLoader());
+        this.posterPath = in.readString();
+        this.productionCompanies = new ArrayList<>();
+        in.readList(this.productionCompanies, Object.class.getClassLoader());
+        this.seasons = new ArrayList<>();
+        in.readList(this.seasons, Season.class.getClassLoader());
+        this.status = in.readString();
+        this.type = in.readString();
+        this.voteAverage = (Double) in.readValue(Double.class.getClassLoader());
+        this.voteCount = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.credits = in.readParcelable(Credits.class.getClassLoader());
+        this.videos = in.readParcelable(Videos.class.getClassLoader());
+        this.images = in.readParcelable(Images.class.getClassLoader());
+        this.similar = in.readParcelable(Similar.class.getClassLoader());
+        this.recommendations = in.readParcelable(Recommendations.class.getClassLoader());
+    }
+
     public String getBackdropPath() {
         return backdropPath;
     }
@@ -117,13 +173,6 @@ public class CombinedTvDetail {
         this.backdropPath = backdropPath;
     }
 
-    public List<CreatedBy> getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(List<CreatedBy> createdBy) {
-        this.createdBy = createdBy;
-    }
 
     public List<Integer> getEpisodeRunTime() {
         return episodeRunTime;
@@ -357,100 +406,73 @@ public class CombinedTvDetail {
         this.recommendations = recommendations;
     }
 
-    public class Backdrop {
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 
-        @SerializedName("aspect_ratio")
-        @Expose
-        private Double aspectRatio;
-        @SerializedName("file_path")
-        @Expose
-        private String filePath;
-        @SerializedName("height")
-        @Expose
-        private Integer height;
-        @SerializedName("iso_639_1")
-        @Expose
-        private Object iso6391;
-        @SerializedName("vote_average")
-        @Expose
-        private Double voteAverage;
-        @SerializedName("vote_count")
-        @Expose
-        private Integer voteCount;
-        @SerializedName("width")
-        @Expose
-        private Integer width;
-
-        public Double getAspectRatio() {
-            return aspectRatio;
-        }
-
-        public void setAspectRatio(Double aspectRatio) {
-            this.aspectRatio = aspectRatio;
-        }
-
-        public String getFilePath() {
-            return filePath;
-        }
-
-        public void setFilePath(String filePath) {
-            this.filePath = filePath;
-        }
-
-        public Integer getHeight() {
-            return height;
-        }
-
-        public void setHeight(Integer height) {
-            this.height = height;
-        }
-
-        public Object getIso6391() {
-            return iso6391;
-        }
-
-        public void setIso6391(Object iso6391) {
-            this.iso6391 = iso6391;
-        }
-
-        public Double getVoteAverage() {
-            return voteAverage;
-        }
-
-        public void setVoteAverage(Double voteAverage) {
-            this.voteAverage = voteAverage;
-        }
-
-        public Integer getVoteCount() {
-            return voteCount;
-        }
-
-        public void setVoteCount(Integer voteCount) {
-            this.voteCount = voteCount;
-        }
-
-        public Integer getWidth() {
-            return width;
-        }
-
-        public void setWidth(Integer width) {
-            this.width = width;
-        }
-
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.backdropPath);
+        dest.writeList(this.episodeRunTime);
+        dest.writeString(this.firstAirDate);
+        dest.writeList(this.genres);
+        dest.writeString(this.homepage);
+        dest.writeValue(this.id);
+        dest.writeValue(this.inProduction);
+        dest.writeStringList(this.languages);
+        dest.writeString(this.lastAirDate);
+        dest.writeString(this.name);
+        dest.writeList(this.networks);
+        dest.writeValue(this.numberOfEpisodes);
+        dest.writeValue(this.numberOfSeasons);
+        dest.writeStringList(this.originCountry);
+        dest.writeString(this.originalLanguage);
+        dest.writeString(this.originalName);
+        dest.writeString(this.overview);
+        dest.writeValue(this.popularity);
+        dest.writeString(this.posterPath);
+        dest.writeList(this.productionCompanies);
+        dest.writeList(this.seasons);
+        dest.writeString(this.status);
+        dest.writeString(this.type);
+        dest.writeValue(this.voteAverage);
+        dest.writeValue(this.voteCount);
+        dest.writeParcelable(this.credits, flags);
+        dest.writeParcelable(this.videos, flags);
+        dest.writeParcelable(this.images, flags);
+        dest.writeParcelable(this.similar, flags);
+        dest.writeParcelable(this.recommendations, flags);
     }
 
 
-    public class CreatedBy {
+    public class Genre implements Parcelable {
 
+        public final Creator<Genre> CREATOR = new Creator<Genre>() {
+            @Override
+            public Genre createFromParcel(Parcel source) {
+                return new Genre(source);
+            }
+
+            @Override
+            public Genre[] newArray(int size) {
+                return new Genre[size];
+            }
+        };
         @SerializedName("id")
         @Expose
         private Integer id;
         @SerializedName("name")
         @Expose
         private String name;
-        @SerializedName("profile_path")
-        @Expose
-        private Object profilePath;
+
+        public Genre() {
+        }
+
+        protected Genre(Parcel in) {
+            this.id = (Integer) in.readValue(Integer.class.getClassLoader());
+            this.name = in.readString();
+        }
 
         public Integer getId() {
             return id;
@@ -468,25 +490,51 @@ public class CombinedTvDetail {
             this.name = name;
         }
 
-        public Object getProfilePath() {
-            return profilePath;
+        @Override
+        public String toString() {
+            return name;
         }
 
-        public void setProfilePath(Object profilePath) {
-            this.profilePath = profilePath;
+        @Override
+        public int describeContents() {
+            return 0;
         }
 
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeValue(this.id);
+            dest.writeString(this.name);
+        }
     }
 
 
-    public class Genre {
+    public class Network implements Parcelable {
 
+        public final Creator<Network> CREATOR = new Creator<Network>() {
+            @Override
+            public Network createFromParcel(Parcel source) {
+                return new Network(source);
+            }
+
+            @Override
+            public Network[] newArray(int size) {
+                return new Network[size];
+            }
+        };
         @SerializedName("id")
         @Expose
         private Integer id;
         @SerializedName("name")
         @Expose
         private String name;
+
+        public Network() {
+        }
+
+        protected Network(Parcel in) {
+            this.id = (Integer) in.readValue(Integer.class.getClassLoader());
+            this.name = in.readString();
+        }
 
         public Integer getId() {
             return id;
@@ -504,345 +552,32 @@ public class CombinedTvDetail {
             this.name = name;
         }
 
-    }
-
-    public class Images {
-
-        @SerializedName("backdrops")
-        @Expose
-        private List<Backdrop> backdrops = null;
-        @SerializedName("posters")
-        @Expose
-        private List<Poster> posters = null;
-
-        public List<Backdrop> getBackdrops() {
-            return backdrops;
+        @Override
+        public int describeContents() {
+            return 0;
         }
 
-        public void setBackdrops(List<Backdrop> backdrops) {
-            this.backdrops = backdrops;
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeValue(this.id);
+            dest.writeString(this.name);
         }
-
-        public List<Poster> getPosters() {
-            return posters;
-        }
-
-        public void setPosters(List<Poster> posters) {
-            this.posters = posters;
-        }
-
-    }
-
-    public class Network {
-
-        @SerializedName("id")
-        @Expose
-        private Integer id;
-        @SerializedName("name")
-        @Expose
-        private String name;
-
-        public Integer getId() {
-            return id;
-        }
-
-        public void setId(Integer id) {
-            this.id = id;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-    }
-
-    public class Poster {
-
-        @SerializedName("aspect_ratio")
-        @Expose
-        private Double aspectRatio;
-        @SerializedName("file_path")
-        @Expose
-        private String filePath;
-        @SerializedName("height")
-        @Expose
-        private Integer height;
-        @SerializedName("iso_639_1")
-        @Expose
-        private String iso6391;
-        @SerializedName("vote_average")
-        @Expose
-        private Double voteAverage;
-        @SerializedName("vote_count")
-        @Expose
-        private Integer voteCount;
-        @SerializedName("width")
-        @Expose
-        private Integer width;
-
-        public Double getAspectRatio() {
-            return aspectRatio;
-        }
-
-        public void setAspectRatio(Double aspectRatio) {
-            this.aspectRatio = aspectRatio;
-        }
-
-        public String getFilePath() {
-            return filePath;
-        }
-
-        public void setFilePath(String filePath) {
-            this.filePath = filePath;
-        }
-
-        public Integer getHeight() {
-            return height;
-        }
-
-        public void setHeight(Integer height) {
-            this.height = height;
-        }
-
-        public String getIso6391() {
-            return iso6391;
-        }
-
-        public void setIso6391(String iso6391) {
-            this.iso6391 = iso6391;
-        }
-
-        public Double getVoteAverage() {
-            return voteAverage;
-        }
-
-        public void setVoteAverage(Double voteAverage) {
-            this.voteAverage = voteAverage;
-        }
-
-        public Integer getVoteCount() {
-            return voteCount;
-        }
-
-        public void setVoteCount(Integer voteCount) {
-            this.voteCount = voteCount;
-        }
-
-        public Integer getWidth() {
-            return width;
-        }
-
-        public void setWidth(Integer width) {
-            this.width = width;
-        }
-
-    }
-
-    public class Recommendations {
-
-        @SerializedName("page")
-        @Expose
-        private Integer page;
-        @SerializedName("results")
-        @Expose
-        private List<Result_> results = null;
-        @SerializedName("total_pages")
-        @Expose
-        private Integer totalPages;
-        @SerializedName("total_results")
-        @Expose
-        private Integer totalResults;
-
-        public Integer getPage() {
-            return page;
-        }
-
-        public void setPage(Integer page) {
-            this.page = page;
-        }
-
-        public List<Result_> getResults() {
-            return results;
-        }
-
-        public void setResults(List<Result_> results) {
-            this.results = results;
-        }
-
-        public Integer getTotalPages() {
-            return totalPages;
-        }
-
-        public void setTotalPages(Integer totalPages) {
-            this.totalPages = totalPages;
-        }
-
-        public Integer getTotalResults() {
-            return totalResults;
-        }
-
-        public void setTotalResults(Integer totalResults) {
-            this.totalResults = totalResults;
-        }
-
     }
 
 
-    public class Result_ {
+    public class Season implements Parcelable {
 
-        @SerializedName("backdrop_path")
-        @Expose
-        private String backdropPath;
-        @SerializedName("first_air_date")
-        @Expose
-        private String firstAirDate;
-        @SerializedName("genre_ids")
-        @Expose
-        private List<Integer> genreIds = null;
-        @SerializedName("id")
-        @Expose
-        private Integer id;
-        @SerializedName("original_language")
-        @Expose
-        private String originalLanguage;
-        @SerializedName("original_name")
-        @Expose
-        private String originalName;
-        @SerializedName("overview")
-        @Expose
-        private String overview;
-        @SerializedName("origin_country")
-        @Expose
-        private List<String> originCountry = null;
-        @SerializedName("poster_path")
-        @Expose
-        private String posterPath;
-        @SerializedName("popularity")
-        @Expose
-        private Double popularity;
-        @SerializedName("name")
-        @Expose
-        private String name;
-        @SerializedName("vote_average")
-        @Expose
-        private Double voteAverage;
-        @SerializedName("vote_count")
-        @Expose
-        private Integer voteCount;
+        public final Creator<Season> CREATOR = new Creator<Season>() {
+            @Override
+            public Season createFromParcel(Parcel source) {
+                return new Season(source);
+            }
 
-        public String getBackdropPath() {
-            return backdropPath;
-        }
-
-        public void setBackdropPath(String backdropPath) {
-            this.backdropPath = backdropPath;
-        }
-
-        public String getFirstAirDate() {
-            return firstAirDate;
-        }
-
-        public void setFirstAirDate(String firstAirDate) {
-            this.firstAirDate = firstAirDate;
-        }
-
-        public List<Integer> getGenreIds() {
-            return genreIds;
-        }
-
-        public void setGenreIds(List<Integer> genreIds) {
-            this.genreIds = genreIds;
-        }
-
-        public Integer getId() {
-            return id;
-        }
-
-        public void setId(Integer id) {
-            this.id = id;
-        }
-
-        public String getOriginalLanguage() {
-            return originalLanguage;
-        }
-
-        public void setOriginalLanguage(String originalLanguage) {
-            this.originalLanguage = originalLanguage;
-        }
-
-        public String getOriginalName() {
-            return originalName;
-        }
-
-        public void setOriginalName(String originalName) {
-            this.originalName = originalName;
-        }
-
-        public String getOverview() {
-            return overview;
-        }
-
-        public void setOverview(String overview) {
-            this.overview = overview;
-        }
-
-        public List<String> getOriginCountry() {
-            return originCountry;
-        }
-
-        public void setOriginCountry(List<String> originCountry) {
-            this.originCountry = originCountry;
-        }
-
-        public String getPosterPath() {
-            return posterPath;
-        }
-
-        public void setPosterPath(String posterPath) {
-            this.posterPath = posterPath;
-        }
-
-        public Double getPopularity() {
-            return popularity;
-        }
-
-        public void setPopularity(Double popularity) {
-            this.popularity = popularity;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public Double getVoteAverage() {
-            return voteAverage;
-        }
-
-        public void setVoteAverage(Double voteAverage) {
-            this.voteAverage = voteAverage;
-        }
-
-        public Integer getVoteCount() {
-            return voteCount;
-        }
-
-        public void setVoteCount(Integer voteCount) {
-            this.voteCount = voteCount;
-        }
-
-    }
-
-
-    public class Season {
-
+            @Override
+            public Season[] newArray(int size) {
+                return new Season[size];
+            }
+        };
         @SerializedName("air_date")
         @Expose
         private String airDate;
@@ -858,6 +593,17 @@ public class CombinedTvDetail {
         @SerializedName("season_number")
         @Expose
         private Integer seasonNumber;
+
+        public Season() {
+        }
+
+        protected Season(Parcel in) {
+            this.airDate = in.readString();
+            this.episodeCount = (Integer) in.readValue(Integer.class.getClassLoader());
+            this.id = (Integer) in.readValue(Integer.class.getClassLoader());
+            this.posterPath = in.readString();
+            this.seasonNumber = (Integer) in.readValue(Integer.class.getClassLoader());
+        }
 
         public String getAirDate() {
             return airDate;
@@ -899,70 +645,19 @@ public class CombinedTvDetail {
             this.seasonNumber = seasonNumber;
         }
 
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(this.airDate);
+            dest.writeValue(this.episodeCount);
+            dest.writeValue(this.id);
+            dest.writeString(this.posterPath);
+            dest.writeValue(this.seasonNumber);
+        }
     }
 
-    public class Similar {
-
-        @SerializedName("page")
-        @Expose
-        private Integer page;
-        @SerializedName("results")
-        @Expose
-        private List<Result_> results = null;
-        @SerializedName("total_pages")
-        @Expose
-        private Integer totalPages;
-        @SerializedName("total_results")
-        @Expose
-        private Integer totalResults;
-
-        public Integer getPage() {
-            return page;
-        }
-
-        public void setPage(Integer page) {
-            this.page = page;
-        }
-
-        public List<Result_> getResults() {
-            return results;
-        }
-
-        public void setResults(List<Result_> results) {
-            this.results = results;
-        }
-
-        public Integer getTotalPages() {
-            return totalPages;
-        }
-
-        public void setTotalPages(Integer totalPages) {
-            this.totalPages = totalPages;
-        }
-
-        public Integer getTotalResults() {
-            return totalResults;
-        }
-
-        public void setTotalResults(Integer totalResults) {
-            this.totalResults = totalResults;
-        }
-
-    }
-
-    public class Videos {
-
-        @SerializedName("results")
-        @Expose
-        private List<VideoResult> results = null;
-
-        public List<VideoResult> getResults() {
-            return results;
-        }
-
-        public void setResults(List<VideoResult> results) {
-            this.results = results;
-        }
-
-    }
 }

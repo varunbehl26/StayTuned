@@ -11,38 +11,31 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by varunbehl on 18/03/17.
  */
 
 public class ShowsTimeProvider extends ContentProvider {
 
-    private static final String AUTHORITY = "varunbehl.showstime.data.ShowsTimeProvider";
-    private static final int EPISODES= 100;
-    private static final int EPISODE_ID = 110;
-
-    private static final String EPISODES_BASE_PATH = "episodes";
-    public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY
-            + "/" + EPISODES_BASE_PATH);
-
     public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE
             + "/mt-tutorial";
     public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE
             + "/mt-tutorial";
-
-    private ShowsTimeDBHelper stayTunedDBHelper ;
-
-
+    private static final String AUTHORITY = "varunbehl.showstime.data.ShowsTimeProvider";
+    private static final int EPISODES= 100;
+    private static final int EPISODE_ID = 110;
+    private static final String EPISODES_BASE_PATH = "episodes";
+    public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY
+            + "/" + EPISODES_BASE_PATH);
     private static final UriMatcher sURIMatcher = new UriMatcher(
             UriMatcher.NO_MATCH);
+
     static {
         sURIMatcher.addURI(AUTHORITY, EPISODES_BASE_PATH, EPISODES);
         sURIMatcher.addURI(AUTHORITY, EPISODES_BASE_PATH + "/#", EPISODE_ID);
     }
 
+    private ShowsTimeDBHelper stayTunedDBHelper;
 
     @Override
     public boolean onCreate() {

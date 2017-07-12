@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="varunbehl.showstime.activity.TvCastDetail">
+    tools:context="varunbehl.showstime.activity.TvCastDetailActivity">
 
 
     <include layout="@layout/content_tv_cast_detail" />

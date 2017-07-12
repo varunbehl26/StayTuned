@@ -1,8 +1,12 @@
 package varunbehl.showstime.pojo.Credits;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import varunbehl.showstime.pojo.Cast.Cast;
@@ -12,14 +16,35 @@ import varunbehl.showstime.pojo.Cast.Cast;
  */
 
 
-public class Credits {
+public class Credits implements Parcelable {
 
+    public static final Parcelable.Creator<Credits> CREATOR = new Parcelable.Creator<Credits>() {
+        @Override
+        public Credits createFromParcel(Parcel source) {
+            return new Credits(source);
+        }
+
+        @Override
+        public Credits[] newArray(int size) {
+            return new Credits[size];
+        }
+    };
     @SerializedName("cast")
     @Expose
     private List<Cast> cast = null;
     @SerializedName("crew")
     @Expose
     private List<Object> crew = null;
+
+    public Credits() {
+    }
+
+    protected Credits(Parcel in) {
+        this.cast = new ArrayList<>();
+        in.readList(this.cast, Cast.class.getClassLoader());
+        this.crew = new ArrayList<>();
+        in.readList(this.crew, Object.class.getClassLoader());
+    }
 
     public List<Cast> getCast() {
         return cast;
@@ -37,4 +62,14 @@ public class Credits {
         this.crew = crew;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeList(this.cast);
+        dest.writeList(this.crew);
+    }
 }

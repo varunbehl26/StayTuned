@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.GridView;
@@ -35,14 +34,13 @@ public class EpisodeActivity extends AppCompatActivity {
     public static final String TV_ID = "TV_ID";
     public static final String SEASON_ID = "SEASON_ID";
     public static final String EPISODE_ID = "EPISODE_ID";
-
+    Button fav_button;
     private EventBus eventBus;
     private EpisodeInfo episodeInfo = new EpisodeInfo();
     private int tvId;
     private RetrofitManager retrofitManager;
     private TextView releaseDate;
     private TextView plotSynopsis;
-    Button fav_button;
     private SimpleDraweeView draweeView;
     private CollapsingToolbarLayout collapsingToolbar;
     private boolean threadAlreadyRunning;
@@ -142,7 +140,6 @@ public class EpisodeActivity extends AppCompatActivity {
         public void run() {
             super.run();
             if (threadAlreadyRunning) {
-                return;
             } else {
                 threadAlreadyRunning = true;
                 Observable<EpisodeInfo> tvSeasonInfoObservable = retrofitManager.getEpisodeInfo(tvId + "", seasonId + "", episodeId);

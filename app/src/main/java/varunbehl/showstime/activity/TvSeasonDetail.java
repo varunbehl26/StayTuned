@@ -40,7 +40,6 @@ public class TvSeasonDetail extends AppCompatActivity {
     private GridView tvSeasonsGridView;
     private ProgressBar tvSeasonsProgressBar;
     private int seasonId;
-    private ProgressBar progressbar;
 
     @Override
     public void onStart() {
@@ -58,12 +57,12 @@ public class TvSeasonDetail extends AppCompatActivity {
 
     private void hideProgressBar() {
         tvSeasonsGridView.setVisibility(View.VISIBLE);
-        progressbar.setVisibility(View.GONE);
+        tvSeasonsProgressBar.setVisibility(View.GONE);
     }
 
     private void showProgressBar() {
         tvSeasonsGridView.setVisibility(View.GONE);
-        progressbar.setVisibility(View.VISIBLE);
+        tvSeasonsProgressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -76,7 +75,6 @@ public class TvSeasonDetail extends AppCompatActivity {
         seasonId = (int) getIntent().getExtras().get(SEASON_ID);
         toolbar.setTitle("Season:" + seasonId);
         setSupportActionBar(toolbar);
-        progressbar = (ProgressBar) findViewById(R.id.progress_fragment);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
@@ -87,7 +85,6 @@ public class TvSeasonDetail extends AppCompatActivity {
 
         tvSeasonsGridView = (GridView) findViewById(R.id.list_view);
         tvSeasonsProgressBar = (ProgressBar) findViewById(R.id.progress_main);
-        tvSeasonsProgressBar.setVisibility(View.VISIBLE);
         showProgressBar();
         new LoadSeasonInfoThread(1).start();
     }

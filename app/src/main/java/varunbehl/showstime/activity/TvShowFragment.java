@@ -51,6 +51,7 @@ import varunbehl.showstime.data.ShowsTimeContract;
 import varunbehl.showstime.data.ShowsTimeDBHelper;
 import varunbehl.showstime.eventbus.MessageEvent;
 import varunbehl.showstime.network.RetrofitManager;
+import varunbehl.showstime.pojo.Picture.Pictures;
 import varunbehl.showstime.pojo.Tv.Tv;
 import varunbehl.showstime.pojo.TvDetails.CombinedTvDetail;
 import varunbehl.showstime.util.Constants;
@@ -63,9 +64,9 @@ public class TvShowFragment extends Fragment {
     private SharedPreferences.Editor editor;
     private boolean threadAlreadyRunning = false;
     private RetrofitManager retrofitManager;
-    private ArrayList<CombinedTvDetail.Result_> topRatedTvList = new ArrayList<>();
-    private ArrayList<CombinedTvDetail.Result_> popularTvList = new ArrayList<>();
-    private ArrayList<CombinedTvDetail.Result_> airingTodayList = new ArrayList<>();
+    private ArrayList<Pictures> topRatedTvList = new ArrayList<>();
+    private ArrayList<Pictures> popularTvList = new ArrayList<>();
+    private ArrayList<Pictures> airingTodayList = new ArrayList<>();
     private HorizontalGridView popularTvShowsHzGridView, topRatedTvshowsHzGridView, todayAirTvShowsHzGridView;
     private ProgressBar popularTvShowsProgressBar, topRatedTvShowsProgressBar, todayAirTvShowsProgressBar;
     private SharedPreferences prefs;
@@ -482,7 +483,7 @@ public class TvShowFragment extends Fragment {
                     if (popularTvList.isEmpty()) {
                         String popularTvJSONList = prefs.getString("popularTvList", "");
                         popularTvList =
-                                new Gson().fromJson(popularTvJSONList, new TypeToken<List<CombinedTvDetail.Result_>>() {
+                                new Gson().fromJson(popularTvJSONList, new TypeToken<List<Pictures>>() {
                                 }.getType());
                         eventBus.post(new MessageEvent(1));
 
@@ -491,7 +492,7 @@ public class TvShowFragment extends Fragment {
                     if (topRatedTvList.isEmpty()) {
                         String topRatedTvJSONList = prefs.getString("topRatedTvList", "");
                         topRatedTvList =
-                                new Gson().fromJson(topRatedTvJSONList, new TypeToken<List<CombinedTvDetail.Result_>>() {
+                                new Gson().fromJson(topRatedTvJSONList, new TypeToken<List<Pictures>>() {
                                 }.getType());
                         eventBus.post(new MessageEvent(2));
 
@@ -500,7 +501,7 @@ public class TvShowFragment extends Fragment {
                         String airingTodayJSONList = prefs.getString("airingTodayList", "");
                         if (!airingTodayJSONList.isEmpty()) {
                             airingTodayList =
-                                    new Gson().fromJson(airingTodayJSONList, new TypeToken<List<CombinedTvDetail.Result_>>() {
+                                    new Gson().fromJson(airingTodayJSONList, new TypeToken<List<Pictures>>() {
                                     }.getType());
                             eventBus.post(new MessageEvent(3));
                         }

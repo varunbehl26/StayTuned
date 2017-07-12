@@ -30,7 +30,7 @@ import varunbehl.showstime.network.RetrofitManager;
 import varunbehl.showstime.pojo.Cast.CastInfo;
 import varunbehl.showstime.util.DateTimeHelper;
 
-public class TvCastDetail extends AppCompatActivity {
+public class TvCastDetailActivity extends AppCompatActivity {
 
     public static final String CAST_ID = "cast_id";
     private int castId;

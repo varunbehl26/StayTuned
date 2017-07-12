@@ -31,12 +31,11 @@ import varunbehl.showstime.network.RetrofitManager;
 import varunbehl.showstime.pojo.Picture.Picture_Detail;
 import varunbehl.showstime.pojo.Picture.Pictures;
 import varunbehl.showstime.pojo.Tv.Tv;
-import varunbehl.showstime.pojo.TvDetails.CombinedTvDetail;
 
 public class ViewAllActivity extends AppCompatActivity {
 
     private boolean threadRunning = false;
-    private ArrayList<CombinedTvDetail.Result_> tvInfoList;
+    private ArrayList<Pictures> tvInfoList;
     private ArrayList<Pictures> moviesList;
     private EventBus eventBus;
     private RetrofitManager retrofitManager;

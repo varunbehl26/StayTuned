@@ -447,7 +447,7 @@ public class MovieFragment extends Fragment {
                                            cardView.setOnClickListener(new View.OnClickListener() {
                                                @Override
                                                public void onClick(View v) {
-                                                   Intent intent = new Intent(mContext, DetailActivity.class)
+                                                   Intent intent = new Intent(mContext, MovieDetailActivity.class)
                                                            .putExtra(MovieDetailActivityFragment.DETAIL_TV, nowPlayingMoviesList.get(position).getId())
                                                            .putExtra("ListToOpen", 1);
                                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

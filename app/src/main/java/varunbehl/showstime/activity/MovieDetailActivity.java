@@ -1,7 +1,6 @@
 package varunbehl.showstime.activity;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -11,7 +10,6 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 
 import com.google.firebase.crash.FirebaseCrash;
@@ -23,7 +21,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import rx.Observable;
@@ -40,19 +37,19 @@ import varunbehl.showstime.pojo.TvSeason.TvSeasonInfo;
 import varunbehl.showstime.pojo.Video.VideoResult;
 import varunbehl.showstime.util.Constants;
 
-public class DetailActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener {
+public class MovieDetailActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener {
     CombinedTvDetail tvInformation;
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private ShowsFragmentPagerAdapter showsPagerAdapter;
     private SharedPreferences prefs;
     private ArrayList<String> imagesList;
-    private int tvId;
     private boolean threadAlreadyRunning = false;
     private TvSeasonInfo.Episode episode;
     private RetrofitManager retrofitManager;
     private EventBus eventBus;
     private CombinedMovieDetail combinedMovieDetail;
+    private int movieId;
 
 
     @Override
@@ -69,7 +66,8 @@ public class DetailActivity extends AppCompatActivity implements TabLayout.OnTab
         viewPager = (ViewPager) findViewById(R.id.pager);
         retrofitManager = RetrofitManager.getInstance();
 
-        tvId = (int) getIntent().getExtras().get(TvDetailActivityFragment.DETAIL_TV);
+        int tvId = (int) getIntent().getExtras().get(TvDetailActivityFragment.DETAIL_TV);
+        movieId = (int) getIntent().getExtras().get(MovieDetailActivityFragment.DETAIL_TV);
 
         prefs = this.getSharedPreferences(
                 Constants.PREFERENCE_NAME, Context.MODE_PRIVATE);
@@ -117,7 +115,7 @@ public class DetailActivity extends AppCompatActivity implements TabLayout.OnTab
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MessageEvent event) {
         try {
-            loadImages(tvInformation);
+            loadImages(combinedMovieDetail);
             initializeAdapter();
             showsPagerAdapter.notifyDataSetChanged();
             viewPager.setCurrentItem(0);
@@ -141,34 +139,33 @@ public class DetailActivity extends AppCompatActivity implements TabLayout.OnTab
         eventBus.unregister(this);
     }
 
-    private void fetchDataForTvInfo() {
-        Observable<CombinedTvDetail> tvInfoObservable = retrofitManager.getTvInfo(tvId + "");
+
+    private void loadImages(CombinedMovieDetail combinedMovieDetail) {
+        List<Poster> images = combinedMovieDetail.getImages().getPosters();
+        imagesList = new ArrayList<>();
+        for (int i = 0; i < images.size(); i++) {
+            imagesList.add(images.get(i).getFilePath());
+        }
+    }
+
+    private void fetchDataForMovieInfo() {
+        Observable<CombinedMovieDetail> tvInfoObservable = retrofitManager.getMoviesDetail(movieId);
         tvInfoObservable
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe(new Subscriber<CombinedTvDetail>() {
+                .subscribe(new Subscriber<CombinedMovieDetail>() {
                                @Override
                                public void onCompleted() {
-                                   if (tvInformation != null) {
-
-                                       String tvInformationJSONList = new Gson().toJson(tvInformation);
+                                   if (combinedMovieDetail != null) {
+                                       if (combinedMovieDetail.getOverview().equals("")) {
+//                                           tv.setVisibility(View.GONE);
+                                       } else {
+                                           eventBus.post(new MessageEvent(1));
+                                       }
+                                       String tvInformationJSONList = new Gson().toJson(combinedMovieDetail);
                                        SharedPreferences.Editor editor = prefs.edit();
-                                       editor.putString("tvInformation_" + tvId, tvInformationJSONList);
+                                       editor.putString("movieInformation_" + movieId, tvInformationJSONList);
                                        editor.apply();
-
-                                       Integer lastSeasonNumber = null;
-                                       if (tvInformation.getStatus().equals("Returning Series")) {
-                                           lastSeasonNumber = tvInformation.getNumberOfSeasons();
-                                       }
-                                       if (lastSeasonNumber != null) {
-                                           Intent intent = new Intent(getApplicationContext(), NextAirService.class);
-                                           intent.putExtra("tvId", tvId);
-                                           intent.putExtra("lastSeasonNumber", lastSeasonNumber);
-                                           intent.putExtra("TvSeriesName", tvInformation.getName());
-                                           startService(intent);
-
-                                       }
-                                       eventBus.post(new MessageEvent(1));
 
                                    }
                                }
@@ -177,24 +174,16 @@ public class DetailActivity extends AppCompatActivity implements TabLayout.OnTab
                                public void onError(Throwable e) {
                                    e.printStackTrace();
                                    FirebaseCrash.report(e);
-                                   Log.v("Exception", Arrays.toString(e.getStackTrace()));
                                }
 
                                @Override
-                               public void onNext(CombinedTvDetail combinedTvDetail) {
-                                   tvInformation = combinedTvDetail;
+                               public void onNext(CombinedMovieDetail detail) {
+                                   combinedMovieDetail = detail;
                                }
                            }
                 );
     }
 
-    private void loadImages(CombinedTvDetail tvInformation) {
-        List<Poster> images = tvInformation.getImages().getPosters();
-        imagesList = new ArrayList<>();
-        for (int i = 0; i < images.size(); i++) {
-            imagesList.add(images.get(i).getFilePath());
-        }
-    }
 
     private class LoadDetailPageThread extends Thread {
         final int requestType;
@@ -209,20 +198,19 @@ public class DetailActivity extends AppCompatActivity implements TabLayout.OnTab
             if (threadAlreadyRunning) {
             } else {
                 threadAlreadyRunning = true;
-
                 try {
-                    String tvInformationJSONList = prefs.getString("tvInformation_" + tvId, "");
-                    if (prefs.contains("tvInformation_" + tvId)) {
-                        tvInformation =
-                                new Gson().fromJson(tvInformationJSONList, new TypeToken<CombinedTvDetail>() {
+                    String movieJSONList = prefs.getString("movieInformation_" + movieId, "");
+                    if (prefs.contains("movieInformation_" + movieId)) {
+                        combinedMovieDetail =
+                                new Gson().fromJson(movieJSONList, new TypeToken<CombinedMovieDetail>() {
                                 }.getType());
-                        if (tvInformation != null) {
+                        if (combinedMovieDetail != null) {
                             eventBus.post(new MessageEvent(1));
                         } else {
-                            fetchDataForTvInfo();
+                            fetchDataForMovieInfo();
                         }
                     } else {
-                        fetchDataForTvInfo();
+                        fetchDataForMovieInfo();
 
                     }
                 } catch (Exception e) {
@@ -254,13 +242,13 @@ public class DetailActivity extends AppCompatActivity implements TabLayout.OnTab
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    return TvDetailActivityFragment.newInstance(tvInformation);
+                    return MovieDetailActivityFragment.newInstance(combinedMovieDetail);
                 case 1:
-                    return VideosFragment.newInstance((ArrayList<VideoResult>) tvInformation.getVideos().getResults());
+                    return VideosFragment.newInstance((ArrayList<VideoResult>) combinedMovieDetail.getVideos().getResults());
                 case 2:
                     return ImageFragment.newInstance(imagesList);
                 default:
-                    return TvDetailActivityFragment.newInstance(tvInformation);
+                    return MovieDetailActivityFragment.newInstance(combinedMovieDetail);
             }
         }
 

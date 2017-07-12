@@ -48,6 +48,10 @@
             android:label="@string/title_activity_detail"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:name=".activity.MovieDetailActivity"
+            android:label="@string/title_activity_detail"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".activity.TvSeasonDetail"
             android:label="@string/title_activity_tv_season_info"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -87,7 +91,7 @@
             android:label="@string/title_activity_view_all"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activity.TvCastDetail"
+            android:name=".activity.TvCastDetailActivity"
             android:label="@string/title_activity_tv_cast_detail"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>

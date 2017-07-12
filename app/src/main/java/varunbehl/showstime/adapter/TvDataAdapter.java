@@ -22,17 +22,17 @@ import java.util.List;
 import varunbehl.showstime.R;
 import varunbehl.showstime.activity.DetailActivity;
 import varunbehl.showstime.activity.TvDetailActivityFragment;
-import varunbehl.showstime.pojo.TvDetails.CombinedTvDetail;
+import varunbehl.showstime.pojo.Picture.Pictures;
 
 public class TvDataAdapter extends RecyclerView.Adapter<TvDataAdapter.ViewHolder> {
 
     private final int value;
-    private final List<CombinedTvDetail.Result_> tvShows;
+    private final List<Pictures> tvShows;
     private final LayoutInflater inflater;
     private final Context mContext;
     private final FirebaseAnalytics mFirebaseAnalytics;
 
-    public TvDataAdapter(Context context, List<CombinedTvDetail.Result_> objects, int value) {
+    public TvDataAdapter(Context context, List<Pictures> objects, int value) {
         this.mContext = context;
         this.tvShows = objects;
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -54,7 +54,7 @@ public class TvDataAdapter extends RecyclerView.Adapter<TvDataAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(final TvDataAdapter.ViewHolder holder, int position) {
-        holder.tvMovieTitle.setText(tvShows.get(position).getName());
+        holder.tvMovieTitle.setText(tvShows.get(position).getOriginalTitle());
         holder.draweeView.setImageURI(getImageUri(tvShows.get(position).getPosterPath()));
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {
@@ -66,7 +66,7 @@ public class TvDataAdapter extends RecyclerView.Adapter<TvDataAdapter.ViewHolder
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 Bundle bundle = new Bundle();
                 bundle.putString(FirebaseAnalytics.Param.ITEM_ID, tvShows.get(holder.getAdapterPosition()).getId().toString());
-                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, tvShows.get(holder.getAdapterPosition()).getName());
+                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, tvShows.get(holder.getAdapterPosition()).getOriginalTitle());
                 bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "tv show");
                 mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
                 mContext.startActivity(intent);

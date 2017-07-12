@@ -22,17 +22,17 @@ import java.util.List;
 import varunbehl.showstime.R;
 import varunbehl.showstime.activity.DetailActivity;
 import varunbehl.showstime.activity.TvDetailActivityFragment;
-import varunbehl.showstime.pojo.TvDetails.CombinedTvDetail;
+import varunbehl.showstime.pojo.Picture.Pictures;
 
-public class TvInfoAdapter extends ArrayAdapter<CombinedTvDetail.Result_> {
+public class TvInfoAdapter extends ArrayAdapter<Pictures> {
 
-    private final List<CombinedTvDetail.Result_> tvInfoList;
+    private final List<Pictures> tvInfoList;
     private final LayoutInflater inflater;
     private final Context mContext;
     private final FirebaseAnalytics mFirebaseAnalytics;
 
 
-    public TvInfoAdapter(Context context, List<CombinedTvDetail.Result_> objects) {
+    public TvInfoAdapter(Context context, List<Pictures> objects) {
         super(context, 0, objects);
         this.mContext = context;
         this.tvInfoList = objects;
@@ -49,7 +49,7 @@ public class TvInfoAdapter extends ArrayAdapter<CombinedTvDetail.Result_> {
     }
 
     @Override
-    public CombinedTvDetail.Result_ getItem(int position) {
+    public Pictures getItem(int position) {
         return tvInfoList.get(position);
     }
 
@@ -61,7 +61,7 @@ public class TvInfoAdapter extends ArrayAdapter<CombinedTvDetail.Result_> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        final CombinedTvDetail.Result_ tvInfo = tvInfoList.get(position);
+        final Pictures tvInfo = tvInfoList.get(position);
 
         ViewHolder holder;
 
@@ -72,7 +72,7 @@ public class TvInfoAdapter extends ArrayAdapter<CombinedTvDetail.Result_> {
             holder = new ViewHolder(convertView);
             convertView.setTag(holder);
         }
-        holder.tvMovieTitle.setText(tvInfo.getName());
+        holder.tvMovieTitle.setText(tvInfo.getOriginalTitle());
         holder.draweeView.setImageURI(getImageUri(tvInfo.getBackdropPath()));
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {
@@ -84,7 +84,7 @@ public class TvInfoAdapter extends ArrayAdapter<CombinedTvDetail.Result_> {
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 Bundle bundle = new Bundle();
                 bundle.putString(FirebaseAnalytics.Param.ITEM_ID, tvInfo.getId().toString());
-                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, tvInfo.getName());
+                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, tvInfo.getOriginalTitle());
                 bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "movies");
 
                 mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
