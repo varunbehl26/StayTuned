@@ -132,6 +132,8 @@ public class MovieDetailActivity extends AppCompatActivity implements TabLayout.
             tabLayout.getTabAt(0).select();
         } catch (Exception e) {
             e.printStackTrace();
+            FirebaseCrash.report(e);
+
         }
 
     }

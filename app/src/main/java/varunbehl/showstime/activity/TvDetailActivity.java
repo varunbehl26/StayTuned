@@ -133,6 +133,8 @@ public class TvDetailActivity extends AppCompatActivity implements TabLayout.OnT
             tabLayout.getTabAt(0).select();
         } catch (Exception e) {
             e.printStackTrace();
+            FirebaseCrash.report(e);
+
         }
 
     }

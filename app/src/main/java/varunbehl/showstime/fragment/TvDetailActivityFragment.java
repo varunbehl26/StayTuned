@@ -179,6 +179,8 @@ public class TvDetailActivityFragment extends Fragment {
             }
         } catch (JSONException e) {
             e.printStackTrace();
+            FirebaseCrash.report(e);
+
         }
         if (episode == null) {
             nextEpisodeCardView.setVisibility(View.GONE);

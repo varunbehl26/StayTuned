@@ -16,6 +16,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.firebase.crash.FirebaseCrash;
 
 import java.util.List;
 
@@ -218,6 +219,8 @@ public class MovieDetailActivityFragment extends Fragment {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            FirebaseCrash.report(e);
+
         }
     }
 

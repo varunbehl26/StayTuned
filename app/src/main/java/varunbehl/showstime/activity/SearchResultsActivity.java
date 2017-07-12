@@ -141,6 +141,8 @@ public class SearchResultsActivity extends AppCompatActivity {
                         );
             } catch (Exception e) {
                 e.printStackTrace();
+                FirebaseCrash.report(e);
+
             }
         }
     }

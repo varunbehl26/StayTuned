@@ -1,5 +1,7 @@
 package varunbehl.showstime.network;
 
+import com.google.firebase.crash.FirebaseCrash;
+
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -56,6 +58,8 @@ public class RetrofitManager {
 
         } catch (Exception e) {
             e.printStackTrace();
+            FirebaseCrash.report(e);
+
         }
     }
 
