@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -13,6 +14,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.google.firebase.crash.FirebaseCrash;
 import com.google.gson.Gson;
@@ -32,6 +35,9 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import varunbehl.showstime.R;
 import varunbehl.showstime.eventbus.MessageEvent;
+import varunbehl.showstime.fragment.ImageFragment;
+import varunbehl.showstime.fragment.TvDetailActivityFragment;
+import varunbehl.showstime.fragment.VideosFragment;
 import varunbehl.showstime.network.RetrofitManager;
 import varunbehl.showstime.pojo.CombinedMovieDetail;
 import varunbehl.showstime.pojo.Images.Poster;
@@ -40,7 +46,7 @@ import varunbehl.showstime.pojo.TvSeason.TvSeasonInfo;
 import varunbehl.showstime.pojo.Video.VideoResult;
 import varunbehl.showstime.util.Constants;
 
-public class DetailActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener {
+public class TvDetailActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener {
     CombinedTvDetail tvInformation;
     private TabLayout tabLayout;
     private ViewPager viewPager;
@@ -53,6 +59,8 @@ public class DetailActivity extends AppCompatActivity implements TabLayout.OnTab
     private RetrofitManager retrofitManager;
     private EventBus eventBus;
     private CombinedMovieDetail combinedMovieDetail;
+    private CollapsingToolbarLayout collapsingToolbar;
+    private ProgressBar progressBar;
 
 
     @Override
@@ -64,11 +72,11 @@ public class DetailActivity extends AppCompatActivity implements TabLayout.OnTab
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-
+        progressBar = (ProgressBar) findViewById(R.id.progress_detail);
         tabLayout = (TabLayout) findViewById(R.id.tabLayoutHome);
         viewPager = (ViewPager) findViewById(R.id.pager);
         retrofitManager = RetrofitManager.getInstance();
-
+        progressBar.setVisibility(View.VISIBLE);
         tvId = (int) getIntent().getExtras().get(TvDetailActivityFragment.DETAIL_TV);
 
         prefs = this.getSharedPreferences(
@@ -119,6 +127,7 @@ public class DetailActivity extends AppCompatActivity implements TabLayout.OnTab
         try {
             loadImages(tvInformation);
             initializeAdapter();
+            progressBar.setVisibility(View.GONE);
             showsPagerAdapter.notifyDataSetChanged();
             viewPager.setCurrentItem(0);
             tabLayout.getTabAt(0).select();

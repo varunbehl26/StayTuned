@@ -20,7 +20,7 @@ import java.util.List;
 
 import varunbehl.showstime.R;
 import varunbehl.showstime.activity.MovieDetailActivity;
-import varunbehl.showstime.activity.MovieDetailActivityFragment;
+import varunbehl.showstime.fragment.MovieDetailActivityFragment;
 import varunbehl.showstime.pojo.Picture.Pictures;
 
 public class MoviesInfoAdapter extends ArrayAdapter<Pictures> {

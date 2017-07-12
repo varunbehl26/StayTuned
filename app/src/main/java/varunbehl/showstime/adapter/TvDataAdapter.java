@@ -20,8 +20,8 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import java.util.List;
 
 import varunbehl.showstime.R;
-import varunbehl.showstime.activity.DetailActivity;
-import varunbehl.showstime.activity.TvDetailActivityFragment;
+import varunbehl.showstime.activity.TvDetailActivity;
+import varunbehl.showstime.fragment.TvDetailActivityFragment;
 import varunbehl.showstime.pojo.Picture.Pictures;
 
 public class TvDataAdapter extends RecyclerView.Adapter<TvDataAdapter.ViewHolder> {
@@ -54,13 +54,13 @@ public class TvDataAdapter extends RecyclerView.Adapter<TvDataAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(final TvDataAdapter.ViewHolder holder, int position) {
-        holder.tvMovieTitle.setText(tvShows.get(position).getOriginalTitle());
+        holder.tvMovieTitle.setText(tvShows.get(position).getName());
         holder.draweeView.setImageURI(getImageUri(tvShows.get(position).getPosterPath()));
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(mContext, DetailActivity.class)
+                Intent intent = new Intent(mContext, TvDetailActivity.class)
                         .putExtra(TvDetailActivityFragment.DETAIL_TV, tvShows.get(holder.getAdapterPosition()).getId())
                         .putExtra("ListToOpen", 2);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

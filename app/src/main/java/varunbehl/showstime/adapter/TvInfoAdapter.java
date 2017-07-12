@@ -20,8 +20,8 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import java.util.List;
 
 import varunbehl.showstime.R;
-import varunbehl.showstime.activity.DetailActivity;
-import varunbehl.showstime.activity.TvDetailActivityFragment;
+import varunbehl.showstime.activity.TvDetailActivity;
+import varunbehl.showstime.fragment.TvDetailActivityFragment;
 import varunbehl.showstime.pojo.Picture.Pictures;
 
 public class TvInfoAdapter extends ArrayAdapter<Pictures> {
@@ -72,13 +72,13 @@ public class TvInfoAdapter extends ArrayAdapter<Pictures> {
             holder = new ViewHolder(convertView);
             convertView.setTag(holder);
         }
-        holder.tvMovieTitle.setText(tvInfo.getOriginalTitle());
+        holder.tvMovieTitle.setText(tvInfo.getName());
         holder.draweeView.setImageURI(getImageUri(tvInfo.getBackdropPath()));
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(mContext, DetailActivity.class)
+                Intent intent = new Intent(mContext, TvDetailActivity.class)
                         .putExtra(TvDetailActivityFragment.DETAIL_TV, tvInfo.getId())
                         .putExtra("ListToOpen", 2);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

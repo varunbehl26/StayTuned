@@ -15,6 +15,7 @@ import java.util.List;
 
 public class Pictures implements Parcelable {
 
+
     public static final Parcelable.Creator<Pictures> CREATOR = new Parcelable.Creator<Pictures>() {
         @Override
         public Pictures createFromParcel(Parcel source) {
@@ -29,6 +30,9 @@ public class Pictures implements Parcelable {
     @SerializedName("poster_path")
     @Expose
     private String posterPath;
+    @SerializedName("name")
+    @Expose
+    private String name;
     @SerializedName("adult")
     @Expose
     private Boolean adult;
@@ -69,31 +73,16 @@ public class Pictures implements Parcelable {
     @Expose
     private Double voteAverage;
 
-    public Pictures(String posterPath, Boolean adult, String overview, String releaseDate, Integer id, String originalTitle, String originalLanguage, String backdropPath, Double popularity, Integer voteCount, Boolean video, Double voteAverage) {
-        this.posterPath = posterPath;
-        this.adult = adult;
-        this.overview = overview;
-        this.releaseDate = releaseDate;
-        this.id = id;
-        this.originalTitle = originalTitle;
-        this.originalLanguage = originalLanguage;
-        this.backdropPath = backdropPath;
-        this.popularity = popularity;
-        this.voteCount = voteCount;
-        this.video = video;
-        this.voteAverage = voteAverage;
-    }
-
     public Pictures() {
     }
 
-
-    private Pictures(Parcel in) {
+    protected Pictures(Parcel in) {
         this.posterPath = in.readString();
+        this.name = in.readString();
         this.adult = (Boolean) in.readValue(Boolean.class.getClassLoader());
         this.overview = in.readString();
         this.releaseDate = in.readString();
-        this.genreIds = new ArrayList<>();
+        this.genreIds = new ArrayList<Integer>();
         in.readList(this.genreIds, Integer.class.getClassLoader());
         this.id = (Integer) in.readValue(Integer.class.getClassLoader());
         this.originalTitle = in.readString();
@@ -104,6 +93,14 @@ public class Pictures implements Parcelable {
         this.voteCount = (Integer) in.readValue(Integer.class.getClassLoader());
         this.video = (Boolean) in.readValue(Boolean.class.getClassLoader());
         this.voteAverage = (Double) in.readValue(Double.class.getClassLoader());
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     /**
@@ -310,6 +307,7 @@ public class Pictures implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.posterPath);
+        dest.writeString(this.name);
         dest.writeValue(this.adult);
         dest.writeString(this.overview);
         dest.writeString(this.releaseDate);
@@ -323,25 +321,5 @@ public class Pictures implements Parcelable {
         dest.writeValue(this.voteCount);
         dest.writeValue(this.video);
         dest.writeValue(this.voteAverage);
-    }
-
-    @Override
-    public String toString() {
-        return "Pictures{" +
-                "posterPath='" + posterPath + '\'' +
-                ", adult=" + adult +
-                ", overview='" + overview + '\'' +
-                ", releaseDate='" + releaseDate + '\'' +
-                ", genreIds=" + genreIds +
-                ", id=" + id +
-                ", originalTitle='" + originalTitle + '\'' +
-                ", originalLanguage='" + originalLanguage + '\'' +
-                ", title='" + title + '\'' +
-                ", backdropPath='" + backdropPath + '\'' +
-                ", popularity=" + popularity +
-                ", voteCount=" + voteCount +
-                ", video=" + video +
-                ", voteAverage=" + voteAverage +
-                '}';
     }
 }

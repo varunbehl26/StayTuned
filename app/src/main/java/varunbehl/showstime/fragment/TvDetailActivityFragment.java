@@ -1,4 +1,4 @@
-package varunbehl.showstime.activity;
+package varunbehl.showstime.fragment;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -26,6 +26,7 @@ import org.json.JSONObject;
 import java.util.List;
 
 import varunbehl.showstime.R;
+import varunbehl.showstime.activity.TvDetailActivity;
 import varunbehl.showstime.adapter.TvCastAdapter;
 import varunbehl.showstime.adapter.TvDataAdapter;
 import varunbehl.showstime.adapter.TvSeasonsAdapter;
@@ -75,7 +76,7 @@ public class TvDetailActivityFragment extends Fragment {
     public TvDetailActivityFragment() {
     }
 
-    static TvDetailActivityFragment newInstance(CombinedTvDetail tvInformation) {
+    public static TvDetailActivityFragment newInstance(CombinedTvDetail tvInformation) {
         Bundle bundle = new Bundle();
         bundle.putParcelable("tvInformation", tvInformation);
         TvDetailActivityFragment tvDetailActivityFragment = new TvDetailActivityFragment();
@@ -97,8 +98,8 @@ public class TvDetailActivityFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
-        ((DetailActivity) getActivity()).getSupportActionBar().setHomeButtonEnabled(true);
-        ((DetailActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ((TvDetailActivity) getActivity()).getSupportActionBar().setHomeButtonEnabled(true);
+        ((TvDetailActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         RetrofitManager retrofitManager = RetrofitManager.getInstance();
         collapsingToolbar = (CollapsingToolbarLayout) getActivity().findViewById(R.id.toolbar_layout);
 
@@ -308,19 +309,6 @@ public class TvDetailActivityFragment extends Fragment {
                     recommendedTvShowsHeading.setText(R.string.you_must_watch_heading);
                 }
             }
-//            if (tvInformation.getVideos().getResults().size() < 1) {
-//                videosCardView.setVisibility(View.GONE);
-//            } else {
-//                videos = tvInformation.getVideos().getResults();
-//                if (getActivity() != null) {
-//                    VideoAdapter videoAdapter = new VideoAdapter(getActivity(), videos);
-//                    videosHzGridView.setAdapter(videoAdapter);
-//                    videoAdapter.notifyDataSetChanged();
-//                    videosHzGridView.setVisibility(View.VISIBLE);
-//                    videosProgressBar.setVisibility(View.GONE);
-//                    videosHeading.setText(R.string.videos_heading);
-//                }
-//            }
         }
     }
 

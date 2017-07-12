@@ -1,4 +1,4 @@
-package varunbehl.showstime.activity;
+package varunbehl.showstime.fragment;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -20,6 +20,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import java.util.List;
 
 import varunbehl.showstime.R;
+import varunbehl.showstime.activity.MovieDetailActivity;
 import varunbehl.showstime.adapter.MovieListDataAdapter;
 import varunbehl.showstime.adapter.TvCastAdapter;
 import varunbehl.showstime.network.RetrofitManager;
@@ -71,11 +72,8 @@ public class MovieDetailActivityFragment extends Fragment {
     public MovieDetailActivityFragment() {
     }
 
-    static MovieDetailActivityFragment newInstance() {
-        return new MovieDetailActivityFragment();
-    }
 
-    static MovieDetailActivityFragment newInstance(CombinedMovieDetail combinedMovieDetail) {
+    public static MovieDetailActivityFragment newInstance(CombinedMovieDetail combinedMovieDetail) {
         Bundle bundle = new Bundle();
         bundle.putParcelable("combinedMovieDetail", combinedMovieDetail);
         MovieDetailActivityFragment movieDetailActivityFragment = new MovieDetailActivityFragment();

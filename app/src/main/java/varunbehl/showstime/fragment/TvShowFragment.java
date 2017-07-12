@@ -1,4 +1,4 @@
-package varunbehl.showstime.activity;
+package varunbehl.showstime.fragment;
 
 import android.content.Context;
 import android.content.Intent;
@@ -46,27 +46,29 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import varunbehl.showstime.R;
-import varunbehl.showstime.adapter.MovieListDataAdapter;
+import varunbehl.showstime.activity.TvDetailActivity;
+import varunbehl.showstime.activity.ViewAllActivity;
+import varunbehl.showstime.adapter.TvDataAdapter;
 import varunbehl.showstime.data.ShowsTimeContract;
 import varunbehl.showstime.data.ShowsTimeDBHelper;
 import varunbehl.showstime.eventbus.MessageEvent;
 import varunbehl.showstime.network.RetrofitManager;
-import varunbehl.showstime.pojo.Picture.Picture_Detail;
 import varunbehl.showstime.pojo.Picture.Pictures;
+import varunbehl.showstime.pojo.Tv.Tv;
+import varunbehl.showstime.pojo.TvDetails.CombinedTvDetail;
 import varunbehl.showstime.util.Constants;
 import varunbehl.showstime.util.DateTimeHelper;
 
-public class MovieFragment extends Fragment {
+public class TvShowFragment extends Fragment {
 
     private FirebaseAnalytics mFirebaseAnalytics;
     private EventBus eventBus;
     private SharedPreferences.Editor editor;
     private boolean threadAlreadyRunning = false;
     private RetrofitManager retrofitManager;
-    private List<Pictures> topRatedMoviesList = new ArrayList<>();
-    private List<Pictures> popularMoviesList = new ArrayList<>();
-    private List<Pictures> upcomingMoviesList = new ArrayList<>();
-    private List<Pictures> nowPlayingMoviesList = new ArrayList<>();
+    private ArrayList<Pictures> topRatedTvList = new ArrayList<>();
+    private ArrayList<Pictures> popularTvList = new ArrayList<>();
+    private ArrayList<Pictures> airingTodayList = new ArrayList<>();
     private HorizontalGridView popularTvShowsHzGridView, topRatedTvshowsHzGridView, todayAirTvShowsHzGridView;
     private ProgressBar popularTvShowsProgressBar, topRatedTvShowsProgressBar, todayAirTvShowsProgressBar;
     private SharedPreferences prefs;
@@ -75,13 +77,10 @@ public class MovieFragment extends Fragment {
     private TextView todayAirTvTvShowHeading;
     private LinearLayout layout;
     private Context mContext;
-    private List<Pictures> dataList = new ArrayList<>();
+    private List<CombinedTvDetail> dataList = new ArrayList<>();
     private CarouselView carousel_view;
+    private List<CombinedTvDetail> tvInfoList;
     private AdView nativeView;
-
-    public static MovieFragment newInstance() {
-        return new MovieFragment();
-    }
 
 
     @Override
@@ -90,12 +89,11 @@ public class MovieFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_movie, container, false);
         MobileAds.initialize(getContext(), Constants.ADUNIT);
         mContext = getActivity();
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(mContext);
         new ShowsTimeDBHelper(mContext);
         eventBus = EventBus.getDefault();
 
         carousel_view = (CarouselView) view.findViewById(R.id.carouselView);
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(mContext);
-
         nativeView = (AdView) view.findViewById(R.id.adView);
         handleAdView();
 
@@ -140,7 +138,7 @@ public class MovieFragment extends Fragment {
         todayAir_view_all_tx.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                actionOnclick("upcoming");
+                actionOnclick("airing_today");
             }
         });
 
@@ -148,117 +146,53 @@ public class MovieFragment extends Fragment {
         topRatedTvshowsHzGridView.setVisibility(View.INVISIBLE);
         todayAirTvShowsHzGridView.setVisibility(View.INVISIBLE);
         new MainPageThread(1).start();
-        readFromDatabase();
         return view;
-    }
-
-    private void handleAdView() {
-
-        nativeView.loadAd(new AdRequest.Builder().addTestDevice("D938443E0DE7112D76DF6BBA67607EB5").build());
-
-        nativeView.setAdListener(new AdListener() {
-
-            @Override
-            public void onAdLoaded() {
-                nativeView.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onAdFailedToLoad(int error) {
-                nativeView.setVisibility(View.GONE);
-            }
-
-        });
     }
 
 
     @Override
     public void onResume() {
         super.onResume();
-//        eventBus = EventBus.getDefault();
         eventBus.register(this);
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
-        eventBus = EventBus.getDefault();
+    public void onPause() {
+        super.onPause();
         eventBus.unregister(this);
     }
 
 
-    private void readFromDatabase() {
-        ShowsTimeDBHelper dbHelper = new ShowsTimeDBHelper(mContext);
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.rawQuery("Select * from " + ShowsTimeContract.StayTunedEntry.TABLE_NAME, null);
-        Log.v("count ", cursor.getCount() + "");
-        cursor.close();
+    @Override
+    public void onStop() {
+        eventBus.unregister(this);
+        super.onStop();
     }
 
-    private void fetchListTypeDataFromServer(String listType, int eventType) {
-        Random rand = new Random();
-        int pageToQuery = rand.nextInt(5) + 1;
-
-        switch (eventType) {
-            case 2:
-                listType = "top_rated";
-                break;
-
-
-        }
-
-        Observable<Picture_Detail> topRatedObservable = retrofitManager.listMoviesInfo(listType, pageToQuery);
-
-        topRatedObservable
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe(new Subscriber<Picture_Detail>() {
-                               @Override
-                               public void onCompleted() {
-                                   if (dataList != null) {
-                                       eventBus.post(new MessageEvent(2));
-                                   }
-                                   String topRatedTvJSONList = new Gson().toJson(topRatedMoviesList);
-                                   SharedPreferences.Editor editor = prefs.edit();
-                                   editor.putString("topRatedMoviesList", topRatedTvJSONList);
-                                   editor.apply();
-                               }
-
-                               @Override
-                               public void onError(Throwable e) {
-                                   e.printStackTrace();
-                                   FirebaseCrash.report(e);
-
-                                   Log.v("Exception", "NullPointerException");
-                               }
-
-                               @Override
-                               public void onNext(Picture_Detail tv) {
-                                   dataList = tv.getResults();
-                               }
-                           }
-                );
-
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        eventBus.unregister(this);
     }
+
 
     private void fetchTopRatedDataFromServer() {
         Random rand = new Random();
         int pageToQuery = rand.nextInt(5) + 1;
-        Observable<Picture_Detail> topRatedObservable = retrofitManager.listMoviesInfo("top_rated", pageToQuery);
+        Observable<Tv> topRatedObservable = retrofitManager.listTvShows("top_rated", pageToQuery);
 
         topRatedObservable
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe(new Subscriber<Picture_Detail>() {
+                .subscribe(new Subscriber<Tv>() {
                                @Override
                                public void onCompleted() {
-                                   if (topRatedMoviesList != null)
+                                   if (topRatedTvList != null)
                                        eventBus.post(new MessageEvent(2));
 
-                                   String topRatedTvJSONList = new Gson().toJson(topRatedMoviesList);
+                                   String topRatedTvJSONList = new Gson().toJson(topRatedTvList);
                                    SharedPreferences.Editor editor = prefs.edit();
-                                   editor.putString("topRatedMoviesList", topRatedTvJSONList);
+                                   editor.putString("topRatedTvList", topRatedTvJSONList);
                                    editor.apply();
                                }
 
@@ -271,8 +205,8 @@ public class MovieFragment extends Fragment {
                                }
 
                                @Override
-                               public void onNext(Picture_Detail tv) {
-                                   topRatedMoviesList = tv.getResults();
+                               public void onNext(Tv tv) {
+                                   topRatedTvList = tv.getTvShows();
                                }
                            }
                 );
@@ -284,19 +218,19 @@ public class MovieFragment extends Fragment {
     private void fetchPopularDataFromServer() {
         Random rand = new Random();
         int pageToQuery = rand.nextInt(5) + 1;
-        Observable<Picture_Detail> popularObservable = retrofitManager.listMoviesInfo("popular", pageToQuery);
+        Observable<Tv> popularObservable = retrofitManager.listTvShows("popular", pageToQuery);
 
         popularObservable
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe(new Subscriber<Picture_Detail>() {
+                .subscribe(new Subscriber<Tv>() {
                                @Override
                                public void onCompleted() {
-                                   if (popularMoviesList != null)
+                                   if (popularTvList != null)
                                        eventBus.post(new MessageEvent(1));
-                                   String topRatedTvJSONList = new Gson().toJson(popularMoviesList);
+                                   String topRatedTvJSONList = new Gson().toJson(popularTvList);
                                    SharedPreferences.Editor editor = prefs.edit();
-                                   editor.putString("popularMoviesList", topRatedTvJSONList);
+                                   editor.putString("popularTvList", topRatedTvJSONList);
                                    editor.apply();
                                }
 
@@ -310,28 +244,28 @@ public class MovieFragment extends Fragment {
 
 
                                @Override
-                               public void onNext(Picture_Detail tv) {
-                                   popularMoviesList = tv.getResults();
+                               public void onNext(Tv tv) {
+                                   popularTvList = tv.getTvShows();
                                }
                            }
 
                 );
     }
 
-    private void fetchLatestDataFromServer() {
-        Observable<Picture_Detail> airingTodayObservable = retrofitManager.listMoviesInfo("upcoming", 1);
+    private void fetchAiringTodayDataFromServer() {
+        Observable<Tv> airingTodayObservable = retrofitManager.listTvShows("airing_today", 1);
 
         airingTodayObservable
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe(new Subscriber<Picture_Detail>() {
+                .subscribe(new Subscriber<Tv>() {
                                @Override
                                public void onCompleted() {
-                                   if (upcomingMoviesList != null)
+                                   if (airingTodayList != null)
                                        eventBus.post(new MessageEvent(3));
-                                   String topRatedTvJSONList = new Gson().toJson(upcomingMoviesList);
+                                   String topRatedTvJSONList = new Gson().toJson(airingTodayList);
                                    SharedPreferences.Editor editor = prefs.edit();
-                                   editor.putString("upcomingMoviesList", topRatedTvJSONList);
+                                   editor.putString("airingTodayList", topRatedTvJSONList);
                                    editor.apply();
                                }
 
@@ -344,8 +278,8 @@ public class MovieFragment extends Fragment {
                                }
 
                                @Override
-                               public void onNext(Picture_Detail tv) {
-                                   upcomingMoviesList = tv.getResults();
+                               public void onNext(Tv tv) {
+                                   airingTodayList = tv.getTvShows();
                                }
                            }
 
@@ -381,109 +315,143 @@ public class MovieFragment extends Fragment {
     public void onMessageEvent(MessageEvent event) {
         threadAlreadyRunning = false;
         if (event.getRequest() == 1) {
-            MovieListDataAdapter popularTvDataAdapter = new MovieListDataAdapter(mContext, popularMoviesList, 1);
+            TvDataAdapter popularTvDataAdapter = new TvDataAdapter(getContext(), popularTvList, 1);
             popularTvShowsHzGridView.setAdapter(popularTvDataAdapter);
             popularTvDataAdapter.notifyDataSetChanged();
             popularTvShowsHzGridView.setVisibility(View.VISIBLE);
             popularTvShowsProgressBar.setVisibility(View.GONE);
-            popularTvShowHeading.setText(R.string.popular_movies);
+            popularTvShowHeading.setText(R.string.popular_tv_heading);
         } else if (event.getRequest() == 2) {
-            MovieListDataAdapter topRatedTvDataAdapter = new MovieListDataAdapter(mContext, topRatedMoviesList, 2);
+            TvDataAdapter topRatedTvDataAdapter = new TvDataAdapter(getContext(), topRatedTvList, 2);
             topRatedTvshowsHzGridView.setAdapter(topRatedTvDataAdapter);
             topRatedTvDataAdapter.notifyDataSetChanged();
             topRatedTvshowsHzGridView.setVisibility(View.VISIBLE);
             topRatedTvShowsProgressBar.setVisibility(View.GONE);
-            topRatedTvshowHeading.setText(R.string.top_rated_movies);
+            topRatedTvshowHeading.setText(R.string.top_rated_heading);
         } else if (event.getRequest() == 3) {
-            MovieListDataAdapter todayAirTvDataAdapter = new MovieListDataAdapter(mContext, upcomingMoviesList, 1);
+            TvDataAdapter todayAirTvDataAdapter = new TvDataAdapter(getContext(), airingTodayList, 1);
             todayAirTvShowsHzGridView.setAdapter(todayAirTvDataAdapter);
             todayAirTvDataAdapter.notifyDataSetChanged();
             todayAirTvShowsHzGridView.setVisibility(View.VISIBLE);
             todayAirTvShowsProgressBar.setVisibility(View.GONE);
-            todayAirTvTvShowHeading.setText(R.string.upcoming_movies);
+            todayAirTvTvShowHeading.setText(R.string.air_today_heading);
 
         } else if (event.getRequest() == 4) {
             showSnakeBar(layout);
+        } else if (event.getRequest() == 5) {
+            carousel_view.setPageCount(tvInfoList.size());
+            if (tvInfoList.size() >= 1) {
+                carousel_view.setVisibility(View.VISIBLE);
+            } else {
+                carousel_view.setVisibility(View.GONE);
+            }
         }
     }
 
     private void actionOnclick(String type) {
         Intent intent = new Intent(mContext, ViewAllActivity.class);
         intent.putExtra("listType", type);
-        intent.putExtra("categoryType", 1);
+        intent.putExtra("categoryType", 2);
         startActivity(intent);
     }
 
-    private void fetchNowPlayingDataFromServer() {
-        Observable<Picture_Detail> airingTodayObservable = retrofitManager.listMoviesInfo("now_playing", 1);
+    private String getDataFromCursor(Cursor cursor, String Index) {
+        return cursor.getString(cursor.getColumnIndex(Index));
 
-        airingTodayObservable
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe(new Subscriber<Picture_Detail>() {
-                               @Override
-                               public void onCompleted() {
-                                   if (nowPlayingMoviesList != null)
-                                       eventBus.post(new MessageEvent(3));
-                                   String topRatedTvJSONList = new Gson().toJson(nowPlayingMoviesList);
-                                   SharedPreferences.Editor editor = prefs.edit();
-                                   editor.putString("upcomingMoviesList", topRatedTvJSONList);
-                                   editor.apply();
+    }
 
-                                   // set ViewListener for custom view
-                                   carousel_view.setViewListener(new ViewListener() {
-                                       @Override
-                                       public View setViewForPosition(final int position) {
-                                           View itemView = getActivity().getLayoutInflater().inflate(R.layout.caraousel_movie_layout, null);
-                                           TextView tvMovieTitle;
-                                           SimpleDraweeView draweeView;
-                                           CardView cardView;
+    private void readFromDatabase() {
+        ShowsTimeDBHelper dbHelper = new ShowsTimeDBHelper(getContext());
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        tvInfoList = new ArrayList<>();
+        Cursor cursor = db.rawQuery("Select * from " + ShowsTimeContract.StayTunedEntry.TABLE_NAME, null);
 
-                                           tvMovieTitle = (TextView) itemView.findViewById(R.id.tv_movie_title);
-                                           draweeView = (SimpleDraweeView) itemView.findViewById(R.id.img_movie_poster);
+        if (cursor.moveToFirst()) {
+            do {
+                CombinedTvDetail tvInfo = new CombinedTvDetail();
+                tvInfo.setId(Integer.parseInt(getDataFromCursor(cursor, ShowsTimeContract.StayTunedEntry.TV_ID)));
+                tvInfo.setBackdropPath(getDataFromCursor(cursor, ShowsTimeContract.StayTunedEntry.IMAGE));
+                tvInfo.setName(getDataFromCursor(cursor, ShowsTimeContract.StayTunedEntry.NAME));
+                String is_fav = cursor.getString(cursor.getColumnIndex(ShowsTimeContract.StayTunedEntry.IS_FAVORITE));
 
-                                           cardView = (CardView) itemView.findViewById(R.id.card_view);
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putInt("is_fav" + "_" + tvInfo.getId(), Integer.parseInt(is_fav));
+                editor.apply();
 
-                                           cardView.setOnClickListener(new View.OnClickListener() {
-                                               @Override
-                                               public void onClick(View v) {
-                                                   Intent intent = new Intent(mContext, MovieDetailActivity.class)
-                                                           .putExtra(MovieDetailActivityFragment.DETAIL_TV, nowPlayingMoviesList.get(position).getId())
-                                                           .putExtra("ListToOpen", 1);
-                                                   intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                                   Bundle bundle = new Bundle();
-                                                   bundle.putString(FirebaseAnalytics.Param.ITEM_ID, nowPlayingMoviesList.get(position).getId().toString());
-                                                   bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, nowPlayingMoviesList.get(position).getTitle());
-                                                   bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "movies");
-                                                   mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
-                                                   mContext.startActivity(intent);
-                                               }
-                                           });
+                tvInfoList.add(tvInfo);
 
-                                           tvMovieTitle.setText(nowPlayingMoviesList.get(position).getTitle());
-                                           draweeView.setImageURI(getImageUri(nowPlayingMoviesList.get(position).getBackdropPath()));
-                                           return itemView;
-                                       }
-                                   });
-                                   carousel_view.setPageCount(nowPlayingMoviesList.size());
-                                   carousel_view.setVisibility(View.VISIBLE);
-                               }
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+    }
 
-                               @Override
-                               public void onError(Throwable e) {
-                                   e.printStackTrace();
-                                   FirebaseCrash.report(e);
 
-                                   Log.v("Exception", "NullPointerException");
-                               }
+    private void handleAdView() {
 
-                               @Override
-                               public void onNext(Picture_Detail picture_detail) {
-                                   nowPlayingMoviesList = picture_detail.getResults();
-                               }
-                           }
+        nativeView.loadAd(new AdRequest.Builder().addTestDevice("D938443E0DE7112D76DF6BBA67607EB5").build());
 
-                );
+        nativeView.setAdListener(new AdListener() {
+
+            @Override
+            public void onAdLoaded() {
+                nativeView.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAdFailedToLoad(int error) {
+                nativeView.setVisibility(View.GONE);
+            }
+
+        });
+    }
+
+    private void fetchFavoriteTvShowsFromDb() {
+        try {
+            readFromDatabase();
+
+            carousel_view.setViewListener(new ViewListener() {
+                @Override
+                public View setViewForPosition(final int position) {
+                    View itemView = getActivity().getLayoutInflater().inflate(R.layout.caraousel_movie_layout, null);
+                    TextView tvMovieTitle;
+                    SimpleDraweeView draweeView;
+                    CardView cardView;
+
+                    tvMovieTitle = (TextView) itemView.findViewById(R.id.tv_movie_title);
+                    draweeView = (SimpleDraweeView) itemView.findViewById(R.id.img_movie_poster);
+
+                    cardView = (CardView) itemView.findViewById(R.id.card_view);
+
+                    cardView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(mContext, TvDetailActivity.class)
+                                    .putExtra(TvDetailActivityFragment.DETAIL_TV, tvInfoList.get(position).getId())
+                                    .putExtra("ListToOpen", 2);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            Bundle bundle = new Bundle();
+                            bundle.putString(FirebaseAnalytics.Param.ITEM_ID, tvInfoList.get(position).getId().toString());
+                            bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, tvInfoList.get(position).getName());
+                            bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "tv show");
+                            mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+                            mContext.startActivity(intent);
+                        }
+                    });
+
+
+                    tvMovieTitle.setText(tvInfoList.get(position).getName());
+                    draweeView.setImageURI(getImageUri(tvInfoList.get(position).getBackdropPath()));
+                    return itemView;
+                }
+            });
+
+            eventBus.post(new MessageEvent(5));
+        } catch (Exception e) {
+            e.printStackTrace();
+            FirebaseCrash.report(e);
+
+        }
+
     }
 
     private String getImageUri(String uri) {
@@ -504,46 +472,46 @@ public class MovieFragment extends Fragment {
             if (threadAlreadyRunning) {
                 return;
             }
-            if (DateTimeHelper.getDifference(prefs.getLong("Last-Sync-Time-Movies", 0))) {
+            if (DateTimeHelper.getDifference(prefs.getLong("Last-Sync-Time", 0))) {
                 fetchPopularDataFromServer();
                 fetchTopRatedDataFromServer();
-                fetchLatestDataFromServer();
+                fetchAiringTodayDataFromServer();
+                fetchFavoriteTvShowsFromDb();
                 Date date = new Date();
-                prefs.edit().putLong("Last-Sync-Time-Movies", date.getTime()).apply();
+                prefs.edit().putLong("Last-Sync-Time", date.getTime()).apply();
             } else {
                 if (requestType == 1) {
                     threadAlreadyRunning = true;
-                    if (popularMoviesList.isEmpty()) {
-                        String popularMovieJSONList = prefs.getString("popularMoviesList", "");
-                        popularMoviesList =
-                                new Gson().fromJson(popularMovieJSONList, new TypeToken<List<Pictures>>() {
+                    if (popularTvList.isEmpty()) {
+                        String popularTvJSONList = prefs.getString("popularTvList", "");
+                        popularTvList =
+                                new Gson().fromJson(popularTvJSONList, new TypeToken<List<Pictures>>() {
                                 }.getType());
                         eventBus.post(new MessageEvent(1));
 
                     }
 
-                    if (topRatedMoviesList.isEmpty()) {
-                        String topRatedMovieJSONList = prefs.getString("topRatedMoviesList", "");
-                        topRatedMoviesList =
-                                new Gson().fromJson(topRatedMovieJSONList, new TypeToken<List<Pictures>>() {
+                    if (topRatedTvList.isEmpty()) {
+                        String topRatedTvJSONList = prefs.getString("topRatedTvList", "");
+                        topRatedTvList =
+                                new Gson().fromJson(topRatedTvJSONList, new TypeToken<List<Pictures>>() {
                                 }.getType());
                         eventBus.post(new MessageEvent(2));
 
                     }
-                    if (upcomingMoviesList.isEmpty()) {
-                        String upcomingMovieJSONList = prefs.getString("upcomingMoviesList", "");
-                        if (!upcomingMovieJSONList.isEmpty()) {
-                            upcomingMoviesList =
-                                    new Gson().fromJson(upcomingMovieJSONList, new TypeToken<List<Pictures>>() {
+                    if (airingTodayList.isEmpty()) {
+                        String airingTodayJSONList = prefs.getString("airingTodayList", "");
+                        if (!airingTodayJSONList.isEmpty()) {
+                            airingTodayList =
+                                    new Gson().fromJson(airingTodayJSONList, new TypeToken<List<Pictures>>() {
                                     }.getType());
                             eventBus.post(new MessageEvent(3));
                         }
                     }
+                    fetchFavoriteTvShowsFromDb();
+
                 }
             }
-
-            fetchNowPlayingDataFromServer();
-
 
         }
     }

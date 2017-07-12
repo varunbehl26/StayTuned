@@ -23,6 +23,8 @@ import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import varunbehl.showstime.R;
+import varunbehl.showstime.fragment.MovieFragment;
+import varunbehl.showstime.fragment.TvShowFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {

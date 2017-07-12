@@ -1,4 +1,4 @@
-package varunbehl.showstime.activity;
+package varunbehl.showstime.fragment;
 
 import android.content.Context;
 import android.os.Bundle;

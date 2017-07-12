@@ -17,8 +17,8 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import varunbehl.showstime.R;
-import varunbehl.showstime.activity.DetailActivity;
-import varunbehl.showstime.activity.TvDetailActivityFragment;
+import varunbehl.showstime.activity.TvDetailActivity;
+import varunbehl.showstime.fragment.TvDetailActivityFragment;
 
 public class TvInfoCursorAdapter extends CursorAdapter {
 
@@ -52,7 +52,7 @@ public class TvInfoCursorAdapter extends CursorAdapter {
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(mContext, DetailActivity.class)
+                Intent intent = new Intent(mContext, TvDetailActivity.class)
                         .putExtra(TvDetailActivityFragment.DETAIL_TV, cursor.getInt(cursor.getColumnIndexOrThrow("tv_id")))
                         .putExtra("ListToOpen",2);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

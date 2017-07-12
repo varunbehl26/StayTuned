@@ -11,6 +11,8 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.google.firebase.crash.FirebaseCrash;
 import com.google.gson.Gson;
@@ -29,6 +31,10 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import varunbehl.showstime.R;
 import varunbehl.showstime.eventbus.MessageEvent;
+import varunbehl.showstime.fragment.ImageFragment;
+import varunbehl.showstime.fragment.MovieDetailActivityFragment;
+import varunbehl.showstime.fragment.TvDetailActivityFragment;
+import varunbehl.showstime.fragment.VideosFragment;
 import varunbehl.showstime.network.RetrofitManager;
 import varunbehl.showstime.pojo.CombinedMovieDetail;
 import varunbehl.showstime.pojo.Images.Poster;
@@ -50,6 +56,7 @@ public class MovieDetailActivity extends AppCompatActivity implements TabLayout.
     private EventBus eventBus;
     private CombinedMovieDetail combinedMovieDetail;
     private int movieId;
+    private ProgressBar progressBar;
 
 
     @Override
@@ -61,6 +68,8 @@ public class MovieDetailActivity extends AppCompatActivity implements TabLayout.
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        progressBar = (ProgressBar) findViewById(R.id.progress_detail);
+        progressBar.setVisibility(View.VISIBLE);
 
         tabLayout = (TabLayout) findViewById(R.id.tabLayoutHome);
         viewPager = (ViewPager) findViewById(R.id.pager);
@@ -117,6 +126,7 @@ public class MovieDetailActivity extends AppCompatActivity implements TabLayout.
         try {
             loadImages(combinedMovieDetail);
             initializeAdapter();
+            progressBar.setVisibility(View.GONE);
             showsPagerAdapter.notifyDataSetChanged();
             viewPager.setCurrentItem(0);
             tabLayout.getTabAt(0).select();

@@ -19,8 +19,8 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import java.util.List;
 
 import varunbehl.showstime.R;
-import varunbehl.showstime.activity.DetailActivity;
-import varunbehl.showstime.activity.TvDetailActivityFragment;
+import varunbehl.showstime.activity.TvDetailActivity;
+import varunbehl.showstime.fragment.TvDetailActivityFragment;
 import varunbehl.showstime.pojo.Search.SearchResult;
 
 public class SearchEpisodeAdapter extends ArrayAdapter<SearchResult.Result> {
@@ -81,7 +81,7 @@ public class SearchEpisodeAdapter extends ArrayAdapter<SearchResult.Result> {
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(mContext, DetailActivity.class)
+                Intent intent = new Intent(mContext, TvDetailActivity.class)
                         .putExtra(TvDetailActivityFragment.DETAIL_TV, result.getId())
                         .putExtra("ListToOpen",2);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

@@ -6,11 +6,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="varunbehl.showstime.activity.DetailActivity">
+    tools:context="varunbehl.showstime.activity.TvDetailActivity">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
         <android.support.design.widget.AppBarLayout
@@ -18,7 +18,8 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/app_bar_height"
             android:fitsSystemWindows="true"
-            android:theme="@style/AppTheme.AppBarOverlay">
+            android:theme="@style/AppTheme.AppBarOverlay"
+            android:visibility="gone">
 
             <android.support.design.widget.CollapsingToolbarLayout
                 android:id="@+id/toolbar_layout"
@@ -51,11 +52,11 @@
 
         </android.support.design.widget.AppBarLayout>
 
-
         <android.support.design.widget.TabLayout
             android:id="@+id/tabLayoutHome"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/app_bar"
             android:background="@color/colorPrimaryDark"
             android:theme="@style/ThemeOverlay.AppCompat.Dark"
             app:tabGravity="fill"
@@ -64,19 +65,23 @@
             app:tabSelectedTextColor="@color/colorAccent"
             app:tabTextColor="@color/colorAccent" />
 
+        <ProgressBar
+            android:id="@+id/progress_detail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:indeterminate="true"
+            android:visibility="visible" />
+
         <android.support.v4.view.ViewPager
             android:id="@+id/pager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_below="@+id/tabLayoutHome"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-    </LinearLayout>
+    </RelativeLayout>
 
-    <!--<FrameLayout-->
-    <!--android:id="@+id/frameLayout"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_below="@+id/app_bar"-->
-    <!--app:layout_behavior="@string/appbar_scrolling_view_behavior" />-->
 
 </android.support.design.widget.CoordinatorLayout>
