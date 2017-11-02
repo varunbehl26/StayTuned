@@ -11,18 +11,15 @@ import android.support.design.widget.Snackbar;
 import android.support.v17.leanback.widget.HorizontalGridView;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.res.ResourcesCompat;
-import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -58,6 +55,7 @@ import varunbehl.showstime.pojo.Tv.Tv;
 import varunbehl.showstime.pojo.TvDetails.CombinedTvDetail;
 import varunbehl.showstime.util.Constants;
 import varunbehl.showstime.util.DateTimeHelper;
+import varunbehl.showstime.util.ImageUtil;
 
 public class TvShowFragment extends Fragment {
 
@@ -82,7 +80,6 @@ public class TvShowFragment extends Fragment {
     private List<CombinedTvDetail> tvInfoList;
     private AdView nativeView;
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -93,21 +90,21 @@ public class TvShowFragment extends Fragment {
         new ShowsTimeDBHelper(mContext);
         eventBus = EventBus.getDefault();
 
-        carousel_view = (CarouselView) view.findViewById(R.id.carouselView);
-        nativeView = (AdView) view.findViewById(R.id.adView);
+        carousel_view = view.findViewById(R.id.carouselView);
+//        nativeView = (AdView) view.findViewById(R.id.adView);
         handleAdView();
 
         prefs = mContext.getSharedPreferences(
                 "varunbehl.showstime", Context.MODE_PRIVATE);
 
         retrofitManager = RetrofitManager.getInstance();
-        layout = (LinearLayout) view.findViewById(R.id.layout_main);
+        layout = view.findViewById(R.id.layout_main);
 
-        popularTvShowsHzGridView = (HorizontalGridView) view.findViewById(R.id.popularTvShowsCard).findViewById(R.id.horizontal_grid_view);
-        popularTvShowsProgressBar = (ProgressBar) view.findViewById(R.id.popularTvShowsCard).findViewById(R.id.progress_main);
+        popularTvShowsHzGridView = view.findViewById(R.id.popularTvShowsCard).findViewById(R.id.horizontal_grid_view);
+        popularTvShowsProgressBar = view.findViewById(R.id.popularTvShowsCard).findViewById(R.id.progress_main);
         popularTvShowsProgressBar.setVisibility(View.VISIBLE);
-        popularTvShowHeading = (TextView) view.findViewById(R.id.popularTvShowsCard).findViewById(R.id.heading);
-        TextView popular_view_all_tx = (TextView) view.findViewById(R.id.popularTvShowsCard).findViewById(R.id.view_all_tx);
+        popularTvShowHeading = view.findViewById(R.id.popularTvShowsCard).findViewById(R.id.heading);
+        TextView popular_view_all_tx = view.findViewById(R.id.popularTvShowsCard).findViewById(R.id.view_all_tx);
         popular_view_all_tx.setVisibility(View.VISIBLE);
         popular_view_all_tx.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,11 +113,11 @@ public class TvShowFragment extends Fragment {
             }
         });
 
-        topRatedTvshowsHzGridView = (HorizontalGridView) view.findViewById(R.id.topRatedTvShowsCard).findViewById(R.id.horizontal_grid_view);
-        topRatedTvShowsProgressBar = (ProgressBar) view.findViewById(R.id.topRatedTvShowsCard).findViewById(R.id.progress_main);
+        topRatedTvshowsHzGridView = view.findViewById(R.id.topRatedTvShowsCard).findViewById(R.id.horizontal_grid_view);
+        topRatedTvShowsProgressBar = view.findViewById(R.id.topRatedTvShowsCard).findViewById(R.id.progress_main);
         topRatedTvShowsProgressBar.setVisibility(View.VISIBLE);
-        topRatedTvshowHeading = (TextView) view.findViewById(R.id.topRatedTvShowsCard).findViewById(R.id.heading);
-        TextView topRated_view_all_tx = (TextView) view.findViewById(R.id.topRatedTvShowsCard).findViewById(R.id.view_all_tx);
+        topRatedTvshowHeading = view.findViewById(R.id.topRatedTvShowsCard).findViewById(R.id.heading);
+        TextView topRated_view_all_tx = view.findViewById(R.id.topRatedTvShowsCard).findViewById(R.id.view_all_tx);
         topRated_view_all_tx.setVisibility(View.VISIBLE);
         topRated_view_all_tx.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -129,11 +126,11 @@ public class TvShowFragment extends Fragment {
             }
         });
 
-        todayAirTvShowsHzGridView = (HorizontalGridView) view.findViewById(R.id.airTodayTvShowsCard).findViewById(R.id.horizontal_grid_view);
-        todayAirTvShowsProgressBar = (ProgressBar) view.findViewById(R.id.airTodayTvShowsCard).findViewById(R.id.progress_main);
+        todayAirTvShowsHzGridView = view.findViewById(R.id.airTodayTvShowsCard).findViewById(R.id.horizontal_grid_view);
+        todayAirTvShowsProgressBar = view.findViewById(R.id.airTodayTvShowsCard).findViewById(R.id.progress_main);
         todayAirTvShowsProgressBar.setVisibility(View.VISIBLE);
-        todayAirTvTvShowHeading = (TextView) view.findViewById(R.id.airTodayTvShowsCard).findViewById(R.id.heading);
-        TextView todayAir_view_all_tx = (TextView) view.findViewById(R.id.airTodayTvShowsCard).findViewById(R.id.view_all_tx);
+        todayAirTvTvShowHeading = view.findViewById(R.id.airTodayTvShowsCard).findViewById(R.id.heading);
+        TextView todayAir_view_all_tx = view.findViewById(R.id.airTodayTvShowsCard).findViewById(R.id.view_all_tx);
         todayAir_view_all_tx.setVisibility(View.VISIBLE);
         todayAir_view_all_tx.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -303,7 +300,7 @@ public class TvShowFragment extends Fragment {
             View sbView = snackbar.getView();
             sbView.setBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.cardview_dark_background, null));
 
-            TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+            TextView textView = sbView.findViewById(android.support.design.R.id.snackbar_text);
             textView.setTextColor(Color.WHITE);
             snackbar.show();
         } catch (Exception e) {
@@ -388,21 +385,21 @@ public class TvShowFragment extends Fragment {
 
     private void handleAdView() {
 
-        nativeView.loadAd(new AdRequest.Builder().addTestDevice("D938443E0DE7112D76DF6BBA67607EB5").build());
-
-        nativeView.setAdListener(new AdListener() {
-
-            @Override
-            public void onAdLoaded() {
-                nativeView.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onAdFailedToLoad(int error) {
-                nativeView.setVisibility(View.GONE);
-            }
-
-        });
+//        nativeView.loadAd(new AdRequest.Builder().addTestDevice("D938443E0DE7112D76DF6BBA67607EB5").build());
+//
+//        nativeView.setAdListener(new AdListener() {
+//
+//            @Override
+//            public void onAdLoaded() {
+//                nativeView.setVisibility(View.VISIBLE);
+//            }
+//
+//            @Override
+//            public void onAdFailedToLoad(int error) {
+//                nativeView.setVisibility(View.GONE);
+//            }
+//
+//        });
     }
 
     private void fetchFavoriteTvShowsFromDb() {
@@ -414,15 +411,11 @@ public class TvShowFragment extends Fragment {
                 public View setViewForPosition(final int position) {
                     View itemView = getActivity().getLayoutInflater().inflate(R.layout.caraousel_movie_layout, null);
                     TextView tvMovieTitle;
-                    SimpleDraweeView draweeView;
-                    CardView cardView;
+                    ImageView draweeView;
+                    tvMovieTitle = itemView.findViewById(R.id.tv_movie_title);
+                    draweeView = itemView.findViewById(R.id.img_movie_poster);
 
-                    tvMovieTitle = (TextView) itemView.findViewById(R.id.tv_movie_title);
-                    draweeView = (SimpleDraweeView) itemView.findViewById(R.id.img_movie_poster);
-
-                    cardView = (CardView) itemView.findViewById(R.id.card_view);
-
-                    cardView.setOnClickListener(new View.OnClickListener() {
+                    draweeView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             Intent intent = new Intent(mContext, TvDetailActivity.class)
@@ -440,7 +433,7 @@ public class TvShowFragment extends Fragment {
 
 
                     tvMovieTitle.setText(tvInfoList.get(position).getName());
-                    draweeView.setImageURI(getImageUri(tvInfoList.get(position).getBackdropPath()));
+                    ImageUtil.loadImageWithFullScreen(mContext, draweeView, tvInfoList.get(position).getBackdropPath());
                     return itemView;
                 }
             });
@@ -452,11 +445,6 @@ public class TvShowFragment extends Fragment {
 
         }
 
-    }
-
-    private String getImageUri(String uri) {
-        String IMAGE_POSTER_BASE_URL = "http://image.tmdb.org/t/p/w780";
-        return IMAGE_POSTER_BASE_URL + "/" + uri;
     }
 
     private class MainPageThread extends Thread {

@@ -54,7 +54,7 @@ public class SearchResultsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_results);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("Search Results:");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -62,9 +62,9 @@ public class SearchResultsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         retrofitManager = RetrofitManager.getInstance();
-        sarchResultGridView = (GridView) findViewById(R.id.list_view);
+        sarchResultGridView = findViewById(R.id.list_view);
 //        sarchResultHeading = (TextView) findViewById(R.id.heading);
-        sarchResultProgressBar = (ProgressBar) findViewById(R.id.progress_main);
+        sarchResultProgressBar = findViewById(R.id.progress_main);
         sarchResultProgressBar.setVisibility(View.VISIBLE);
         try {
 

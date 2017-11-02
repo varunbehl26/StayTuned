@@ -1,7 +1,5 @@
 package varunbehl.showstime.network;
 
-import com.google.firebase.crash.FirebaseCrash;
-
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -31,36 +29,29 @@ public class RetrofitManager {
     private static RetrofitManager retrofitManager;
 
     private RetrofitManager() {
-
-        try {
-            OkHttpClient.Builder builder = new OkHttpClient().newBuilder();
-            builder.readTimeout(10, TimeUnit.SECONDS);
-            builder.connectTimeout(5, TimeUnit.SECONDS);
+        OkHttpClient.Builder builder = new OkHttpClient().newBuilder();
+        builder.readTimeout(10, TimeUnit.SECONDS);
+        builder.connectTimeout(5, TimeUnit.SECONDS);
 
 //            if (BuildConfig.DEBUG) {
-            HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-            interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-            builder.addInterceptor(interceptor);
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        builder.addInterceptor(interceptor);
 //            }
 
+        OkHttpClient client = builder.build();
 
-            OkHttpClient client = builder.build();
+        String API_BASE_URL = "http://api.themoviedb.org/";
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(API_BASE_URL)
+                .client(client)
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .build();
 
-            String API_BASE_URL = "http://api.themoviedb.org/";
-            Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl(API_BASE_URL)
-                    .client(client)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                    .build();
+        dataInterface = retrofit.create(DataInterface.class);
 
-            dataInterface = retrofit.create(DataInterface.class);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            FirebaseCrash.report(e);
-
-        }
     }
 
     public static RetrofitManager getInstance() {

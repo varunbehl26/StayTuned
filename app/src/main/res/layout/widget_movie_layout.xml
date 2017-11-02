@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:id="@+id/card_view"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginTop="5dp"
-    android:background="#fff"
     android:orientation="vertical">
 
-    <ImageView
+    <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/img_movie_poster"
         android:layout_width="125dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        />
+        fresco:placeholderImage="@drawable/placeholder" />
 
     <TextView
         android:id="@+id/tv_movie_title"

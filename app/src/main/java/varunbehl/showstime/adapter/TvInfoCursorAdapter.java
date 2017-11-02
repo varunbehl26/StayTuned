@@ -12,13 +12,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.facebook.drawee.view.SimpleDraweeView;
 
 import varunbehl.showstime.R;
 import varunbehl.showstime.activity.TvDetailActivity;
 import varunbehl.showstime.fragment.TvDetailActivityFragment;
+import varunbehl.showstime.util.ImageUtil;
 
 public class TvInfoCursorAdapter extends CursorAdapter {
 
@@ -38,16 +38,16 @@ public class TvInfoCursorAdapter extends CursorAdapter {
     @Override
     public void bindView(View view, Context context, final Cursor cursor) {
         TextView tvMovieTitle;
-        SimpleDraweeView draweeView;
+        ImageView draweeView;
         CardView cardView;
 
-        tvMovieTitle = (TextView) view.findViewById(R.id.tv_movie_title);
-        draweeView = (SimpleDraweeView) view.findViewById(R.id.img_movie_poster);
-        cardView = (CardView) view.findViewById(R.id.card_view);
+        tvMovieTitle = view.findViewById(R.id.tv_movie_title);
+        draweeView = view.findViewById(R.id.img_movie_poster);
+        cardView = view.findViewById(R.id.card_view);
 
 
         tvMovieTitle.setText(cursor.getString(cursor.getColumnIndexOrThrow("name")));
-        draweeView.setImageURI(getImageUri(cursor.getString(cursor.getColumnIndexOrThrow("image"))));
+        ImageUtil.loadImage(context, draweeView, cursor.getString(cursor.getColumnIndexOrThrow("image")));
 
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,11 +61,5 @@ public class TvInfoCursorAdapter extends CursorAdapter {
         });
 
     }
-
-    private String getImageUri(String uri) {
-        String IMAGE_POSTER_BASE_URL = "http://image.tmdb.org/t/p/w342";
-        return IMAGE_POSTER_BASE_URL + "/" + uri;
-    }
-
 
 }

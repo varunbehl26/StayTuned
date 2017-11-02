@@ -5,14 +5,9 @@ import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
-import com.google.firebase.crash.FirebaseCrash;
-import com.squareup.picasso.Picasso;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -85,14 +80,14 @@ class TvWidgetFactory implements RemoteViewsService.RemoteViewsFactory {
 
         rv.setOnClickPendingIntent(R.id.button, pendingIntent);
 
-        try {
-            Bitmap b = Picasso.with(context).load(getImageUri(tvInfo.getBackdropPath())).get();
-            rv.setImageViewBitmap(R.id.img_movie_poster, b);
-        } catch (IOException e) {
-            e.printStackTrace();
-            FirebaseCrash.report(e);
-
-        }
+//        try {
+//            Bitmap b = Picasso.with(context).load(Constants.getImageUri(tvInfo.getBackdropPath())).get();
+//            rv.setImageViewBitmap(R.id.img_movie_poster, b);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            FirebaseCrash.report(e);
+//
+//        }
 
 
         return rv;
@@ -113,9 +108,6 @@ class TvWidgetFactory implements RemoteViewsService.RemoteViewsFactory {
         return i;
     }
 
-    private String getImageUri(String uri) {
-        return "http://image.tmdb.org/t/p/w342" + "/" + uri;
-    }
 
     @Override
     public boolean hasStableIds() {

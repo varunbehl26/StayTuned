@@ -1,36 +1,38 @@
 package varunbehl.showstime.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v17.leanback.widget.HorizontalGridView;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
-import com.google.firebase.crash.FirebaseCrash;
+import com.synnapps.carouselview.CarouselView;
+import com.synnapps.carouselview.ViewListener;
 
 import java.util.List;
 
+import varunbehl.showstime.FullscreenImageViewActivity;
 import varunbehl.showstime.R;
 import varunbehl.showstime.activity.MovieDetailActivity;
 import varunbehl.showstime.adapter.MovieListDataAdapter;
-import varunbehl.showstime.adapter.TvCastAdapter;
-import varunbehl.showstime.network.RetrofitManager;
 import varunbehl.showstime.pojo.Cast.Cast;
 import varunbehl.showstime.pojo.CombinedMovieDetail;
 import varunbehl.showstime.pojo.Picture.Pictures;
 import varunbehl.showstime.pojo.Video.VideoResult;
 import varunbehl.showstime.util.Constants;
 import varunbehl.showstime.util.DateTimeHelper;
+import varunbehl.showstime.util.ImageUtil;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -46,28 +48,23 @@ public class MovieDetailActivityFragment extends Fragment {
     private TextView vote;
     private TextView plotSynopsis;
     private Button fav_button;
-    private SimpleDraweeView draweeView;
     private CollapsingToolbarLayout collapsingToolbar;
     private HorizontalGridView videosHzGridView;
     private HorizontalGridView recommendedTvShowsHzGridView;
     private HorizontalGridView similarTvShowsHzGridView;
-    private HorizontalGridView tvCastGridView;
     private ProgressBar similarTvShowsProgressBar;
     private ProgressBar recommendedTvShowsProgressBar;
     private ProgressBar videosProgressBar;
-    private ProgressBar tvCastProgressBar;
-    private TextView tvCastHeading;
     private TextView similarTvShowsHeading;
     private TextView recommendedTvShowsHeading;
     private TextView videosHeading;
     private SharedPreferences prefs;
     private SharedPreferences.Editor editor;
-    private CardView tvSeasonsCardView;
-    private CardView similarTvShowsCardView;
-    private CardView recommendedTvShowsCardView;
-    private View cordinatorLayout;
+    private ConstraintLayout similarTvShowsCardView;
+    private ConstraintLayout recommendedTvShowsCardView;
     private String episodeDate;
     private CombinedMovieDetail combinedMovieDetail;
+    private CarouselView carouselView;
 
 
     public MovieDetailActivityFragment() {
@@ -83,16 +80,6 @@ public class MovieDetailActivityFragment extends Fragment {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
@@ -100,48 +87,48 @@ public class MovieDetailActivityFragment extends Fragment {
         ((MovieDetailActivity) getActivity()).getSupportActionBar().setHomeButtonEnabled(true);
         ((MovieDetailActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        RetrofitManager retrofitManager = RetrofitManager.getInstance();
-        collapsingToolbar = (CollapsingToolbarLayout) getActivity().findViewById(R.id.toolbar_layout);
-        LinearLayout detailLayout = (LinearLayout) rootView.findViewById(R.id.detail_layout);
-        CardView infoCardView = (CardView) rootView.findViewById(R.id.info_card_view);
-        TextView title = (TextView) rootView.findViewById(R.id.title);
-        releaseDate = (TextView) rootView.findViewById(R.id.release_date);
-        vote = (TextView) rootView.findViewById(R.id.vote);
-        plotSynopsis = (TextView) rootView.findViewById(R.id.plot_synopsis);
-        fav_button = (Button) rootView.findViewById(R.id.b11);
-        draweeView = (SimpleDraweeView) getActivity().findViewById(R.id.movie_poster);
+//        collapsingToolbar = (CollapsingToolbarLayout) getActivity().findViewById(R.id.toolbar_layout);
+        LinearLayout detailLayout = rootView.findViewById(R.id.detail_layout);
+//        CardView infoCardView = (CardView) rootView.findViewById(R.id.info_card_view);
+        TextView title = rootView.findViewById(R.id.title);
+        releaseDate = rootView.findViewById(R.id.release_date);
+        vote = rootView.findViewById(R.id.vote);
+        plotSynopsis = rootView.findViewById(R.id.plot_synopsis);
+        fav_button = rootView.findViewById(R.id.b11);
+        ImageView draweeView = getActivity().findViewById(R.id.movie_poster);
         fav_button.setBackground(getContext().getResources().getDrawable(R.drawable.unfav));
         fav_button.setVisibility(View.GONE);
-        ProgressBar progressBar = (ProgressBar) rootView.findViewById(R.id.progress_fragment);
-        cordinatorLayout = getActivity().findViewById(R.id.app_bar);
+        ProgressBar progressBar = rootView.findViewById(R.id.progress_fragment);
+        View cordinatorLayout = getActivity().findViewById(R.id.app_bar);
+        carouselView = getActivity().findViewById(R.id.carouselView);
 
         prefs = getActivity().getSharedPreferences(
                 Constants.PREFERENCE_NAME, Context.MODE_PRIVATE);
 
-        LinearLayout nextEpisodeCardView = (LinearLayout) rootView.findViewById(R.id.nextAirLayout);
+        LinearLayout nextEpisodeCardView = rootView.findViewById(R.id.nextAirLayout);
         nextEpisodeCardView.setVisibility(View.GONE);
 
-        tvSeasonsCardView = (CardView) rootView.findViewById(R.id.tvSeasonsCard);
-        ProgressBar tvSeasonsProgressBar = (ProgressBar) tvSeasonsCardView.findViewById(R.id.progress_main);
+        ConstraintLayout tvSeasonsCardView = rootView.findViewById(R.id.tvSeasonsCard);
+        ProgressBar tvSeasonsProgressBar = tvSeasonsCardView.findViewById(R.id.progress_main);
         tvSeasonsProgressBar.setVisibility(View.VISIBLE);
         tvSeasonsCardView.setVisibility(View.GONE);
 
-        CardView tvCastCardView = (CardView) rootView.findViewById(R.id.tvCastCard);
-        tvCastGridView = (HorizontalGridView) tvCastCardView.findViewById(R.id.horizontal_grid_view);
-        tvCastHeading = (TextView) tvCastCardView.findViewById(R.id.heading);
-        tvCastProgressBar = (ProgressBar) tvCastCardView.findViewById(R.id.progress_main);
+        ConstraintLayout tvCastCardView = rootView.findViewById(R.id.tvCastCard);
+        HorizontalGridView tvCastGridView = tvCastCardView.findViewById(R.id.horizontal_grid_view);
+        TextView tvCastHeading = tvCastCardView.findViewById(R.id.heading);
+        ProgressBar tvCastProgressBar = tvCastCardView.findViewById(R.id.progress_main);
         tvCastProgressBar.setVisibility(View.VISIBLE);
 
-        similarTvShowsCardView = (CardView) rootView.findViewById(R.id.similarTvShowsCard);
-        similarTvShowsHzGridView = (HorizontalGridView) similarTvShowsCardView.findViewById(R.id.horizontal_grid_view);
-        similarTvShowsHeading = (TextView) similarTvShowsCardView.findViewById(R.id.heading);
-        similarTvShowsProgressBar = (ProgressBar) similarTvShowsCardView.findViewById(R.id.progress_main);
+        similarTvShowsCardView = rootView.findViewById(R.id.similarTvShowsCard);
+        similarTvShowsHzGridView = similarTvShowsCardView.findViewById(R.id.horizontal_grid_view);
+        similarTvShowsHeading = similarTvShowsCardView.findViewById(R.id.heading);
+        similarTvShowsProgressBar = similarTvShowsCardView.findViewById(R.id.progress_main);
         similarTvShowsProgressBar.setVisibility(View.VISIBLE);
 
-        recommendedTvShowsCardView = (CardView) rootView.findViewById(R.id.recommendedTvShowsCard);
-        recommendedTvShowsHzGridView = (HorizontalGridView) recommendedTvShowsCardView.findViewById(R.id.horizontal_grid_view);
-        recommendedTvShowsHeading = (TextView) recommendedTvShowsCardView.findViewById(R.id.heading);
-        recommendedTvShowsProgressBar = (ProgressBar) recommendedTvShowsCardView.findViewById(R.id.progress_main);
+        recommendedTvShowsCardView = rootView.findViewById(R.id.recommendedTvShowsCard);
+        recommendedTvShowsHzGridView = recommendedTvShowsCardView.findViewById(R.id.horizontal_grid_view);
+        recommendedTvShowsHeading = recommendedTvShowsCardView.findViewById(R.id.heading);
+        recommendedTvShowsProgressBar = recommendedTvShowsCardView.findViewById(R.id.progress_main);
         recommendedTvShowsProgressBar.setVisibility(View.VISIBLE);
 
 
@@ -157,43 +144,42 @@ public class MovieDetailActivityFragment extends Fragment {
     }
 
 
-    public void loadMovieDetails() {
-        try {
-            cordinatorLayout.setVisibility(View.VISIBLE);
-            boolean threadAlreadyRunning = false;
-            collapsingToolbar.setTitle(combinedMovieDetail.getTitle());
-            draweeView.setImageURI(getString(R.string.image_path) + combinedMovieDetail.getBackdropPath());
-            releaseDate.setText(getString(R.string.release_data) + DateTimeHelper.parseDate(combinedMovieDetail.getReleaseDate()) + "");
-            vote.setText(getString(R.string.rating) + combinedMovieDetail.getVoteAverage() + "/10");
-            plotSynopsis.setText(combinedMovieDetail.getOverview());
-            is_fav = (prefs.getInt("is_fav" + "_" + movieId, 0));
-            if (is_fav == 1) {
-                fav_button.setBackground(getContext().getResources().getDrawable(R.drawable.fav));
-            } else {
-                fav_button.setBackground(getContext().getResources().getDrawable(R.drawable.unfav));
-            }
+    private void loadMovieDetails() {
+//            cordinatorLayout.setVisibility(View.VISIBLE);
+        boolean threadAlreadyRunning = false;
+//            collapsingToolbar.setTitle(combinedMovieDetail.getTitle());
+//            ImageUtil.loadImageWithFullScreen(getActivity(), draweeView, combinedMovieDetail.getBackdropPath());
+        releaseDate.setText(getString(R.string.release_data) + DateTimeHelper.parseDate(combinedMovieDetail.getReleaseDate()) + "");
+        vote.setText(getString(R.string.rating) + combinedMovieDetail.getVoteAverage() + "/10");
+        plotSynopsis.setText(combinedMovieDetail.getOverview());
+        is_fav = (prefs.getInt("is_fav" + "_" + movieId, 0));
+        if (is_fav == 1) {
+            fav_button.setBackground(getContext().getResources().getDrawable(R.drawable.fav));
+        } else {
+            fav_button.setBackground(getContext().getResources().getDrawable(R.drawable.unfav));
+        }
 
-            fav_button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (is_fav == 1) {
-                        fav_button.setBackground(getContext().getResources().getDrawable(R.drawable.unfav));
-                        //                        deleteFromDb();
-                        is_fav = 0;
-                        SharedPreferences.Editor editor = prefs.edit();
-                        editor.putInt("is_fav" + "_" + movieId, 0);
-                        editor.apply();
-                    } else {
-                        fav_button.setBackground(getContext().getResources().getDrawable(R.drawable.fav));
-                        //                        ShowsTimeDBHelper.addintoDB(tvInformation, getContext(), movieId);
-                        is_fav = 1;
-                        SharedPreferences.Editor editor = prefs.edit();
-                        editor.putInt("is_fav" + "_" + movieId, 1);
-                        editor.apply();
-                    }
+        fav_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (is_fav == 1) {
+                    fav_button.setBackground(getContext().getResources().getDrawable(R.drawable.unfav));
+                    //                        deleteFromDb();
+                    is_fav = 0;
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.putInt("is_fav" + "_" + movieId, 0);
+                    editor.apply();
+                } else {
+                    fav_button.setBackground(getContext().getResources().getDrawable(R.drawable.fav));
+                    //                        ShowsTimeDBHelper.addintoDB(tvInformation, getContext(), movieId);
+                    is_fav = 1;
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.putInt("is_fav" + "_" + movieId, 1);
+                    editor.apply();
                 }
-            });
-            List<VideoResult> CombinedMovieDetailVideos = combinedMovieDetail.getVideos().getResults();
+            }
+        });
+        List<VideoResult> CombinedMovieDetailVideos = combinedMovieDetail.getVideos().getResults();
 
 //            if (getActivity() != null || (CombinedMovieDetailVideos != null ? CombinedMovieDetailVideos.size() : 0) < 1) {
 //                VideoAdapter videoAdapter = new VideoAdapter(getActivity(), CombinedMovieDetailVideos);
@@ -206,26 +192,57 @@ public class MovieDetailActivityFragment extends Fragment {
 //            } else {
 //                tvSeasonsCardView.setVisibility(View.GONE);
 //            }
-            List<Cast> movieCast = combinedMovieDetail.getCredits().getCast();
+        List<Cast> movieCast = combinedMovieDetail.getCredits().getCast();
 
-            if (getActivity() != null || combinedMovieDetail.getCredits().getCast().size() < 1) {
-                TvCastAdapter tvCastAdapter = new TvCastAdapter(getActivity(), movieCast, movieId);
-                tvCastGridView.setAdapter(tvCastAdapter);
-                tvCastAdapter.notifyDataSetChanged();
-                tvCastProgressBar.setVisibility(View.GONE);
-                tvCastHeading.setText(R.string.tv_casts_heading);
-            } else {
-                tvSeasonsCardView.setVisibility(View.GONE);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            FirebaseCrash.report(e);
+//            if (getActivity() != null || combinedMovieDetail.getCredits().getCast().size() < 1) {
+//                TvCastAdapter tvCastAdapter = new TvCastAdapter(getActivity(), movieCast, movieId);
+//                tvCastGridView.setAdapter(tvCastAdapter);
+//                tvCastAdapter.notifyDataSetChanged();
+//                tvCastProgressBar.setVisibility(View.GONE);
+//                tvCastHeading.setText(R.string.tv_casts_heading);
+//            } else {
+//                tvSeasonsCardView.setVisibility(View.GONE);
+//            }
 
+        if (getActivity() != null || combinedMovieDetail.getImages().getBackdrops().size() < 1) {
+
+            carouselView.setViewListener(new ViewListener() {
+                @Override
+                public View setViewForPosition(final int position) {
+                    View itemView = getActivity().getLayoutInflater().inflate(R.layout.caraousel_movie_layout, null);
+                    TextView tvMovieTitle = itemView.findViewById(R.id.tv_movie_title);
+                    ImageView draweeView = itemView.findViewById(R.id.img_movie_poster);
+                    tvMovieTitle.setVisibility(View.GONE);
+
+                    itemView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(getContext(), FullscreenImageViewActivity.class);
+                            intent.putExtra("Image_Path", combinedMovieDetail.getImages().getBackdrops().get(position).getFilePath());
+                            intent.putExtra("orientartion", 1);
+                            startActivity(intent);
+                        }
+                    });
+                    itemView.setTag(position);
+                    ImageUtil.loadImageWithFullScreen(getActivity(), draweeView, combinedMovieDetail.getImages().getBackdrops().get(position).getFilePath());
+                    return itemView;
+
+                }
+            });
+
+            carouselView.setPageCount(combinedMovieDetail.getImages().getBackdrops().size());
+
+//            TvCastAdapter tvCastAdapter = new TvCastAdapter(getActivity(), tvInformation.getCredits().getCast(), tvId);
+//            tvCastGridView.setAdapter(tvCastAdapter);
+//            tvCastAdapter.notifyDataSetChanged();
+//            tvCastProgressBar.setVisibility(View.GONE);
+//            tvCastHeading.setText(R.string.tv_casts_heading);
         }
+
     }
 
 
-    public void loadSimilarRecommendations(CombinedMovieDetail combinedMovieDetail) {
+    private void loadSimilarRecommendations(CombinedMovieDetail combinedMovieDetail) {
         List<Pictures> similarMoviesList = combinedMovieDetail.getSimilar().getResults();
 
         if (similarMoviesList.size() < 1) {

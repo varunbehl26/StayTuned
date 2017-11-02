@@ -12,9 +12,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.List;
@@ -23,6 +23,7 @@ import varunbehl.showstime.R;
 import varunbehl.showstime.activity.MovieDetailActivity;
 import varunbehl.showstime.fragment.MovieDetailActivityFragment;
 import varunbehl.showstime.pojo.Picture.Pictures;
+import varunbehl.showstime.util.ImageUtil;
 
 public class MovieListDataAdapter extends RecyclerView.Adapter<MovieListDataAdapter.ViewHolder> {
 
@@ -56,7 +57,8 @@ public class MovieListDataAdapter extends RecyclerView.Adapter<MovieListDataAdap
     @Override
     public void onBindViewHolder(final MovieListDataAdapter.ViewHolder holder,  int position) {
         holder.tvMovieTitle.setText(picturesList.get(position).getTitle());
-        holder.draweeView.setImageURI(getImageUri(picturesList.get(position).getPosterPath()));
+        ImageUtil.loadImage(mContext, holder.draweeView, picturesList.get(position).getPosterPath());
+
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -89,21 +91,16 @@ public class MovieListDataAdapter extends RecyclerView.Adapter<MovieListDataAdap
     }
 
 
-    private String getImageUri(String uri) {
-        String IMAGE_POSTER_BASE_URL = "http://image.tmdb.org/t/p/w342";
-        return IMAGE_POSTER_BASE_URL + "/" + uri;
-    }
-
     static class ViewHolder extends RecyclerView.ViewHolder {
         final TextView tvMovieTitle;
         final CardView cardView;
-        final SimpleDraweeView draweeView;
+        final ImageView draweeView;
 
         ViewHolder(View itemView) {
             super(itemView);
-            tvMovieTitle = (TextView) itemView.findViewById(R.id.tv_movie_title);
-            draweeView = (SimpleDraweeView) itemView.findViewById(R.id.img_movie_poster);
-            cardView = (CardView) itemView.findViewById(R.id.card_view);
+            tvMovieTitle = itemView.findViewById(R.id.tv_movie_title);
+            draweeView = itemView.findViewById(R.id.img_movie_poster);
+            cardView = itemView.findViewById(R.id.card_view);
         }
     }
 }

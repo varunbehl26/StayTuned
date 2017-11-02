@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.GridView;
@@ -53,14 +54,18 @@ public class ViewAllActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_all);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("View All");
-        myGrid = (GridView) findViewById(R.id.grid_view);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        myGrid = findViewById(R.id.grid_view);
         retrofitManager = RetrofitManager.getInstance();
         setSupportActionBar(toolbar);
         tvInfoList = new ArrayList<>();
         moviesList = new ArrayList<>();
-        progressbar = (ProgressBar) findViewById(R.id.progress_fragment);
+        progressbar = findViewById(R.id.progress_fragment);
         showProgressBar();
         Intent intent = getIntent();
         listType = intent.getStringExtra("listType");
@@ -97,6 +102,18 @@ public class ViewAllActivity extends AppCompatActivity {
 
     }
 
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                super.onBackPressed();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+    
     private void hideProgressBar() {
         myGrid.setVisibility(View.VISIBLE);
         progressbar.setVisibility(View.GONE);

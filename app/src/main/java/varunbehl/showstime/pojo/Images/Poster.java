@@ -47,7 +47,7 @@ public class Poster implements Parcelable {
     public Poster() {
     }
 
-    protected Poster(Parcel in) {
+    private Poster(Parcel in) {
         this.aspectRatio = (Double) in.readValue(Double.class.getClassLoader());
         this.filePath = in.readString();
         this.height = (Integer) in.readValue(Integer.class.getClassLoader());

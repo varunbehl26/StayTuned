@@ -48,7 +48,7 @@ public class VideoResult implements Parcelable {
     public VideoResult() {
     }
 
-    protected VideoResult(Parcel in) {
+    VideoResult(Parcel in) {
         this.id = in.readString();
         this.iso6391 = in.readString();
         this.iso31661 = in.readString();

@@ -63,16 +63,16 @@ public class MovieDetailActivity extends AppCompatActivity implements TabLayout.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        progressBar = (ProgressBar) findViewById(R.id.progress_detail);
+        progressBar = findViewById(R.id.progress_detail);
         progressBar.setVisibility(View.VISIBLE);
 
-        tabLayout = (TabLayout) findViewById(R.id.tabLayoutHome);
-        viewPager = (ViewPager) findViewById(R.id.pager);
+        tabLayout = findViewById(R.id.tabLayoutHome);
+        viewPager = findViewById(R.id.pager);
         retrofitManager = RetrofitManager.getInstance();
 
         int tvId = (int) getIntent().getExtras().get(TvDetailActivityFragment.DETAIL_TV);
@@ -237,8 +237,8 @@ public class MovieDetailActivity extends AppCompatActivity implements TabLayout.
 
     private class ShowsFragmentPagerAdapter extends FragmentStatePagerAdapter {
         final int PAGE_COUNT = 3;
-        private String tabTitles[] = new String[]{"Detail", "Videos", "Images"};
-        private Context context;
+        private final String[] tabTitles = new String[]{"Detail", "Videos", "Images"};
+        private final Context context;
 
         public ShowsFragmentPagerAdapter(FragmentManager fm, Context context) {
             super(fm);

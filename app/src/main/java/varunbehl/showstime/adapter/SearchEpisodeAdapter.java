@@ -11,9 +11,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.List;
@@ -22,6 +22,7 @@ import varunbehl.showstime.R;
 import varunbehl.showstime.activity.TvDetailActivity;
 import varunbehl.showstime.fragment.TvDetailActivityFragment;
 import varunbehl.showstime.pojo.Search.SearchResult;
+import varunbehl.showstime.util.ImageUtil;
 
 public class SearchEpisodeAdapter extends ArrayAdapter<SearchResult.Result> {
 
@@ -74,7 +75,7 @@ public class SearchEpisodeAdapter extends ArrayAdapter<SearchResult.Result> {
         holder.episodeDesc.setText(result.getOverview());
         holder.episode_date.setText(mContext.getString(R.string.rating)+result.getVoteAverage());
         if (result.getPosterPath()!=null) {
-            holder.draweeView.setImageURI(getImageUri(result.getPosterPath()));
+            ImageUtil.loadImage(mContext, holder.draweeView, result.getPosterPath());
             holder.draweeView.setVisibility(View.VISIBLE);
         }
 
@@ -97,24 +98,19 @@ public class SearchEpisodeAdapter extends ArrayAdapter<SearchResult.Result> {
         return convertView;
     }
 
-    private String getImageUri(String uri) {
-        String IMAGE_POSTER_BASE_URL = "http://image.tmdb.org/t/p/w342";
-        return IMAGE_POSTER_BASE_URL + "/" + uri;
-    }
-
     static class ViewHolder {
         final TextView episodeTitle;
         final TextView episodeDesc;
         final TextView episode_date;
-        final SimpleDraweeView draweeView;
+        final ImageView draweeView;
         final CardView cardView;
 
         ViewHolder(View itemView) {
-            episodeTitle = (TextView) itemView.findViewById(R.id.episode_name);
-            episode_date = (TextView) itemView.findViewById(R.id.episode_date);
-            episodeDesc = (TextView) itemView.findViewById(R.id.episode_desc);
-            draweeView = (SimpleDraweeView) itemView.findViewById(R.id.img_episode_poster);
-            cardView = (CardView) itemView.findViewById(R.id.card_view);
+            episodeTitle = itemView.findViewById(R.id.episode_name);
+            episode_date = itemView.findViewById(R.id.episode_date);
+            episodeDesc = itemView.findViewById(R.id.episode_desc);
+            draweeView = itemView.findViewById(R.id.img_episode_poster);
+            cardView = itemView.findViewById(R.id.card_view);
         }
     }
 }

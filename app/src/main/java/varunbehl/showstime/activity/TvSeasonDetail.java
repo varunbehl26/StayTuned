@@ -70,7 +70,7 @@ public class TvSeasonDetail extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tv_season_info);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         tvId = (int) getIntent().getExtras().get(TV_ID);
         seasonId = (int) getIntent().getExtras().get(SEASON_ID);
         toolbar.setTitle("Season:" + seasonId);
@@ -81,10 +81,10 @@ public class TvSeasonDetail extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         retrofitManager = RetrofitManager.getInstance();
-        CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsingToolbar);
+        CollapsingToolbarLayout collapsingToolbar = findViewById(R.id.collapsingToolbar);
 
-        tvSeasonsGridView = (GridView) findViewById(R.id.list_view);
-        tvSeasonsProgressBar = (ProgressBar) findViewById(R.id.progress_main);
+        tvSeasonsGridView = findViewById(R.id.list_view);
+        tvSeasonsProgressBar = findViewById(R.id.progress_main);
         showProgressBar();
         new LoadSeasonInfoThread(1).start();
     }

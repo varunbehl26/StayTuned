@@ -123,7 +123,7 @@ public class CombinedMovieDetail implements Parcelable {
     public CombinedMovieDetail() {
     }
 
-    protected CombinedMovieDetail(Parcel in) {
+    private CombinedMovieDetail(Parcel in) {
         this.adult = (Boolean) in.readValue(Boolean.class.getClassLoader());
         this.backdropPath = in.readString();
         this.belongsToCollection = in.readParcelable(BelongsToCollection.class.getClassLoader());
@@ -479,7 +479,7 @@ public class CombinedMovieDetail implements Parcelable {
         public BelongsToCollection() {
         }
 
-        protected BelongsToCollection(Parcel in) {
+        BelongsToCollection(Parcel in) {
             this.id = (Integer) in.readValue(Integer.class.getClassLoader());
             this.name = in.readString();
             this.posterPath = in.readString();
@@ -555,7 +555,7 @@ public class CombinedMovieDetail implements Parcelable {
         public Genre() {
         }
 
-        protected Genre(Parcel in) {
+        Genre(Parcel in) {
             this.id = (Integer) in.readValue(Integer.class.getClassLoader());
             this.name = in.readString();
         }
@@ -612,7 +612,7 @@ public class CombinedMovieDetail implements Parcelable {
         public ProductionCompany() {
         }
 
-        protected ProductionCompany(Parcel in) {
+        ProductionCompany(Parcel in) {
             this.name = in.readString();
             this.id = (Integer) in.readValue(Integer.class.getClassLoader());
         }
@@ -668,7 +668,7 @@ public class CombinedMovieDetail implements Parcelable {
         public ProductionCountry() {
         }
 
-        protected ProductionCountry(Parcel in) {
+        ProductionCountry(Parcel in) {
             this.iso31661 = in.readString();
             this.name = in.readString();
         }
@@ -731,7 +731,7 @@ public class CombinedMovieDetail implements Parcelable {
         public Reviews() {
         }
 
-        protected Reviews(Parcel in) {
+        Reviews(Parcel in) {
             this.page = (Integer) in.readValue(Integer.class.getClassLoader());
             this.results = new ArrayList<>();
             in.readList(this.results, Object.class.getClassLoader());
@@ -808,7 +808,7 @@ public class CombinedMovieDetail implements Parcelable {
         public SpokenLanguage() {
         }
 
-        protected SpokenLanguage(Parcel in) {
+        SpokenLanguage(Parcel in) {
             this.iso6391 = in.readString();
             this.name = in.readString();
         }

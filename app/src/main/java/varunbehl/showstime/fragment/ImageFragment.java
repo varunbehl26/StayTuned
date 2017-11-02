@@ -1,12 +1,12 @@
 package varunbehl.showstime.fragment;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridView;
 
 import java.util.ArrayList;
 
@@ -15,7 +15,7 @@ import varunbehl.showstime.adapter.ImageAdapter;
 
 public class ImageFragment extends Fragment {
 
-    ArrayList<String> values;
+    private ArrayList<String> values;
 
     public static ImageFragment newInstance(ArrayList<String> values) {
         Bundle args = new Bundle();
@@ -30,21 +30,16 @@ public class ImageFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_image, container, false);
-        GridView backdropGridView = (GridView) view.findViewById(R.id.backdrop_gridView);
         Bundle arguments = getArguments();
         values = arguments.getStringArrayList("images");
-        backdropGridView.setAdapter(new ImageAdapter(getContext(), values));
+        RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
+        StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(2,
+                StaggeredGridLayoutManager.VERTICAL);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(staggeredGridLayoutManager);
+        ImageAdapter rcAdapter = new ImageAdapter(getContext(), values);
+        recyclerView.setAdapter(rcAdapter);
         return view;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
     }
 
 }

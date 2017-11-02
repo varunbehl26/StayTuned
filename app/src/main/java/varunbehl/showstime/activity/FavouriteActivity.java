@@ -33,7 +33,7 @@ public class FavouriteActivity extends AppCompatActivity implements LoaderManage
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favourite);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("Favourite Tv Shows");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -45,8 +45,8 @@ public class FavouriteActivity extends AppCompatActivity implements LoaderManage
         getSupportLoaderManager().initLoader(0, null, this).forceLoad();
 
 
-        TextView textView = (TextView) findViewById(R.id.no_data_textView);
-        GridView myGrid = (GridView) findViewById(R.id.grid_view);
+        TextView textView = findViewById(R.id.no_data_textView);
+        GridView myGrid = findViewById(R.id.grid_view);
 
         // Here we query database
         Cursor mCursor = null;

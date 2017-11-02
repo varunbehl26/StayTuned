@@ -14,6 +14,8 @@ import java.util.TimeZone;
 public class DateTimeHelper {
 
 
+    private static boolean firstTime = true;
+
     public static String parseDate(String dateTime) {
         try {
             if (dateTime != null && !dateTime.isEmpty() && !dateTime.equalsIgnoreCase("")) {
@@ -33,7 +35,8 @@ public class DateTimeHelper {
 
     public static boolean getDifference(Long hours) {
 
-        if (hours == 0) {
+        if (hours == 0 || firstTime) {
+            firstTime = false;
             return true;
         }
         Date date = new Date(hours);
@@ -47,9 +50,6 @@ public class DateTimeHelper {
 
         if (diffInDays > 1) {
             Log.v("Diff in number of days" , diffInDays+"");
-            return true;
-        } else if (diffHours > 3) {
-            Log.v("Diff in number of hours" , diffInDays+"");
             return true;
         }
         return false;

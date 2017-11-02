@@ -12,6 +12,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.SET_WALLPAPER" />
 
     <application
         android:allowBackup="true"
@@ -92,6 +93,16 @@
         <activity
             android:name=".activity.TvCastDetailActivity"
             android:label="@string/title_activity_tv_cast_detail"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="7a560082b9b2a15f169e80300674f36e18b42f15" />
+
+        <activity
+            android:name=".FullscreenImageViewActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_fullscreen_image_view"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>
 

@@ -7,10 +7,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.firebase.crash.FirebaseCrash;
 
 import org.greenrobot.eventbus.EventBus;
@@ -26,6 +26,7 @@ import varunbehl.showstime.adapter.TvSeasonsEpisodeAdapter;
 import varunbehl.showstime.eventbus.MessageEvent;
 import varunbehl.showstime.network.RetrofitManager;
 import varunbehl.showstime.pojo.Episode.EpisodeInfo;
+import varunbehl.showstime.util.ImageUtil;
 
 public class EpisodeActivity extends AppCompatActivity {
 
@@ -41,7 +42,7 @@ public class EpisodeActivity extends AppCompatActivity {
     private RetrofitManager retrofitManager;
     private TextView releaseDate;
     private TextView plotSynopsis;
-    private SimpleDraweeView draweeView;
+    private ImageView draweeView;
     private CollapsingToolbarLayout collapsingToolbar;
     private boolean threadAlreadyRunning;
     private GridView tvSeasonsGridView;
@@ -70,7 +71,7 @@ public class EpisodeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_episode);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -78,15 +79,15 @@ public class EpisodeActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         retrofitManager = RetrofitManager.getInstance();
-        collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsingToolbar);
+        collapsingToolbar = findViewById(R.id.collapsingToolbar);
 
 
-        TextView title = (TextView) findViewById(R.id.title);
-        releaseDate = (TextView) findViewById(R.id.release_date);
-        TextView vote = (TextView) findViewById(R.id.vote);
-        plotSynopsis = (TextView) findViewById(R.id.plot_synopsis);
+        TextView title = findViewById(R.id.title);
+        releaseDate = findViewById(R.id.release_date);
+        TextView vote = findViewById(R.id.vote);
+        plotSynopsis = findViewById(R.id.plot_synopsis);
 //        fav_button = (Button) findViewById(R.id.b11);
-        draweeView = (SimpleDraweeView) findViewById(R.id.movie_poster);
+        draweeView = findViewById(R.id.movie_poster);
 
 
 //        tvSeasonsGridView = (GridView) findViewById(R.id.episodesCard).findViewById(R.id.list_view);
@@ -123,7 +124,7 @@ public class EpisodeActivity extends AppCompatActivity {
         if (event.getRequest() == 1) {
             threadAlreadyRunning = false;
             collapsingToolbar.setTitle(episodeInfo.getName());
-            draweeView.setImageURI(getString(R.string.image_path)+ episodeInfo.getStillPath());
+            ImageUtil.loadImageWithFullScreen(this, draweeView, episodeInfo.getStillPath());
             releaseDate.setText(getString(R.string.episode_air_heading) + episodeInfo.getAirDate() + "");
             plotSynopsis.setText(episodeInfo.getOverview());
         }
@@ -131,6 +132,7 @@ public class EpisodeActivity extends AppCompatActivity {
 
     private class LoadEpisodeInfoThread extends Thread {
         final int requestType;
+
 
         LoadEpisodeInfoThread(int requestType) {
             this.requestType = requestType;

@@ -10,9 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.List;
 
@@ -20,6 +19,7 @@ import varunbehl.showstime.R;
 import varunbehl.showstime.activity.EpisodeActivity;
 import varunbehl.showstime.pojo.TvSeason.TvSeasonInfo;
 import varunbehl.showstime.util.DateTimeHelper;
+import varunbehl.showstime.util.ImageUtil;
 
 public class TvSeasonsEpisodeAdapter extends ArrayAdapter<TvSeasonInfo.Episode> {
 
@@ -72,7 +72,7 @@ public class TvSeasonsEpisodeAdapter extends ArrayAdapter<TvSeasonInfo.Episode> 
         holder.episode_date.setText(DateTimeHelper.parseDate(tvSeasonEpisodeList.get(position).getAirDate()));
         if (tvSeasonEpisodeList.get(position).getStillPath() != null && !tvSeasonEpisodeList.get(position).getStillPath().equals("")) {
             holder.draweeView.setVisibility(View.VISIBLE);
-            holder.draweeView.setImageURI(getImageUri(tvSeasonEpisodeList.get(position).getStillPath()));
+            ImageUtil.loadImage(mContext, holder.draweeView, tvSeasonEpisodeList.get(position).getStillPath());
         } else {
             holder.draweeView.setVisibility(View.VISIBLE);
         }
@@ -89,24 +89,20 @@ public class TvSeasonsEpisodeAdapter extends ArrayAdapter<TvSeasonInfo.Episode> 
         return convertView;
     }
 
-    private String getImageUri(String uri) {
-        String IMAGE_POSTER_BASE_URL = "http://image.tmdb.org/t/p/w342";
-        return IMAGE_POSTER_BASE_URL + "/" + uri;
-    }
 
     static class ViewHolder {
         final TextView episodeTitle;
         final TextView episodeDesc;
         final TextView episode_date;
-        final SimpleDraweeView draweeView;
+        final ImageView draweeView;
         final CardView cardView;
 
         ViewHolder(View itemView) {
-            episodeTitle = (TextView) itemView.findViewById(R.id.episode_name);
-            episode_date = (TextView) itemView.findViewById(R.id.episode_date);
-            episodeDesc = (TextView) itemView.findViewById(R.id.episode_desc);
-            draweeView = (SimpleDraweeView) itemView.findViewById(R.id.img_episode_poster);
-            cardView = (CardView) itemView.findViewById(R.id.card_view);
+            episodeTitle = itemView.findViewById(R.id.episode_name);
+            episode_date = itemView.findViewById(R.id.episode_date);
+            episodeDesc = itemView.findViewById(R.id.episode_desc);
+            draweeView = itemView.findViewById(R.id.img_episode_poster);
+            cardView = itemView.findViewById(R.id.card_view);
         }
     }
 }

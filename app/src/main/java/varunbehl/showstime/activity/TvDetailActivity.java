@@ -35,7 +35,9 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import varunbehl.showstime.R;
 import varunbehl.showstime.eventbus.MessageEvent;
+import varunbehl.showstime.fragment.CastFragment;
 import varunbehl.showstime.fragment.ImageFragment;
+import varunbehl.showstime.fragment.SeasonsFragment;
 import varunbehl.showstime.fragment.TvDetailActivityFragment;
 import varunbehl.showstime.fragment.VideosFragment;
 import varunbehl.showstime.network.RetrofitManager;
@@ -47,7 +49,7 @@ import varunbehl.showstime.pojo.Video.VideoResult;
 import varunbehl.showstime.util.Constants;
 
 public class TvDetailActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener {
-    CombinedTvDetail tvInformation;
+    private CombinedTvDetail tvInformation;
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private ShowsFragmentPagerAdapter showsPagerAdapter;
@@ -61,20 +63,21 @@ public class TvDetailActivity extends AppCompatActivity implements TabLayout.OnT
     private CombinedMovieDetail combinedMovieDetail;
     private CollapsingToolbarLayout collapsingToolbar;
     private ProgressBar progressBar;
+    private Toolbar toolbar;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        progressBar = (ProgressBar) findViewById(R.id.progress_detail);
-        tabLayout = (TabLayout) findViewById(R.id.tabLayoutHome);
-        viewPager = (ViewPager) findViewById(R.id.pager);
+        progressBar = findViewById(R.id.progress_detail);
+        tabLayout = findViewById(R.id.tabLayoutHome);
+        viewPager = findViewById(R.id.pager);
         retrofitManager = RetrofitManager.getInstance();
         progressBar.setVisibility(View.VISIBLE);
         tvId = (int) getIntent().getExtras().get(TvDetailActivityFragment.DETAIL_TV);
@@ -161,6 +164,7 @@ public class TvDetailActivity extends AppCompatActivity implements TabLayout.OnT
                                @Override
                                public void onCompleted() {
                                    if (tvInformation != null) {
+                                       toolbar.setTitle(tvInformation.getName());
 
                                        String tvInformationJSONList = new Gson().toJson(tvInformation);
                                        SharedPreferences.Editor editor = prefs.edit();
@@ -247,9 +251,9 @@ public class TvDetailActivity extends AppCompatActivity implements TabLayout.OnT
 
 
     private class ShowsFragmentPagerAdapter extends FragmentStatePagerAdapter {
-        final int PAGE_COUNT = 3;
-        private String tabTitles[] = new String[]{"Detail", "Videos", "Images"};
-        private Context context;
+        final int PAGE_COUNT = 5;
+        private final String[] tabTitles = new String[]{"Detail", "Videos", "Images", "Cast", "Seasons"};
+        private final Context context;
 
         public ShowsFragmentPagerAdapter(FragmentManager fm, Context context) {
             super(fm);
@@ -270,6 +274,10 @@ public class TvDetailActivity extends AppCompatActivity implements TabLayout.OnT
                     return VideosFragment.newInstance((ArrayList<VideoResult>) tvInformation.getVideos().getResults());
                 case 2:
                     return ImageFragment.newInstance(imagesList);
+                case 3:
+                    return CastFragment.newInstance(tvInformation.getCredits().getCast(), tvId);
+                case 4:
+                    return SeasonsFragment.newInstance(tvInformation.getSeasons(), tvId);
                 default:
                     return TvDetailActivityFragment.newInstance(tvInformation);
             }

@@ -127,7 +127,7 @@ public class CombinedTvDetail implements Parcelable {
     public CombinedTvDetail() {
     }
 
-    protected CombinedTvDetail(Parcel in) {
+    private CombinedTvDetail(Parcel in) {
         this.backdropPath = in.readString();
         this.episodeRunTime = new ArrayList<>();
         in.readList(this.episodeRunTime, Integer.class.getClassLoader());
@@ -469,7 +469,7 @@ public class CombinedTvDetail implements Parcelable {
         public Genre() {
         }
 
-        protected Genre(Parcel in) {
+        Genre(Parcel in) {
             this.id = (Integer) in.readValue(Integer.class.getClassLoader());
             this.name = in.readString();
         }
@@ -531,7 +531,7 @@ public class CombinedTvDetail implements Parcelable {
         public Network() {
         }
 
-        protected Network(Parcel in) {
+        Network(Parcel in) {
             this.id = (Integer) in.readValue(Integer.class.getClassLoader());
             this.name = in.readString();
         }
@@ -597,7 +597,7 @@ public class CombinedTvDetail implements Parcelable {
         public Season() {
         }
 
-        protected Season(Parcel in) {
+        Season(Parcel in) {
             this.airDate = in.readString();
             this.episodeCount = (Integer) in.readValue(Integer.class.getClassLoader());
             this.id = (Integer) in.readValue(Integer.class.getClassLoader());

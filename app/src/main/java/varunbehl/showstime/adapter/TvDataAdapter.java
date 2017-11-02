@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -23,6 +24,7 @@ import varunbehl.showstime.R;
 import varunbehl.showstime.activity.TvDetailActivity;
 import varunbehl.showstime.fragment.TvDetailActivityFragment;
 import varunbehl.showstime.pojo.Picture.Pictures;
+import varunbehl.showstime.util.ImageUtil;
 
 public class TvDataAdapter extends RecyclerView.Adapter<TvDataAdapter.ViewHolder> {
 
@@ -55,9 +57,10 @@ public class TvDataAdapter extends RecyclerView.Adapter<TvDataAdapter.ViewHolder
     @Override
     public void onBindViewHolder(final TvDataAdapter.ViewHolder holder, int position) {
         holder.tvMovieTitle.setText(tvShows.get(position).getName());
-        holder.draweeView.setImageURI(getImageUri(tvShows.get(position).getPosterPath()));
+        ImageUtil.loadImageWithoutThumbnail(mContext, holder.draweeView, tvShows.get(position).getPosterPath());
+//        holder.draweeView.setImageURI(getImageUri(tvShows.get(position).getPosterPath()));
 
-        holder.cardView.setOnClickListener(new View.OnClickListener() {
+        holder.draweeView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, TvDetailActivity.class)
@@ -90,20 +93,20 @@ public class TvDataAdapter extends RecyclerView.Adapter<TvDataAdapter.ViewHolder
 
 
     private String getImageUri(String uri) {
-        String IMAGE_POSTER_BASE_URL = "http://image.tmdb.org/t/p/w342";
+        String IMAGE_POSTER_BASE_URL = "http://image.tmdb.org/t/p/w185";
         return IMAGE_POSTER_BASE_URL + "/" + uri;
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         final TextView tvMovieTitle;
         final CardView cardView;
-        final SimpleDraweeView draweeView;
+        final ImageView draweeView;
 
         ViewHolder(View itemView) {
             super(itemView);
-            tvMovieTitle = (TextView) itemView.findViewById(R.id.tv_movie_title);
+            tvMovieTitle = itemView.findViewById(R.id.tv_movie_title);
             draweeView = (SimpleDraweeView) itemView.findViewById(R.id.img_movie_poster);
-            cardView = (CardView) itemView.findViewById(R.id.card_view);
+            cardView = itemView.findViewById(R.id.card_view);
         }
     }
 }

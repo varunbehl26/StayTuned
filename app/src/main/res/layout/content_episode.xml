@@ -3,11 +3,9 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/cardview_dark_background"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
     tools:context="varunbehl.showstime.activity.EpisodeActivity"
@@ -37,8 +35,8 @@
                 android:layout_alignParentTop="true"
                 android:fitsSystemWindows="true"
                 android:scaleType="centerCrop"
-                app:layout_collapseMode="parallax"
-                fresco:placeholderImage="@drawable/placeholder" />
+                android:src="@drawable/placeholder"
+                app:layout_collapseMode="parallax" />
 
 
             <android.support.v7.widget.Toolbar

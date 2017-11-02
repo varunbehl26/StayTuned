@@ -48,7 +48,7 @@ public class Backdrop implements Parcelable {
     public Backdrop() {
     }
 
-    protected Backdrop(Parcel in) {
+    private Backdrop(Parcel in) {
         this.aspectRatio = (Double) in.readValue(Double.class.getClassLoader());
         this.filePath = in.readString();
         this.height = (Integer) in.readValue(Integer.class.getClassLoader());

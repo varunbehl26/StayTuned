@@ -11,9 +11,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.List;
@@ -22,6 +22,7 @@ import varunbehl.showstime.R;
 import varunbehl.showstime.activity.MovieDetailActivity;
 import varunbehl.showstime.fragment.MovieDetailActivityFragment;
 import varunbehl.showstime.pojo.Picture.Pictures;
+import varunbehl.showstime.util.ImageUtil;
 
 public class MoviesInfoAdapter extends ArrayAdapter<Pictures> {
 
@@ -68,7 +69,7 @@ public class MoviesInfoAdapter extends ArrayAdapter<Pictures> {
 
         holder.tvMovieTitle.setText(movie.getTitle());
 
-        holder.draweeView.setImageURI(getImageUri(movie.getPosterPath()));
+        ImageUtil.loadImage(mContext, holder.draweeView, movie.getPosterPath());
 
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {
@@ -90,20 +91,15 @@ public class MoviesInfoAdapter extends ArrayAdapter<Pictures> {
         return convertView;
     }
 
-    private String getImageUri(String uri) {
-        String IMAGE_POSTER_BASE_URL = "http://image.tmdb.org/t/p/w342";
-        return IMAGE_POSTER_BASE_URL + "/" + uri;
-    }
-
     static class ViewHolder {
         final TextView tvMovieTitle;
         final CardView cardView;
-        final SimpleDraweeView draweeView;
+        final ImageView draweeView;
 
         public ViewHolder(View itemView) {
-            tvMovieTitle = (TextView) itemView.findViewById(R.id.tv_movie_title);
-            draweeView = (SimpleDraweeView) itemView.findViewById(R.id.img_movie_poster);
-            cardView = (CardView) itemView.findViewById(R.id.card_view);
+            tvMovieTitle = itemView.findViewById(R.id.tv_movie_title);
+            draweeView = itemView.findViewById(R.id.img_movie_poster);
+            cardView = itemView.findViewById(R.id.card_view);
         }
     }
 }

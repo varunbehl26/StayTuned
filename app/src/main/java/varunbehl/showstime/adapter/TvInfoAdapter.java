@@ -12,9 +12,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.List;
@@ -23,6 +23,7 @@ import varunbehl.showstime.R;
 import varunbehl.showstime.activity.TvDetailActivity;
 import varunbehl.showstime.fragment.TvDetailActivityFragment;
 import varunbehl.showstime.pojo.Picture.Pictures;
+import varunbehl.showstime.util.ImageUtil;
 
 public class TvInfoAdapter extends ArrayAdapter<Pictures> {
 
@@ -73,7 +74,7 @@ public class TvInfoAdapter extends ArrayAdapter<Pictures> {
             convertView.setTag(holder);
         }
         holder.tvMovieTitle.setText(tvInfo.getName());
-        holder.draweeView.setImageURI(getImageUri(tvInfo.getBackdropPath()));
+        ImageUtil.loadImage(mContext, holder.draweeView, tvInfo.getBackdropPath());
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,20 +96,16 @@ public class TvInfoAdapter extends ArrayAdapter<Pictures> {
         return convertView;
     }
 
-    private String getImageUri(String uri) {
-        String IMAGE_POSTER_BASE_URL = "http://image.tmdb.org/t/p/w342";
-        return IMAGE_POSTER_BASE_URL + "/" + uri;
-    }
 
     private static class ViewHolder {
         final TextView tvMovieTitle;
-        final SimpleDraweeView draweeView;
+        final ImageView draweeView;
         final CardView cardView;
 
         ViewHolder(View itemView) {
-            tvMovieTitle = (TextView) itemView.findViewById(R.id.tv_movie_title);
-            draweeView = (SimpleDraweeView) itemView.findViewById(R.id.img_movie_poster);
-            cardView = (CardView) itemView.findViewById(R.id.card_view);
+            tvMovieTitle = itemView.findViewById(R.id.tv_movie_title);
+            draweeView = itemView.findViewById(R.id.img_movie_poster);
+            cardView = itemView.findViewById(R.id.card_view);
 
         }
     }

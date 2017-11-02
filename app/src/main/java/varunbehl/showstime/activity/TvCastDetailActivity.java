@@ -1,6 +1,7 @@
 package varunbehl.showstime.activity;
 
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v17.leanback.widget.HorizontalGridView;
 import android.support.v7.app.AppCompatActivity;
@@ -8,10 +9,10 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.firebase.crash.FirebaseCrash;
 
 import org.greenrobot.eventbus.EventBus;
@@ -29,6 +30,7 @@ import varunbehl.showstime.eventbus.MessageEvent;
 import varunbehl.showstime.network.RetrofitManager;
 import varunbehl.showstime.pojo.Cast.CastInfo;
 import varunbehl.showstime.util.DateTimeHelper;
+import varunbehl.showstime.util.ImageUtil;
 
 public class TvCastDetailActivity extends AppCompatActivity {
 
@@ -40,9 +42,9 @@ public class TvCastDetailActivity extends AppCompatActivity {
     private TextView releaseDate;
     private TextView vote;
     private TextView plotSynopsis;
-    private SimpleDraweeView draweeView;
+    private ImageView draweeView;
     private CollapsingToolbarLayout collapsingToolbar;
-    private CardView tvCastCardView;
+    //    private CardView tvCastCardView;
     private HorizontalGridView tvCastGridView;
     private TextView tvCastHeading;
     private ProgressBar tvCastProgressBar;
@@ -51,29 +53,29 @@ public class TvCastDetailActivity extends AppCompatActivity {
     private TextView tvCrewHeading;
     private ProgressBar tvCrewProgressBar;
     private TvCrewAdapter tvCrewAdapter;
+    private ConstraintLayout tvCastCardView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tv_cast_detail);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+        TextView title = findViewById(R.id.title);
+        releaseDate = findViewById(R.id.release_date);
+        vote = findViewById(R.id.vote);
+        plotSynopsis = findViewById(R.id.plot_synopsis);
+        draweeView = findViewById(R.id.movie_poster);
+        collapsingToolbar = findViewById(R.id.collapsingToolbar);
 
-        TextView title = (TextView) findViewById(R.id.title);
-        releaseDate = (TextView) findViewById(R.id.release_date);
-        vote = (TextView) findViewById(R.id.vote);
-        plotSynopsis = (TextView) findViewById(R.id.plot_synopsis);
-        draweeView = (SimpleDraweeView) findViewById(R.id.movie_poster);
-        collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsingToolbar);
-
-        tvCastCardView = (CardView) findViewById(R.id.tvCastCard);
-        tvCastGridView = (HorizontalGridView) tvCastCardView.findViewById(R.id.horizontal_grid_view);
-        tvCastHeading = (TextView) tvCastCardView.findViewById(R.id.heading);
-        tvCastProgressBar = (ProgressBar) tvCastCardView.findViewById(R.id.progress_main);
+        tvCastCardView = findViewById(R.id.tvCastCard);
+        tvCastGridView = tvCastCardView.findViewById(R.id.horizontal_grid_view);
+        tvCastHeading = tvCastCardView.findViewById(R.id.heading);
+        tvCastProgressBar = tvCastCardView.findViewById(R.id.progress_main);
         tvCastProgressBar.setVisibility(View.VISIBLE);
 
 //        tvCrewCardView = (CardView) findViewById(R.id.tvCrewCard);
@@ -109,7 +111,7 @@ public class TvCastDetailActivity extends AppCompatActivity {
 //            progress_fragment.setVisibility(View.GONE);
 //            threadAlreadyRunning = false;
             collapsingToolbar.setTitle(casts.getName());
-            draweeView.setImageURI(getString(R.string.image_path) + casts.getProfilePath());
+            ImageUtil.loadImage(this, draweeView, casts.getProfilePath());
             releaseDate.setText(getString(R.string.born_on) + DateTimeHelper.parseDate(casts.getBirthday()) + "");
             vote.setText(getString(R.string.rating) + casts.getPopularity() + "/10");
             plotSynopsis.setText(casts.getBiography());

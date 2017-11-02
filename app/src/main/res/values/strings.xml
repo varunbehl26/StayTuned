@@ -44,4 +44,9 @@
     <string name="top_rated_movies">Top Rated Movies</string>
     <string name="upcoming_movies">Upcoming Movies</string>
 
+    <string name="title_activity_fullscreen_image_view">FullscreenImageViewActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="transition_search_back" translatable="false">transition_search_back</string>
+
 </resources>
