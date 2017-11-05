@@ -7,10 +7,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.firebase.crash.FirebaseCrash;
 
 import org.greenrobot.eventbus.EventBus;
@@ -42,7 +42,7 @@ public class EpisodeActivity extends AppCompatActivity {
     private RetrofitManager retrofitManager;
     private TextView releaseDate;
     private TextView plotSynopsis;
-    private ImageView draweeView;
+    private SimpleDraweeView draweeView;
     private CollapsingToolbarLayout collapsingToolbar;
     private boolean threadAlreadyRunning;
     private GridView tvSeasonsGridView;

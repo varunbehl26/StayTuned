@@ -11,9 +11,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.List;
@@ -102,7 +102,7 @@ public class SearchEpisodeAdapter extends ArrayAdapter<SearchResult.Result> {
         final TextView episodeTitle;
         final TextView episodeDesc;
         final TextView episode_date;
-        final ImageView draweeView;
+        final SimpleDraweeView draweeView;
         final CardView cardView;
 
         ViewHolder(View itemView) {

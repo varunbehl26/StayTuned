@@ -12,8 +12,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import varunbehl.showstime.R;
 import varunbehl.showstime.activity.TvDetailActivity;
@@ -38,7 +39,7 @@ public class TvInfoCursorAdapter extends CursorAdapter {
     @Override
     public void bindView(View view, Context context, final Cursor cursor) {
         TextView tvMovieTitle;
-        ImageView draweeView;
+        SimpleDraweeView draweeView;
         CardView cardView;
 
         tvMovieTitle = view.findViewById(R.id.tv_movie_title);

@@ -12,7 +12,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -100,7 +99,7 @@ public class TvDataAdapter extends RecyclerView.Adapter<TvDataAdapter.ViewHolder
     static class ViewHolder extends RecyclerView.ViewHolder {
         final TextView tvMovieTitle;
         final CardView cardView;
-        final ImageView draweeView;
+        final SimpleDraweeView draweeView;
 
         ViewHolder(View itemView) {
             super(itemView);

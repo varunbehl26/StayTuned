@@ -9,10 +9,10 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.firebase.crash.FirebaseCrash;
 
 import org.greenrobot.eventbus.EventBus;
@@ -42,7 +42,7 @@ public class TvCastDetailActivity extends AppCompatActivity {
     private TextView releaseDate;
     private TextView vote;
     private TextView plotSynopsis;
-    private ImageView draweeView;
+    private SimpleDraweeView draweeView;
     private CollapsingToolbarLayout collapsingToolbar;
     //    private CardView tvCastCardView;
     private HorizontalGridView tvCastGridView;

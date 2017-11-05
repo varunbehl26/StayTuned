@@ -12,11 +12,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.synnapps.carouselview.CarouselView;
 import com.synnapps.carouselview.ViewListener;
 
@@ -95,7 +95,7 @@ public class MovieDetailActivityFragment extends Fragment {
         vote = rootView.findViewById(R.id.vote);
         plotSynopsis = rootView.findViewById(R.id.plot_synopsis);
         fav_button = rootView.findViewById(R.id.b11);
-        ImageView draweeView = getActivity().findViewById(R.id.movie_poster);
+        SimpleDraweeView draweeView = getActivity().findViewById(R.id.movie_poster);
         fav_button.setBackground(getContext().getResources().getDrawable(R.drawable.unfav));
         fav_button.setVisibility(View.GONE);
         ProgressBar progressBar = rootView.findViewById(R.id.progress_fragment);
@@ -211,7 +211,7 @@ public class MovieDetailActivityFragment extends Fragment {
                 public View setViewForPosition(final int position) {
                     View itemView = getActivity().getLayoutInflater().inflate(R.layout.caraousel_movie_layout, null);
                     TextView tvMovieTitle = itemView.findViewById(R.id.tv_movie_title);
-                    ImageView draweeView = itemView.findViewById(R.id.img_movie_poster);
+                    SimpleDraweeView draweeView = itemView.findViewById(R.id.img_movie_poster);
                     tvMovieTitle.setVisibility(View.GONE);
 
                     itemView.setOnClickListener(new View.OnClickListener() {

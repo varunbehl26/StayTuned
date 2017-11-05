@@ -103,7 +103,7 @@ public class TvDetailActivityFragment extends Fragment {
         ((TvDetailActivity) getActivity()).getSupportActionBar().setHomeButtonEnabled(true);
         ((TvDetailActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         RetrofitManager retrofitManager = RetrofitManager.getInstance();
-//        collapsingToolbar = (CollapsingToolbarLayout) getActivity().findViewById(R.id.toolbar_layout);
+        collapsingToolbar = (CollapsingToolbarLayout) getActivity().findViewById(R.id.toolbar_layout);
 
 //        CardView infoCardView = (CardView) rootView.findViewById(R.id.info_card_view);
         TextView title = rootView.findViewById(R.id.title);
@@ -212,7 +212,7 @@ public class TvDetailActivityFragment extends Fragment {
 //        coordinatorLayout.setVisibility(View.VISIBLE);
         progress_fragment.setVisibility(View.GONE);
         boolean threadAlreadyRunning = false;
-//        collapsingToolbar.setTitle(tvInformation.getName());
+        collapsingToolbar.setTitle(tvInformation.getName());
 //        draweeView.setImageURI(getString(R.string.image_path) + tvInformation.getBackdropPath());
         releaseDate.setText(getString(R.string.firstAir) + DateTimeHelper.parseDate(tvInformation.getFirstAirDate()) + "");
         vote.setText(getString(R.string.rating) + tvInformation.getVoteAverage() + "/10");

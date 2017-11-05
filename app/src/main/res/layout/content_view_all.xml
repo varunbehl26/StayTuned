@@ -25,7 +25,7 @@
         android:background="@color/cardview_dark_background"
         android:gravity="center"
         android:horizontalSpacing="10dp"
-        android:numColumns="3"
+        android:numColumns="2"
         android:stretchMode="columnWidth"
         android:verticalSpacing="10dp"
         android:visibility="visible" />

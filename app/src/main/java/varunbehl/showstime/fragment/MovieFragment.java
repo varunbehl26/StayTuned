@@ -16,11 +16,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -440,7 +440,7 @@ public class MovieFragment extends Fragment {
                                        public View setViewForPosition(final int position) {
                                            View itemView = getActivity().getLayoutInflater().inflate(R.layout.caraousel_movie_layout, null);
                                            TextView tvMovieTitle;
-                                           ImageView draweeView;
+                                           SimpleDraweeView draweeView;
                                            ConstraintLayout cardView;
 
                                            tvMovieTitle = itemView.findViewById(R.id.tv_movie_title);

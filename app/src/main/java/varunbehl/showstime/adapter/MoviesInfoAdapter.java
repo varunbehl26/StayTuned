@@ -11,9 +11,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.List;
@@ -94,7 +94,7 @@ public class MoviesInfoAdapter extends ArrayAdapter<Pictures> {
     static class ViewHolder {
         final TextView tvMovieTitle;
         final CardView cardView;
-        final ImageView draweeView;
+        final SimpleDraweeView draweeView;
 
         public ViewHolder(View itemView) {
             tvMovieTitle = itemView.findViewById(R.id.tv_movie_title);
