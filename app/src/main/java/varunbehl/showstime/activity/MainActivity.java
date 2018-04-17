@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity
         FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         FrameLayout framlayout = findViewById(R.id.frameLayout);
 
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setVisibility(View.VISIBLE);
         bottomNavigationView.setSelectedItemId(R.id.tv_shows);
 
@@ -78,6 +78,13 @@ public class MainActivity extends AppCompatActivity
                                 fragmentManager1.beginTransaction()
                                         .replace(R.id.frameLayout, tvShowFragment).commit();
 //                                item.setIcon(R.drawable.fav);
+
+                                break;
+                            case R.id.fav:
+
+                                Intent intent = new Intent(MainActivity.this, FavouriteActivity.class);
+                                startActivity(intent);
+                                //                                item.setIcon(R.drawable.fav);
 
                                 break;
                         }
